@@ -13,7 +13,22 @@ class PascalLexerTestCase(unittest.TestCase):
                             shell=True,
                             stdout=None)
 
-            cls.lex = etree.parse('lexanal.xml')
+            parser = etree.XMLParser(recover=True)
+            cls.lex = etree.parse('lexanal.xml', parser)
+
+    def lex_test(self, tag, name=None, token=None, lexeme=None, column=None, line=None):
+        if name:
+            self.assertEquals(tag.tag, name)
+
+        if name:
+            self.assertEquals(tag.tag, name)
+
+        args = [token, lexeme, column, line]
+        keys = ['token', 'lexeme', 'column', 'line']
+
+        for arg, key in zip(args, keys):
+            if arg:
+                self.assertEquals(tag.get(key), arg)
 
 class TestLol(PascalLexerTestCase):
     source = "lol.pascal"
@@ -21,19 +36,28 @@ class TestLol(PascalLexerTestCase):
     def test_first_boolean(self):
         self.assertEquals(self.lex.getroot().tag, 'lexanal')
 
-        lol = self.lex.getroot()[0]
-
-        self.assertEquals(lol.tag, 'terminal')
-        self.assertEquals(lol.get('token'), 'BOOL_CONST')
-        self.assertEquals(lol.get('lexeme'), 'true')
-        self.assertEquals(lol.get('column'), '1')
-        self.assertEquals(lol.get('line'), '1')
+        self.lex_test(self.lex.getroot()[0],
+                      'terminal', 'BOOL_CONST', 'true', '1', '1')
 
 class TestHelloWorld(PascalLexerTestCase):
     source = "helloworld.pascal"
 
     def test_program(self):
-        self.fail()
+        self.lex_test(self.lex.getroot()[0],
+                      'terminal', 'PROGRAM', 'program', '2', '1')
+
+    def test_name(self):
+        self.lex_test(self.lex.getroot()[1],
+                      'terminal', 'IDENTIFIER', 'HelloWorld', '2', '8')
+        self.lex_test(self.lex.getroot()[2],
+                      'terminal', 'LPARENTHESIS', '(', '2', '9')
+        self.lex_test(self.lex.getroot()[3],
+                      'terminal', 'IDENTIFIER', 'output', '2', '10')
+        self.lex_test(self.lex.getroot()[4],
+                      'terminal', 'RBRACKET', ')', '2', '17')
+        self.lex_test(self.lex.getroot()[5],
+                      'terminal', 'SEMIC', ';', '2', '18')
+
 
     def test_begin(self):
         self.fail()

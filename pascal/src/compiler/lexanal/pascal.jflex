@@ -92,5 +92,5 @@ import compiler.synanal.*;
    { return sym(PascalTok.SUB); }
    { return sym(PascalTok.VAR); }
    { return sym(PascalTok.PROCEDURE); }
-   { return sym(PascalTok.DO); }
-   { return sym(PascalTok.IDENTIFIER); }*/
+   { return sym(PascalTok.DO); } */
+[^0-9][0-9_a-zA-Z]+   { return sym(PascalTok.IDENTIFIER); }
