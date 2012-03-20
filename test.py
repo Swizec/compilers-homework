@@ -1,5 +1,5 @@
 
-import unittest, os
+import unittest, os, subprocess
 from lxml import etree
 
 class PascalLexerTestCase(unittest.TestCase):
@@ -9,7 +9,9 @@ class PascalLexerTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if cls.source != None:
-            os.system("java -cp pascal/bin/java_cup/runtime:lib/java-cup-11a.jar:pascal/bin/compiler/.. compiler.Main test/"+cls.source.replace(".pascal", ""))
+            subprocess.call("java -cp pascal/bin/java_cup/runtime:lib/java-cup-11a.jar:pascal/bin/compiler/.. compiler.Main test/"+cls.source.replace(".pascal", ""),
+                            shell=True,
+                            stdout=None)
 
             cls.lex = etree.parse('lexanal.xml')
 
@@ -26,6 +28,21 @@ class TestLol(PascalLexerTestCase):
         self.assertEquals(lol.get('lexeme'), 'true')
         self.assertEquals(lol.get('column'), '1')
         self.assertEquals(lol.get('line'), '1')
+
+class TestHelloWorld(PascalLexerTestCase):
+    source = "helloworld.pascal"
+
+    def test_program(self):
+        self.fail()
+
+    def test_begin(self):
+        self.fail()
+
+    def test_end(self):
+        self.fail()
+
+    def test_writeln(self):
+        self.fail()
 
 
 if __name__ == '__main__':
