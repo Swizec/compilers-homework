@@ -99,7 +99,17 @@ class TestComments(PascalLexerTestCase):
     source = "comments.pascal"
 
     def test_comments(self):
-        self.assertEquals(len(self.root), 0)
+        self.lex_test(self.root[0],
+                      'terminal', 'IDENTIFIER', 'Writeln')
+        self.lex_test(self.root[1],
+                      'terminal', 'LPARENTHESIS')
+        self.lex_test(self.root[2],
+                      'terminal', 'CHAR_CONST')
+        self.lex_test(self.root[3],
+                      'terminal', 'RPARENTHESIS')
+        self.lex_test(self.root[4],
+                      'terminal', 'SEMIC')
+
 
 class TestOddities(PascalLexerTestCase):
     source = "oddities.pascal"

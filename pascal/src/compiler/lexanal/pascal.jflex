@@ -30,14 +30,30 @@ import compiler.synanal.*;
     private PascalSym sym(int type) {
         return new PascalSym(type, yyline + 1, yycolumn + 1, yytext());
     }
+
+    private int commentDepth = 0;
 %}
 
 %eof{
 %eof}
 
+%state COMMENT
+
 %%
 
 \r|\n|\r\n | [ \t\f]	{ /* ignore */ }
+
+<COMMENT> {
+"{"       { commentDepth++; }
+"}"       { commentDepth--;
+            if (commentDepth <= 0) yybegin(YYINITIAL);
+          }
+.|[\r\n]  {  }
+}
+
+<YYINITIAL> {
+"{"   { commentDepth++;
+        yybegin(COMMENT); }
 
 "["   { return sym(PascalTok.LBRACKET); }
 "]"   { return sym(PascalTok.RBRACKET); }
@@ -98,8 +114,7 @@ import compiler.synanal.*;
 [0-9]+   { return sym(PascalTok.INT_CONST); }
 '[\x20-\x7E]*'   { return sym(PascalTok.CHAR_CONST); }
 
-\{([\r\n]|.)*\}  {   }
-
 [_a-zA-Z][0-9_a-zA-Z]*   { return sym(PascalTok.IDENTIFIER); }
+}
 
 /*   { return sym(PascalTok.error); }*/
