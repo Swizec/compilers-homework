@@ -9,17 +9,17 @@ import compiler.synanal.*;
 
 /**
  * Opis posameznega osnovnega simbola.
- * 
+ *
  * Ta razred je izpeljan iz razreda java_cup.runtime.Symbol. Edini razlog za
  * izpeljavo je dodatek metode <code>toXML</code> za izpis simbola v XML obliki.
- * 
+ *
  * Vsak osnovni simbol je opisan s stirimi podatki: - <code>int sym</code> :
  * vrsta osnovnega simbola (token); - <code>int left</code> : vrstica izvorne
  * kode, v kateri se osnovni simbol zacne (line); - <code>int right</code> :
  * stolpec izvorne kode, v katerem se osnovni simbol zacne (column); -
  * <code>Object value</code>: znakovna predstavitev osnovnega simbola (lexeme).
  * (Cudno poimenovanje izvira iz razreda java_cup.runtime.Symbol.)
- * 
+ *
  * @see <a
  *      href="https://www2.in.tum.de/repos/cup/develop/src/java_cup/runtime/Symbol.java"><code>java_cup.runtime.Symbol</code>
  *      source</a>
@@ -28,7 +28,7 @@ public class PascalSym extends Symbol implements XMLable {
 
 	/**
 	 * Konstruktor, ki se uporablja za osnovni simbol <code>EOF</code>.
-	 * 
+	 *
 	 * @param sym
 	 *            Vrsta osnovnega simbola.
 	 */
@@ -38,7 +38,7 @@ public class PascalSym extends Symbol implements XMLable {
 
 	/**
 	 * Konstruktor, ki se uporablja le pri testnem izpisu med sintaksno analizo.
-	 * 
+	 *
 	 * @param symb
 	 *            Simbol razreda <code>Symbol<code>.
 	 */
@@ -49,7 +49,7 @@ public class PascalSym extends Symbol implements XMLable {
 	/**
 	 * Konstruktor, ki se uporablja za vse osnovne simbole razen za
 	 * <code>EOF</code>.
-	 * 
+	 *
 	 * @param sym
 	 *            Vrsta osnovnega simbola.
 	 * @param left
@@ -60,7 +60,13 @@ public class PascalSym extends Symbol implements XMLable {
 	 *            Znakovna predstavitev osnovnega simbola.
 	 */
 	public PascalSym(int sym, int left, int right, Object value) {
-		super(sym, left, right, value);
+          super(sym, left, right, value);
+          /*if (sym == PascalTok.CHAR_CONST) {
+            String lexeme = (String) value;
+            lexeme = lexeme.substring(1, lexeme.length()-1);
+            lexeme = lexeme.replace("''", "'");
+            this.value = lexeme;
+          }*/
 	}
 
 	public void toXML(PrintStream xml) {

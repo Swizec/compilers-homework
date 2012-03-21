@@ -1,0 +1,6 @@
+*.class
+bin/*
+src/compiler/lexanal/*.java
+*.java~
+\#*
+.\#*

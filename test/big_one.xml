@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<lexanal>
+<terminal token="PROGRAM" line="1" column="1"/>
+<terminal token="IDENTIFIER" lexeme="mojProgram" line="1" column="9"/>
+<terminal token="SEMIC" line="1" column="19"/>
+<terminal token="VAR" line="2" column="1"/>
+<terminal token="IDENTIFIER" lexeme="i" line="3" column="9"/>
+<terminal token="COMMA" line="3" column="10"/>
+<terminal token="IDENTIFIER" lexeme="j" line="3" column="11"/>
+<terminal token="COMMA" line="3" column="12"/>
+<terminal token="IDENTIFIER" lexeme="k" line="3" column="13"/>
+<terminal token="COLON" line="3" column="15"/>
+<terminal token="INT" line="3" column="17"/>
+<terminal token="SEMIC" line="3" column="24"/>
+<terminal token="IDENTIFIER" lexeme="a" line="4" column="3"/>
+<terminal token="COLON" line="4" column="5"/>
+<terminal token="BOOL" line="4" column="7"/>
+<terminal token="SEMIC" line="4" column="14"/>
+<terminal token="IDENTIFIER" lexeme="b" line="5" column="3"/>
+<terminal token="COLON" line="5" column="5"/>
+<terminal token="CHAR" line="5" column="7"/>
+<terminal token="SEMIC" line="5" column="11"/>
+<terminal token="IDENTIFIER" lexeme="f" line="6" column="3"/>
+<terminal token="COLON" line="6" column="4"/>
+<terminal token="ARRAY" line="6" column="6"/>
+<terminal token="LBRACKET" line="6" column="11"/>
+<terminal token="INT_CONST" lexeme="0" line="6" column="12"/>
+<terminal token="DOTS" line="6" column="13"/>
+<terminal token="INT_CONST" lexeme="8" line="6" column="15"/>
+<terminal token="RBRACKET" line="6" column="16"/>
+<terminal token="OF" line="6" column="18"/>
+<terminal token="INT" line="6" column="21"/>
+<terminal token="SEMIC" line="6" column="28"/>
+<terminal token="IDENTIFIER" lexeme="p" line="7" column="3"/>
+<terminal token="COLON" line="7" column="5"/>
+<terminal token="PTR" line="7" column="7"/>
+<terminal token="INT" line="7" column="8"/>
+<terminal token="SEMIC" line="7" column="15"/>
+<terminal token="FUNCTION" line="9" column="1"/>
+<terminal token="IDENTIFIER" lexeme="fact" line="9" column="10"/>
+<terminal token="LPARENTHESIS" line="9" column="14"/>
+<terminal token="IDENTIFIER" lexeme="a" line="9" column="15"/>
+<terminal token="COLON" line="9" column="16"/>
+<terminal token="INT" line="9" column="17"/>
+<terminal token="RPARENTHESIS" line="9" column="24"/>
+<terminal token="COLON" line="9" column="25"/>
+<terminal token="INT" line="9" column="27"/>
+<terminal token="SEMIC" line="9" column="34"/>
+<terminal token="BEGIN" line="10" column="1"/>
+<terminal token="IF" line="11" column="2"/>
+<terminal token="IDENTIFIER" lexeme="a" line="11" column="5"/>
+<terminal token="EQU" line="11" column="7"/>
+<terminal token="INT_CONST" lexeme="1" line="11" column="9"/>
+<terminal token="THEN" line="11" column="11"/>
+<terminal token="IDENTIFIER" lexeme="fact" line="12" column="3"/>
+<terminal token="ASSIGN" line="12" column="8"/>
+<terminal token="INT_CONST" lexeme="1" line="12" column="11"/>
+<terminal token="ELSE" line="13" column="2"/>
+<terminal token="IDENTIFIER" lexeme="fact" line="14" column="3"/>
+<terminal token="ASSIGN" line="14" column="8"/>
+<terminal token="IDENTIFIER" lexeme="a" line="14" column="11"/>
+<terminal token="MUL" line="14" column="12"/>
+<terminal token="IDENTIFIER" lexeme="fact" line="14" column="13"/>
+<terminal token="LPARENTHESIS" line="14" column="17"/>
+<terminal token="IDENTIFIER" lexeme="a" line="14" column="18"/>
+<terminal token="SUB" line="14" column="19"/>
+<terminal token="INT_CONST" lexeme="1" line="14" column="20"/>
+<terminal token="RPARENTHESIS" line="14" column="21"/>
+<terminal token="SEMIC" line="14" column="22"/>
+<terminal token="END" line="15" column="1"/>
+<terminal token="SEMIC" line="15" column="4"/>
+<terminal token="BEGIN" line="17" column="1"/>
+<terminal token="IDENTIFIER" lexeme="i" line="18" column="5"/>
+<terminal token="ASSIGN" line="18" column="7"/>
+<terminal token="INT_CONST" lexeme="12" line="18" column="10"/>
+<terminal token="SEMIC" line="18" column="12"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="22" column="2"/>
+<terminal token="LPARENTHESIS" line="22" column="9"/>
+<terminal token="CHAR_CONST" lexeme="&#39;b&#39;" line="22" column="10"/>
+<terminal token="RPARENTHESIS" line="22" column="13"/>
+<terminal token="SEMIC" line="22" column="14"/>
+<terminal token="IDENTIFIER" lexeme="j" line="23" column="5"/>
+<terminal token="ASSIGN" line="23" column="7"/>
+<terminal token="SUB" line="23" column="10"/>
+<terminal token="INT_CONST" lexeme="4" line="23" column="11"/>
+<terminal token="SEMIC" line="23" column="12"/>
+<terminal token="IDENTIFIER" lexeme="k" line="24" column="5"/>
+<terminal token="ASSIGN" line="24" column="7"/>
+<terminal token="IDENTIFIER" lexeme="i" line="24" column="10"/>
+<terminal token="ADD" line="24" column="11"/>
+<terminal token="IDENTIFIER" lexeme="j" line="24" column="12"/>
+<terminal token="SEMIC" line="24" column="13"/>
+<terminal token="IDENTIFIER" lexeme="repeat" line="25" column="5"/>
+<terminal token="IDENTIFIER" lexeme="f" line="25" column="12"/>
+<terminal token="LBRACKET" line="25" column="13"/>
+<terminal token="IDENTIFIER" lexeme="k" line="25" column="14"/>
+<terminal token="RBRACKET" line="25" column="15"/>
+<terminal token="ASSIGN" line="25" column="17"/>
+<terminal token="IDENTIFIER" lexeme="fact" line="25" column="20"/>
+<terminal token="LPARENTHESIS" line="25" column="24"/>
+<terminal token="IDENTIFIER" lexeme="k" line="25" column="25"/>
+<terminal token="RPARENTHESIS" line="25" column="26"/>
+<terminal token="SEMIC" line="25" column="27"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="26" column="3"/>
+<terminal token="LPARENTHESIS" line="26" column="10"/>
+<terminal token="IDENTIFIER" lexeme="fact" line="26" column="11"/>
+<terminal token="LPARENTHESIS" line="26" column="15"/>
+<terminal token="IDENTIFIER" lexeme="k" line="26" column="16"/>
+<terminal token="RPARENTHESIS" line="26" column="17"/>
+<terminal token="RPARENTHESIS" line="26" column="18"/>
+<terminal token="SEMIC" line="26" column="19"/>
+<terminal token="IDENTIFIER" lexeme="k" line="27" column="3"/>
+<terminal token="ASSIGN" line="27" column="5"/>
+<terminal token="IDENTIFIER" lexeme="k" line="27" column="8"/>
+<terminal token="SUB" line="27" column="9"/>
+<terminal token="INT_CONST" lexeme="1" line="27" column="10"/>
+<terminal token="SEMIC" line="27" column="11"/>
+<terminal token="IDENTIFIER" lexeme="until" line="29" column="2"/>
+<terminal token="IDENTIFIER" lexeme="k" line="29" column="8"/>
+<terminal token="LEQ" line="29" column="10"/>
+<terminal token="INT_CONST" lexeme="0" line="29" column="13"/>
+<terminal token="SEMIC" line="29" column="14"/>
+<terminal token="IDENTIFIER" lexeme="b" line="31" column="2"/>
+<terminal token="ASSIGN" line="31" column="3"/>
+<terminal token="CHAR_CONST" lexeme="&#39;a&#39;" line="31" column="5"/>
+<terminal token="SEMIC" line="31" column="8"/>
+<terminal token="IDENTIFIER" lexeme="a" line="32" column="2"/>
+<terminal token="ASSIGN" line="32" column="3"/>
+<terminal token="BOOL_CONST" lexeme="false" line="32" column="5"/>
+<terminal token="SEMIC" line="32" column="10"/>
+<terminal token="FOR" line="33" column="2"/>
+<terminal token="IDENTIFIER" lexeme="i" line="33" column="6"/>
+<terminal token="ASSIGN" line="33" column="8"/>
+<terminal token="INT_CONST" lexeme="0" line="33" column="11"/>
+<terminal token="TO" line="33" column="13"/>
+<terminal token="INT_CONST" lexeme="10" line="33" column="16"/>
+<terminal token="DO" line="33" column="19"/>
+<terminal token="IF" line="34" column="3"/>
+<terminal token="IDENTIFIER" lexeme="i" line="34" column="6"/>
+<terminal token="LTH" line="34" column="8"/>
+<terminal token="INT_CONST" lexeme="6" line="34" column="10"/>
+<terminal token="THEN" line="34" column="12"/>
+<terminal token="BEGIN" line="35" column="4"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="36" column="5"/>
+<terminal token="LPARENTHESIS" line="36" column="12"/>
+<terminal token="IDENTIFIER" lexeme="a" line="36" column="13"/>
+<terminal token="RPARENTHESIS" line="36" column="14"/>
+<terminal token="SEMIC" line="36" column="15"/>
+<terminal token="IDENTIFIER" lexeme="a" line="37" column="5"/>
+<terminal token="ASSIGN" line="37" column="7"/>
+<terminal token="NOT" line="37" column="10"/>
+<terminal token="IDENTIFIER" lexeme="a" line="37" column="14"/>
+<terminal token="SEMIC" line="37" column="15"/>
+<terminal token="IF" line="38" column="5"/>
+<terminal token="IDENTIFIER" lexeme="a" line="38" column="8"/>
+<terminal token="THEN" line="38" column="10"/>
+<terminal token="BEGIN" line="38" column="15"/>
+<terminal token="IDENTIFIER" lexeme="k" line="38" column="21"/>
+<terminal token="ASSIGN" line="38" column="22"/>
+<terminal token="INT_CONST" lexeme="95" line="38" column="24"/>
+<terminal token="SEMIC" line="38" column="26"/>
+<terminal token="IDENTIFIER" lexeme="j" line="38" column="28"/>
+<terminal token="ASSIGN" line="38" column="29"/>
+<terminal token="SUB" line="38" column="31"/>
+<terminal token="INT_CONST" lexeme="3" line="38" column="32"/>
+<terminal token="SEMIC" line="38" column="33"/>
+<terminal token="END" line="38" column="35"/>
+<terminal token="ELSE" line="38" column="39"/>
+<terminal token="IDENTIFIER" lexeme="k" line="38" column="44"/>
+<terminal token="ASSIGN" line="38" column="45"/>
+<terminal token="SUB" line="38" column="47"/>
+<terminal token="INT_CONST" lexeme="2" line="38" column="48"/>
+<terminal token="SEMIC" line="38" column="49"/>
+<terminal token="WHILE" line="39" column="5"/>
+<terminal token="LPARENTHESIS" line="39" column="11"/>
+<terminal token="IDENTIFIER" lexeme="j" line="39" column="12"/>
+<terminal token="GTH" line="39" column="14"/>
+<terminal token="SUB" line="39" column="16"/>
+<terminal token="INT_CONST" lexeme="9" line="39" column="17"/>
+<terminal token="RPARENTHESIS" line="39" column="18"/>
+<terminal token="AND" line="39" column="20"/>
+<terminal token="LPARENTHESIS" line="39" column="24"/>
+<terminal token="IDENTIFIER" lexeme="j" line="39" column="25"/>
+<terminal token="LTH" line="39" column="27"/>
+<terminal token="SUB" line="39" column="29"/>
+<terminal token="INT_CONST" lexeme="1" line="39" column="30"/>
+<terminal token="RPARENTHESIS" line="39" column="31"/>
+<terminal token="DO" line="39" column="33"/>
+<terminal token="BEGIN" line="40" column="6"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="41" column="7"/>
+<terminal token="LPARENTHESIS" line="41" column="14"/>
+<terminal token="IDENTIFIER" lexeme="j" line="41" column="15"/>
+<terminal token="RPARENTHESIS" line="41" column="16"/>
+<terminal token="SEMIC" line="41" column="17"/>
+<terminal token="IDENTIFIER" lexeme="case" line="42" column="7"/>
+<terminal token="IDENTIFIER" lexeme="k" line="42" column="12"/>
+<terminal token="OF" line="42" column="14"/>
+<terminal token="INT_CONST" lexeme="95" line="43" column="8"/>
+<terminal token="COLON" line="43" column="10"/>
+<terminal token="IDENTIFIER" lexeme="j" line="43" column="12"/>
+<terminal token="ASSIGN" line="43" column="14"/>
+<terminal token="IDENTIFIER" lexeme="j" line="43" column="17"/>
+<terminal token="SUB" line="43" column="18"/>
+<terminal token="INT_CONST" lexeme="1" line="43" column="19"/>
+<terminal token="SEMIC" line="43" column="20"/>
+<terminal token="SUB" line="44" column="8"/>
+<terminal token="INT_CONST" lexeme="2" line="44" column="9"/>
+<terminal token="COLON" line="44" column="10"/>
+<terminal token="IDENTIFIER" lexeme="j" line="44" column="12"/>
+<terminal token="ASSIGN" line="44" column="13"/>
+<terminal token="IDENTIFIER" lexeme="j" line="44" column="15"/>
+<terminal token="ADD" line="44" column="16"/>
+<terminal token="INT_CONST" lexeme="1" line="44" column="17"/>
+<terminal token="END" line="45" column="7"/>
+<terminal token="SEMIC" line="45" column="10"/>
+<terminal token="END" line="46" column="6"/>
+<terminal token="SEMIC" line="46" column="9"/>
+<terminal token="END" line="47" column="4"/>
+<terminal token="ELSE" line="48" column="3"/>
+<terminal token="IF" line="48" column="8"/>
+<terminal token="IDENTIFIER" lexeme="i" line="48" column="11"/>
+<terminal token="GTH" line="48" column="13"/>
+<terminal token="INT_CONST" lexeme="9" line="48" column="15"/>
+<terminal token="THEN" line="48" column="17"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="49" column="4"/>
+<terminal token="LPARENTHESIS" line="49" column="11"/>
+<terminal token="IDENTIFIER" lexeme="b" line="49" column="12"/>
+<terminal token="RPARENTHESIS" line="49" column="13"/>
+<terminal token="ELSE" line="50" column="3"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="51" column="4"/>
+<terminal token="LPARENTHESIS" line="51" column="11"/>
+<terminal token="IDENTIFIER" lexeme="i" line="51" column="12"/>
+<terminal token="RPARENTHESIS" line="51" column="13"/>
+<terminal token="SEMIC" line="51" column="14"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="52" column="2"/>
+<terminal token="LPARENTHESIS" line="52" column="9"/>
+<terminal token="CHAR_CONST" lexeme="&#39;k&#39;" line="52" column="10"/>
+<terminal token="RPARENTHESIS" line="52" column="13"/>
+<terminal token="SEMIC" line="52" column="14"/>
+<terminal token="FOR" line="53" column="2"/>
+<terminal token="IDENTIFIER" lexeme="i" line="53" column="6"/>
+<terminal token="ASSIGN" line="53" column="7"/>
+<terminal token="INT_CONST" lexeme="0" line="53" column="9"/>
+<terminal token="TO" line="53" column="10"/>
+<terminal token="INT_CONST" lexeme="9" line="53" column="13"/>
+<terminal token="DO" line="53" column="14"/>
+<terminal token="IDENTIFIER" lexeme="writeln" line="54" column="2"/>
+<terminal token="LPARENTHESIS" line="54" column="9"/>
+<terminal token="IDENTIFIER" lexeme="f" line="54" column="10"/>
+<terminal token="LBRACKET" line="54" column="11"/>
+<terminal token="IDENTIFIER" lexeme="i" line="54" column="12"/>
+<terminal token="RBRACKET" line="54" column="13"/>
+<terminal token="MUL" line="54" column="14"/>
+<terminal token="INT_CONST" lexeme="1000" line="54" column="15"/>
+<terminal token="MUL" line="54" column="19"/>
+<terminal token="INT_CONST" lexeme="1000" line="54" column="20"/>
+<terminal token="ADD" line="54" column="24"/>
+<terminal token="IDENTIFIER" lexeme="i" line="54" column="25"/>
+<terminal token="RPARENTHESIS" line="54" column="26"/>
+<terminal token="SEMIC" line="54" column="27"/>
+<terminal token="END" line="55" column="1"/>
+<terminal token="DOT" line="55" column="4"/>
+</lexanal>
