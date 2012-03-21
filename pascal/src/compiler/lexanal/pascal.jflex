@@ -81,8 +81,8 @@ import compiler.synanal.*;
 "-"   { return sym(PascalTok.SUB); }
 
 "char"   { return sym(PascalTok.CHAR); }
-"int"   { return sym(PascalTok.INT); }
-"bool"   { return sym(PascalTok.BOOL); }
+"integer"   { return sym(PascalTok.INT); }
+"boolean"   { return sym(PascalTok.BOOL); }
 
 
 "function"   { return sym(PascalTok.FUNCTION); }

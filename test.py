@@ -139,10 +139,20 @@ class TestBigOne(PascalLexerTestCase):
     source = "big_one.pascal"
 
     def test_stuff(self):
-        fixture = open('test/big_one.xml', 'r').read()
-        output = open('lexanal.xml', 'r').read()
+        fixture = etree.parse("test/big_one.xml").getroot()
 
-        self.assertEqual(fixture, output)
+        self.assertEquals(len(fixture), len(self.root))
+
+        for i in xrange(len(fixture)):
+            f, r = fixture[i], self.root[i]
+            for arg in ['token', 'lexeme', 'column', 'line']:
+                self.assertEqual(f.get(arg), r.get(arg),
+                                 "%s diff at %s, %s\nreal: |%s|\nmine: |%s|" % (
+                        arg,
+                        f.get('line'),
+                        f.get('column'),
+                        f.get('lexeme') or f.get('token'),
+                        r.get('lexeme') or r.get('token')))
 
 
 if __name__ == '__main__':
