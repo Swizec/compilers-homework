@@ -101,3 +101,5 @@ import compiler.synanal.*;
 [_a-zA-Z][0-9_a-zA-Z]+   { return sym(PascalTok.IDENTIFIER); }
 
 /*   { return sym(PascalTok.error); } */
+
+\{.*\}  {   }

@@ -8,6 +8,11 @@ class PascalLexerTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        try:
+            os.remove('lexanal.xml')
+        except OSError:
+            pass
+
         if cls.source != None:
             subprocess.call("java -cp pascal/bin/java_cup/runtime:lib/java-cup-11a.jar:pascal/bin/compiler/.. compiler.Main test/"+cls.source.replace(".pascal", ""),
                             shell=True,
@@ -79,6 +84,11 @@ class TestHelloWorld(PascalLexerTestCase):
         self.lex_test(self.lex.getroot()[12],
                       'terminal', 'DOT', line='5', column='4')
 
+class TestComments(PascalLexerTestCase):
+    source = "comments.pascal"
+
+    def test_comments(self):
+        self.assertEquals(len(self.lex.getroot()), 0)
 
 if __name__ == '__main__':
     unittest.main()
