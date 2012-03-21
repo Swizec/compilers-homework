@@ -60,13 +60,24 @@ class TestHelloWorld(PascalLexerTestCase):
 
 
     def test_begin(self):
-        self.fail()
-
-    def test_end(self):
-        self.fail()
+        self.lex_test(self.lex.getroot()[6],
+                      'terminal', 'BEGIN', line='3', column='1')
 
     def test_writeln(self):
-        self.fail()
+        self.lex_test(self.lex.getroot()[7],
+                      'terminal', 'IDENTIFIER', 'Writeln', '4', '3')
+        self.lex_test(self.lex.getroot()[8],
+                      'terminal', 'LPARENTHESIS', line='4', column='10')
+        self.lex_test(self.lex.getroot()[9],
+                      'terminal', 'CHAR_CONST', 'Hello world!', line='4', column='11')
+        self.lex_test(self.lex.getroot()[10],
+                      'terminal', 'RPARENTHESIS', line='4', column='25')
+
+    def test_end(self):
+        self.lex_test(self.lex.getroot()[11],
+                      'terminal', 'END', line='5', column='1')
+        self.lex_test(self.lex.getroot()[12],
+                      'terminal', 'DOT', line='5', column='4')
 
 
 if __name__ == '__main__':

@@ -39,63 +39,65 @@ import compiler.synanal.*;
 
 \r|\n|\r\n | [ \t\f]	{ /* ignore */ }
 
-"true"|"false"	{ return sym(PascalTok.BOOL_CONST); }
-/*   { return sym(PascalTok.CHAR_CONST); }
-   { return sym(PascalTok.LTH); }
-   { return sym(PascalTok.FUNCTION); }
-   { return sym(PascalTok.LBRACKET); }
-   { return sym(PascalTok.CONST); }
-   { return sym(PascalTok.CHAR); }
-*/
-";"   { return sym(PascalTok.SEMIC); }
-/*
-   { return sym(PascalTok.INT); }
-   { return sym(PascalTok.ARRAY); }
-   { return sym(PascalTok.FOR); }
-   { return sym(PascalTok.NOT); }
-   { return sym(PascalTok.AND); }
-   { return sym(PascalTok.RECORD); }
-   { return sym(PascalTok.TYPE); }
-   { return sym(PascalTok.NIL); }
-   { return sym(PascalTok.OR); }
-   { return sym(PascalTok.BOOL); }
-   { return sym(PascalTok.COMMA); }
-   { return sym(PascalTok.BEGIN); }
-   { return sym(PascalTok.DIV); }
-   { return sym(PascalTok.GEQ); }
-   { return sym(PascalTok.IF); }
-   { return sym(PascalTok.ASSIGN); }
-   { return sym(PascalTok.DOT); }
-   { return sym(PascalTok.PTR); }
-   { return sym(PascalTok.OF); }
-   { return sym(PascalTok.DOTS); }
-   { return sym(PascalTok.EOF); }
-   { return sym(PascalTok.RBRACKET); }
-   { return sym(PascalTok.INT_CONST); }
-*/
-"program"   { return sym(PascalTok.PROGRAM); }
-/*
-   { return sym(PascalTok.error); }
-   { return sym(PascalTok.MUL); }
-   { return sym(PascalTok.ADD); }
-*/
+"["   { return sym(PascalTok.LBRACKET); }
+"]"   { return sym(PascalTok.RBRACKET); }
 "("   { return sym(PascalTok.LPARENTHESIS); }
-/*   { return sym(PascalTok.NEQ); }
-   { return sym(PascalTok.GTH); }
-   { return sym(PascalTok.EQU); }
-   { return sym(PascalTok.COLON); }
-   { return sym(PascalTok.ELSE); }
-   { return sym(PascalTok.TO); }
-   { return sym(PascalTok.WHILE); }
-   { return sym(PascalTok.THEN); }
-*/
 ")"   { return sym(PascalTok.RPARENTHESIS); }
-/*
-   { return sym(PascalTok.LEQ); }
-   { return sym(PascalTok.END); }
-   { return sym(PascalTok.BOOL_CONST); }
-   { return sym(PascalTok.SUB); }
-   { return sym(PascalTok.VAR); }
-   { return sym(PascalTok.PROCEDURE); }
-   { return sym(PascalTok.DO); } */
+
+";"   { return sym(PascalTok.SEMIC); }
+","   { return sym(PascalTok.COMMA); }
+
+"<"   { return sym(PascalTok.LTH); }
+">="   { return sym(PascalTok.GEQ); }
+"<>"   { return sym(PascalTok.NEQ); }
+">"   { return sym(PascalTok.GTH); }
+"<="   { return sym(PascalTok.LEQ); }
+":="   { return sym(PascalTok.ASSIGN); }
+"="   { return sym(PascalTok.EQU); }
+
+"."   { return sym(PascalTok.DOT); }
+".."   { return sym(PascalTok.DOTS); }
+"^"   { return sym(PascalTok.PTR); }
+":"   { return sym(PascalTok.COLON); }
+
+"*"   { return sym(PascalTok.MUL); }
+"+"   { return sym(PascalTok.ADD); }
+"-"   { return sym(PascalTok.SUB); }
+
+"char"   { return sym(PascalTok.CHAR); }
+"int"   { return sym(PascalTok.INT); }
+"bool"   { return sym(PascalTok.BOOL); }
+
+
+"function"   { return sym(PascalTok.FUNCTION); }
+"const"   { return sym(PascalTok.CONST); }
+"array"   { return sym(PascalTok.ARRAY); }
+"for"   { return sym(PascalTok.FOR); }
+"not"   { return sym(PascalTok.NOT); }
+"and"   { return sym(PascalTok.AND); }
+"record"   { return sym(PascalTok.RECORD); }
+"type"   { return sym(PascalTok.TYPE); }
+"nil"   { return sym(PascalTok.NIL); }
+"or"   { return sym(PascalTok.OR); }
+"begin"  { return sym(PascalTok.BEGIN); }
+"div"   { return sym(PascalTok.DIV); }
+"if" { return sym(PascalTok.IF); }
+"of"   { return sym(PascalTok.OF); }
+"program"   { return sym(PascalTok.PROGRAM); }
+"else"   { return sym(PascalTok.ELSE); }
+"to"   { return sym(PascalTok.TO); }
+"while"   { return sym(PascalTok.WHILE); }
+"then"   { return sym(PascalTok.THEN); }
+"end"   { return sym(PascalTok.END); }
+"var"   { return sym(PascalTok.VAR); }
+"procedure"   { return sym(PascalTok.PROCEDURE); }
+"do"   { return sym(PascalTok.DO); }
+
+
+"true"|"false"	{ return sym(PascalTok.BOOL_CONST); }
+[0-9]+   { return sym(PascalTok.INT_CONST); }
+'[\x20-\x7E]*'   { return sym(PascalTok.CHAR_CONST); }
+
 [_a-zA-Z][0-9_a-zA-Z]+   { return sym(PascalTok.IDENTIFIER); }
+
+/*   { return sym(PascalTok.error); } */
