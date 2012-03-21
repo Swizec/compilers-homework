@@ -61,12 +61,12 @@ public class PascalSym extends Symbol implements XMLable {
 	 */
 	public PascalSym(int sym, int left, int right, Object value) {
           super(sym, left, right, value);
-          if (sym == PascalTok.CHAR_CONST) {
+          /*if (sym == PascalTok.CHAR_CONST) {
             String lexeme = (String) value;
             lexeme = lexeme.substring(1, lexeme.length()-1);
             lexeme = lexeme.replace("''", "'");
             this.value = lexeme;
-          }
+          }*/
 	}
 
 	public void toXML(PrintStream xml) {

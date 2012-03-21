@@ -1,5 +1,6 @@
 
 program HelloWorld(output);
 begin
-  Writeln('Hello world! And O''Reilly')
+   Writeln('H');
+   Writeln('''')
 end.

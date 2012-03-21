@@ -71,19 +71,29 @@ class TestHelloWorld(PascalLexerTestCase):
 
     def test_writeln(self):
         self.lex_test(self.root[7],
-                      'terminal', 'IDENTIFIER', 'Writeln', '4', '3')
+                      'terminal', 'IDENTIFIER', 'Writeln')
         self.lex_test(self.root[8],
-                      'terminal', 'LPARENTHESIS', line='4', column='10')
+                      'terminal', 'LPARENTHESIS')
         self.lex_test(self.root[9],
-                      'terminal', 'CHAR_CONST', "Hello world! And O'Reilly", line='4', column='11')
+                      'terminal', 'CHAR_CONST', "'H'")
         self.lex_test(self.root[10],
-                      'terminal', 'RPARENTHESIS', line='4', column='39')
+                      'terminal', 'RPARENTHESIS')
+        self.lex_test(self.root[11],
+                      'terminal', 'SEMIC')
+        self.lex_test(self.root[12],
+                      'terminal', 'IDENTIFIER', 'Writeln')
+        self.lex_test(self.root[13],
+                      'terminal', 'LPARENTHESIS')
+        self.lex_test(self.root[14],
+                      'terminal', 'CHAR_CONST', "''''")
+        self.lex_test(self.root[15],
+                      'terminal', 'RPARENTHESIS')
 
     def test_end(self):
-        self.lex_test(self.root[11],
-                      'terminal', 'END', line='5', column='1')
-        self.lex_test(self.root[12],
-                      'terminal', 'DOT', line='5', column='4')
+        self.lex_test(self.root[16],
+                      'terminal', 'END', line='6', column='1')
+        self.lex_test(self.root[17],
+                      'terminal', 'DOT', line='6', column='4')
 
 class TestComments(PascalLexerTestCase):
     source = "comments.pascal"
