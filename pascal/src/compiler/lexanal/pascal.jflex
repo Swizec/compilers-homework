@@ -98,8 +98,8 @@ import compiler.synanal.*;
 [0-9]+   { return sym(PascalTok.INT_CONST); }
 '[\x20-\x7E]*'   { return sym(PascalTok.CHAR_CONST); }
 
+\{([\r\n]|.)*\}  {   }
+
 [_a-zA-Z][0-9_a-zA-Z]+   { return sym(PascalTok.IDENTIFIER); }
 
 /*   { return sym(PascalTok.error); } */
-
-\{.*\}  {   }
