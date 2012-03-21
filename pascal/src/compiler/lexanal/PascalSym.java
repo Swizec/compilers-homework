@@ -63,7 +63,9 @@ public class PascalSym extends Symbol implements XMLable {
           super(sym, left, right, value);
           if (sym == PascalTok.CHAR_CONST) {
             String lexeme = (String) value;
-            this.value = lexeme.substring(1, lexeme.length()-1);
+            lexeme = lexeme.substring(1, lexeme.length()-1);
+            lexeme = lexeme.replace("''", "'");
+            this.value = lexeme;
           }
 	}
 

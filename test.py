@@ -69,9 +69,9 @@ class TestHelloWorld(PascalLexerTestCase):
         self.lex_test(self.lex.getroot()[8],
                       'terminal', 'LPARENTHESIS', line='4', column='10')
         self.lex_test(self.lex.getroot()[9],
-                      'terminal', 'CHAR_CONST', 'Hello world!', line='4', column='11')
+                      'terminal', 'CHAR_CONST', "Hello world! And O'Reilly", line='4', column='11')
         self.lex_test(self.lex.getroot()[10],
-                      'terminal', 'RPARENTHESIS', line='4', column='25')
+                      'terminal', 'RPARENTHESIS', line='4', column='39')
 
     def test_end(self):
         self.lex_test(self.lex.getroot()[11],
