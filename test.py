@@ -16,7 +16,7 @@ class PascalLexerTestCase(unittest.TestCase):
             parser = etree.XMLParser(recover=True)
             cls.lex = etree.parse('lexanal.xml', parser)
 
-    def lex_test(self, tag, name=None, token=None, lexeme=None, column=None, line=None):
+    def lex_test(self, tag, name=None, token=None, lexeme=None, line=None, column=None):
         if name:
             self.assertEquals(tag.tag, name)
 
@@ -44,19 +44,19 @@ class TestHelloWorld(PascalLexerTestCase):
 
     def test_program(self):
         self.lex_test(self.lex.getroot()[0],
-                      'terminal', 'PROGRAM', 'program', '2', '1')
+                      'terminal', 'PROGRAM', line='2', column='1')
 
     def test_name(self):
         self.lex_test(self.lex.getroot()[1],
-                      'terminal', 'IDENTIFIER', 'HelloWorld', '2', '8')
+                      'terminal', 'IDENTIFIER', 'HelloWorld', '2', '9')
         self.lex_test(self.lex.getroot()[2],
-                      'terminal', 'LPARENTHESIS', '(', '2', '9')
+                      'terminal', 'LPARENTHESIS', line='2', column='19')
         self.lex_test(self.lex.getroot()[3],
-                      'terminal', 'IDENTIFIER', 'output', '2', '10')
+                      'terminal', 'IDENTIFIER', 'output', line='2', column='20')
         self.lex_test(self.lex.getroot()[4],
-                      'terminal', 'RBRACKET', ')', '2', '17')
+                      'terminal', 'RPARENTHESIS', line='2', column='26')
         self.lex_test(self.lex.getroot()[5],
-                      'terminal', 'SEMIC', ';', '2', '18')
+                      'terminal', 'SEMIC', line='2', column='27')
 
 
     def test_begin(self):
