@@ -115,6 +115,15 @@ class TestOddities(PascalLexerTestCase):
         for i in xrange(len(sequence)):
             self.lex_test(self.root[6+i], token=sequence[i])
 
+class TestBigOne(PascalLexerTestCase):
+    source = "big_one.pascal"
+
+    def test_stuff(self):
+        fixture = open('test/big_one.xml', 'r').read()
+        output = open('lexanal.xml', 'r').read()
+
+        self.assertEqual(fixture, output)
+
 
 if __name__ == '__main__':
     unittest.main()
