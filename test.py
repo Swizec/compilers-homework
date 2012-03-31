@@ -135,6 +135,13 @@ class TestOddities(PascalLexerTestCase):
         for i in xrange(len(sequence)):
             self.lex_test(self.root[6+i], token=sequence[i])
 
+class TestUnclosedComment(PascalLexerTestCase):
+    source = "unclosed-comment.pascal"
+
+    def test_error(self):
+        self.lex_test(self.root[0],
+                      'terminal', 'BEGIN')
+
 class TestBigOne(PascalLexerTestCase):
     source = "big_one.pascal"
 
