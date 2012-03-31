@@ -1,55 +1,55 @@
-package compiler.lexanal;
+package compiler.synanal;
 
 import java.io.*;
 import java.lang.reflect.*;
 
+import compiler.lexanal.*;
 import compiler.report.*;
-import compiler.synanal.*;
 
 public class Main {
 
-	public static String[] pascalTermNames;
+	public static String[] pascalNontNames;
 
 	static {
-		/* Pripravimo imena vrst koncnih simbolov.  */
+		/* Pripravimo imena vrst vmesnih simbolov.  */
 		PascalTok pascalTok = new PascalTok();
 		Field[] pascalToks = pascalTok.getClass().getDeclaredFields();
-		pascalTermNames = new String[pascalToks.length];
+		pascalNontNames = new String[pascalToks.length];
 		for (int f = 0; f < pascalToks.length; f++) {
 			try {
 				int tok = pascalToks[f].getInt(pascalTok);
 				String lex = pascalToks[f].toString().replaceAll("^.*\\.", "");
-				pascalTermNames[tok] = lex;
+				if (! ((tok < compiler.lexanal.Main.pascalTermNames.length) &&
+					   (lex.equals(compiler.lexanal.Main.pascalTermNames[tok])))) {
+					pascalNontNames[tok] = lex;
+				}
 			}
 			catch (IllegalAccessException _) {}
 		}
 	}
 
-	/** Izvede fazo leksikalne analize (ce ta ni del sintaksne analize). */
+	/** Izvede prevajanje do vkljucno faze sintaksne analize. */
 	public static void exec() {
 		/* Odpremo vhodno in izhodno datoteko.  */
 		FileReader srcFile = null;
 		String srcName = compiler.Main.prgName + ".pascal";
 		try { srcFile = new FileReader(srcName); }
 		catch (FileNotFoundException _) { Report.error("Source file '" + srcName + "' cannot be opened.", 1); }
-		PrintStream xml = XML.open("lexanal");
+		PrintStream xml = XML.open("synanal");
 
-		/* Opravimo leksikalno analizo: zgolj beremo simbol za simbolom.  */
-        PascalLex lexer = new PascalLex(srcFile);
-        PascalSym symbol;
-        try {
-            while ((symbol = lexer.next_token ()).sym != PascalTok.EOF) {
-            	symbol.toXML(xml);
-            }
-        }
-        catch (IOException _) {
-            Report.error("Error while testing lexical analyzer.", 1);
-        }
+		PascalLex lexer = new PascalLex(srcFile);
+		PascalSyn parser = new PascalSyn(lexer);
+		try {
+			parser.debug_parse(xml);
+		}
+		catch (Exception ex) {
+			XML.close("synanal", xml);
+			Report.error("Error while testing syntax analyzer.", 1);
+		}
 
-        /* Zapremo obe datoteki.  */
-        XML.close("lexanal", xml);
+		/* Zapremo obe datoteki.  */
+        XML.close("synanal", xml);
         try { srcFile.close(); }
 		catch (IOException _) { Report.error("Source file '" + srcName + "' cannot be opened.", 1); }
 	}
-
 }

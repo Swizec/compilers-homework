@@ -1,0 +1,35 @@
+package compiler.synanal;
+
+import java_cup.runtime.*;
+
+import compiler.report.*;
+
+parser code
+{:
+        public void syntax_error(Symbol cur_token) {
+            Report.warning ("Syntax error near word '" + (String)(cur_token.value) + "'.", cur_token.left, cur_token.right);
+        }
+        
+        public void report_error(String message, Object info) {
+        }
+        
+        public void report_fatal_error(String message, Object info) throws Exception {
+        	throw new Exception(message);
+        }
+:}
+
+terminal String BOOL_CONST, CHAR_CONST, INT_CONST, NIL;
+terminal String IDENTIFIER;
+
+terminal BOOL, CHAR, INT;
+terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
+terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
+terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
+
+non terminal	source;
+
+start with source;
+
+source
+    ;
+
