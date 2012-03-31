@@ -14,7 +14,7 @@ class PascalLexerTestCase(unittest.TestCase):
             pass
 
         if cls.source != None:
-            subprocess.call("java -cp pascal/bin/java_cup/runtime:lib/java-cup-11a.jar:pascal/bin/compiler/.. compiler.Main test/"+cls.source.replace(".pascal", ""),
+            subprocess.call("java -cp pascal/bin/java_cup/runtime:lib/java-cup-11a.jar:pascal/bin/compiler/.. compiler.Main test/"+cls.source.replace(".pascal", "")+" lexanal",
                             shell=True,
                             stdout=None)
 

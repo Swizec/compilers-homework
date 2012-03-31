@@ -9,10 +9,10 @@ parser code
         public void syntax_error(Symbol cur_token) {
             Report.warning ("Syntax error near word '" + (String)(cur_token.value) + "'.", cur_token.left, cur_token.right);
         }
-        
+
         public void report_error(String message, Object info) {
         }
-        
+
         public void report_fatal_error(String message, Object info) throws Exception {
         	throw new Exception(message);
         }
@@ -30,6 +30,5 @@ non terminal	source;
 
 start with source;
 
-source
-    ;
+source ::= BOOL_CONST;
 
