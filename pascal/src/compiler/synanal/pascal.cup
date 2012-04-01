@@ -43,8 +43,8 @@ sentence ::= BEGIN END;
 /*
   declarations
 */
-constant ::= CONST constant_ SEMIC;
-constant_ ::= IDENTIFIER EQU value | IDENTIFIER EQU value COMMA constant_;
+constant ::= CONST constant_;
+constant_ ::= IDENTIFIER EQU value SEMIC | IDENTIFIER EQU value SEMIC constant_;
 /* types */
 type ::= TYPE type_;
 type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
