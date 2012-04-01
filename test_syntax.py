@@ -17,11 +17,12 @@ class PascalSyntaxTestCase(PascalTestCase):
         cls.root = cls.syn.getroot()
 
 
-class TestLol(PascalSyntaxTestCase):
-    source = "lol.pascal"
+class TestSyntax(PascalSyntaxTestCase):
+    source = "syntax.pascal"
 
-    def test_bool(self):
-        print self.root
+    def test_syntax(self):
+        # we just abuse this to run things easily
+        pass
 
 
 if __name__ == '__main__':

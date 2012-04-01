@@ -27,8 +27,13 @@ terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SU
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
 
 non terminal	source;
+non terminal    program, declaration, sentence;
 
 start with source;
 
-source ::= BOOL_CONST;
+source ::= program declaration sentence DOT;
 
+program ::= | PROGRAM IDENTIFIER SEMIC;
+
+declaration ::= ;
+sentence ::= BEGIN END;
