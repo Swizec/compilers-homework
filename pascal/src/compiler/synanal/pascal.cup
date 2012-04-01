@@ -28,19 +28,28 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 
 non terminal source;
 non terminal program, declaration, sentence;
-non terminal constant, constant_, assignment;
-non terminal value;
+non terminal constant, constant_, type, type_;
+non terminal assignment, type_desc, value;
+non terminal type_atom;
 
 start with source;
 
 source ::= program declaration sentence DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
-declaration ::= | constant declaration;
+declaration ::= | constant declaration | type declaration;
 sentence ::= BEGIN END;
 
+/*
+  declarations
+*/
 constant ::= CONST constant_ SEMIC;
 constant_ ::= assignment | assignment COMMA constant_;
+/* types */
+type ::= TYPE type_;
+type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
+type_desc ::= type_atom;
+type_atom ::= BOOL | CHAR | INT;
 
 assignment ::= IDENTIFIER EQU value;
 value ::= BOOL_CONST | CHAR_CONST | INT_CONST;
