@@ -50,6 +50,25 @@ type
 begin
 end; { hello3 }
 
+function ohai(): integer;
+var
+   bla : array[1..3] of integer;
+begin
+end; { ohai }
+
+function ohai2(a : boolean): integer;
+begin
+end; { ohai2 }
+
+function ohai3(a : boolean; b : array[1..7] of integer): boolean;
+   function o():char;
+   begin
+   end; { o }
+   procedure e(a : boolean);
+   begin
+   end;
+begin
+end;
 
 begin
 end.

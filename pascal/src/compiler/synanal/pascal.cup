@@ -31,7 +31,7 @@ non terminal program, declaration, sentence;
 non terminal constant, constant_, type, type_, var, var_, subroutine;
 non terminal value;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
-non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function;
+non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
 
 start with source;
 
@@ -60,11 +60,13 @@ type_pointer ::= PTR type_desc;
 var ::= | VAR var_;
 var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
 /* subroutines */
-subroutine ::= | procedure subroutine;
+subroutine ::= | procedure subroutine | function subroutine;
 procedure ::= procedure_head declaration sentence SEMIC;
 procedure_head ::= PROCEDURE IDENTIFIER parameters SEMIC;
+function ::= function_head declaration sentence SEMIC;
+function_head ::= FUNCTION IDENTIFIER parameters COLON type_desc SEMIC;
 parameters ::= LPARENTHESIS parameter RPARENTHESIS;
-parameter ::= | parameter_desc | parameter_desc SEMIC;
+parameter ::= | parameter_desc | parameter_desc SEMIC parameter_desc;
 parameter_desc ::= IDENTIFIER COLON type_desc;
 
 value ::= BOOL_CONST | CHAR_CONST | INT_CONST;
