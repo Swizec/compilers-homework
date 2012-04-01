@@ -30,7 +30,7 @@ non terminal source;
 non terminal program, declaration, sentence;
 non terminal constant, constant_, type, type_;
 non terminal assignment, type_desc, value;
-non terminal type_atom;
+non terminal type_atom, type_table;
 
 start with source;
 
@@ -48,8 +48,9 @@ constant_ ::= assignment | assignment COMMA constant_;
 /* types */
 type ::= TYPE type_;
 type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
-type_desc ::= type_atom;
+type_desc ::= type_atom | IDENTIFIER | type_table;
 type_atom ::= BOOL | CHAR | INT;
+type_table ::= ARRAY LBRACKET value DOTS value RBRACKET OF type_desc;
 
 assignment ::= IDENTIFIER EQU value;
 value ::= BOOL_CONST | CHAR_CONST | INT_CONST;

@@ -7,6 +7,9 @@ const meow =  8;
 type
    a = integer;
    b = boolean;
+   c = a;
+   d = array[2..5] of integer;
+   e = array[1..3] of d;
 
 begin
 end.
