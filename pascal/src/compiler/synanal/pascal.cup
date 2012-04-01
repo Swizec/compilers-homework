@@ -28,16 +28,16 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 
 non terminal source;
 non terminal program, declaration, sentence;
-non terminal constant, constant_, type, type_;
-non terminal type_desc, value;
-non terminal type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
+non terminal constant, constant_, type, type_, var, var_;
+non terminal value;
+non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 
 start with source;
 
 source ::= program declaration sentence DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
-declaration ::= | constant declaration | type declaration;
+declaration ::= | constant declaration | type declaration | var declaration;
 sentence ::= BEGIN END;
 
 /*
@@ -55,5 +55,8 @@ type_record ::= RECORD type_record_components END;
 type_record_components ::= type_record_component | type_record_component type_record_components;
 type_record_component ::= IDENTIFIER COLON type_desc SEMIC;
 type_pointer ::= PTR type_desc;
+/* variables */
+var ::= VAR var_;
+var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
 
 value ::= BOOL_CONST | CHAR_CONST | INT_CONST;

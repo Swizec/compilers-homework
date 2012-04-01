@@ -20,6 +20,9 @@ type
        end;
    h = ^f;
    i = (integer);
+var
+   eh  : integer;
+   meh : d;
 
 begin
 end.
