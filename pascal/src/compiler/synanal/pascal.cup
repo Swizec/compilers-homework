@@ -26,14 +26,21 @@ terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS
 terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
 
-non terminal	source;
-non terminal    program, declaration, sentence;
+non terminal source;
+non terminal program, declaration, sentence;
+non terminal constant, constant_, assignment;
+non terminal value;
 
 start with source;
 
 source ::= program declaration sentence DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
-
-declaration ::= ;
+declaration ::= | constant;
 sentence ::= BEGIN END;
+
+constant ::= CONST constant_ SEMIC;
+constant_ ::= assignment | assignment COMMA constant_;
+
+assignment ::= IDENTIFIER EQU value;
+value ::= BOOL_CONST | CHAR_CONST | INT_CONST;
