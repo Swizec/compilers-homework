@@ -10,6 +10,12 @@ type
    c = a;
    d = array[2..5] of integer;
    e = array[1..3] of d;
+   f = record
+          f : integer;
+          g : e;
+       end;
+   h = ^f;
+   i = (integer);
 
 begin
 end.

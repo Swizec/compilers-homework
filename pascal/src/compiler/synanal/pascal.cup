@@ -29,8 +29,8 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 non terminal source;
 non terminal program, declaration, sentence;
 non terminal constant, constant_, type, type_;
-non terminal assignment, type_desc, value;
-non terminal type_atom, type_table;
+non terminal type_desc, value;
+non terminal type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 
 start with source;
 
@@ -44,13 +44,16 @@ sentence ::= BEGIN END;
   declarations
 */
 constant ::= CONST constant_ SEMIC;
-constant_ ::= assignment | assignment COMMA constant_;
+constant_ ::= IDENTIFIER EQU value | IDENTIFIER EQU value COMMA constant_;
 /* types */
 type ::= TYPE type_;
 type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
-type_desc ::= type_atom | IDENTIFIER | type_table;
+type_desc ::= type_atom | IDENTIFIER | type_table | type_record | type_pointer | LPARENTHESIS type_desc RPARENTHESIS;
 type_atom ::= BOOL | CHAR | INT;
 type_table ::= ARRAY LBRACKET value DOTS value RBRACKET OF type_desc;
+type_record ::= RECORD type_record_components END;
+type_record_components ::= type_record_component | type_record_component type_record_components;
+type_record_component ::= IDENTIFIER COLON type_desc SEMIC;
+type_pointer ::= PTR type_desc;
 
-assignment ::= IDENTIFIER EQU value;
 value ::= BOOL_CONST | CHAR_CONST | INT_CONST;
