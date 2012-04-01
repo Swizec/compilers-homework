@@ -36,7 +36,7 @@ start with source;
 source ::= program declaration sentence DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
-declaration ::= | constant;
+declaration ::= | constant declaration;
 sentence ::= BEGIN END;
 
 constant ::= CONST constant_ SEMIC;
