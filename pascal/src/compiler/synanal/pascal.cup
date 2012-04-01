@@ -28,25 +28,26 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 
 non terminal source;
 non terminal program, declaration, sentence;
-non terminal constant, constant_, type, type_, var, var_;
+non terminal constant, constant_, type, type_, var, var_, subroutine;
 non terminal value;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
+non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function;
 
 start with source;
 
 source ::= program declaration sentence DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
-declaration ::= | constant declaration | type declaration | var declaration;
+declaration ::= constant type var subroutine;
 sentence ::= BEGIN END;
 
 /*
   declarations
 */
-constant ::= CONST constant_;
+constant ::= | CONST constant_;
 constant_ ::= IDENTIFIER EQU value SEMIC | IDENTIFIER EQU value SEMIC constant_;
 /* types */
-type ::= TYPE type_;
+type ::= | TYPE type_;
 type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
 type_desc ::= type_atom | IDENTIFIER | type_table | type_record | type_pointer | LPARENTHESIS type_desc RPARENTHESIS;
 type_atom ::= BOOL | CHAR | INT;
@@ -56,7 +57,14 @@ type_record_components ::= type_record_component | type_record_component type_re
 type_record_component ::= IDENTIFIER COLON type_desc SEMIC;
 type_pointer ::= PTR type_desc;
 /* variables */
-var ::= VAR var_;
+var ::= | VAR var_;
 var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
+/* subroutines */
+subroutine ::= | procedure subroutine;
+procedure ::= procedure_head declaration sentence SEMIC;
+procedure_head ::= PROCEDURE IDENTIFIER parameters SEMIC;
+parameters ::= LPARENTHESIS parameter RPARENTHESIS;
+parameter ::= | parameter_desc | parameter_desc SEMIC;
+parameter_desc ::= IDENTIFIER COLON type_desc;
 
 value ::= BOOL_CONST | CHAR_CONST | INT_CONST;
