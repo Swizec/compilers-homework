@@ -13,6 +13,9 @@ const
    whee = hah;
    meh  = a[yay.wat+5];
    moh  = meh or b[-6+^c];
+   bla  = a();
+   ble  = b(a[c()+3]);
+   blu  = a(b(wat.eh), c.a[6+mah]);
 
 type
    a = integer;
