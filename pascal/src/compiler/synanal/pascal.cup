@@ -29,7 +29,7 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 non terminal source;
 non terminal program, declaration, sentence;
 non terminal constant, constant_, type, type_, var, var_, subroutine;
-non terminal value;
+non terminal value, prefix;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
 
@@ -69,4 +69,8 @@ parameters ::= LPARENTHESIS parameter RPARENTHESIS;
 parameter ::= | parameter_desc | parameter_desc SEMIC parameter_desc;
 parameter_desc ::= IDENTIFIER COLON type_desc;
 
-value ::= BOOL_CONST | CHAR_CONST | INT_CONST;
+/*
+  values
+*/
+value ::= BOOL_CONST | CHAR_CONST | INT_CONST | NIL | prefix value;
+prefix ::= SUB | ADD | PTR | NOT;

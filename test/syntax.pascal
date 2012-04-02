@@ -3,8 +3,10 @@ program hello;
 
 const
    lol = 5;
-   bla = 6;
-   hah = 7;
+   bla = ^6;
+   hah = -7;
+   beh = +'c';
+   mah = nil;
 
 type
    a = integer;
