@@ -1,1 +1,2 @@
-lexanal.xml
+*.xml
+*.pyc

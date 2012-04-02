@@ -9,7 +9,7 @@ public class Report {
 	 *            Opozorilo.
 	 */
 	public static void warning(String msg) {
-		System.out.println(":-o " + msg);
+		System.err.println(":-o " + msg);
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class Report {
 	 *            Stoplec izvorne kode, kjer se zacne razlog za opozorilo.
 	 */
 	public static void warning(String msg, int begLine, int begColumn) {
-		System.out.println(":-o [" + begLine + ":" + begColumn + "] " + msg);
+		System.err.println(":-o [" + begLine + ":" + begColumn + "] " + msg);
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class Report {
 	 */
 	public static void warning(String msg, int begLine, int begColumn,
 			int endLine, int endColumn) {
-		System.out.println(":-o [" + begLine + ":" + begColumn + "-" + endLine
+		System.err.println(":-o [" + begLine + ":" + begColumn + "-" + endLine
 				+ ":" + endColumn + "] " + msg);
 	}
 
@@ -58,7 +58,7 @@ public class Report {
 	 *            Izhodna koda programa.
 	 */
 	public static void error(String msg, int exitCode) {
-		System.out.println(":-( " + msg);
+		System.err.println(":-( " + msg);
 		System.exit(exitCode);
 	}
 
@@ -77,7 +77,7 @@ public class Report {
 	 */
 	public static void error(String msg, int begLine, int begColumn,
 			int exitCode) {
-		System.out.println(":-( [" + begLine + ":" + begColumn + "] " + msg);
+		System.err.println(":-( [" + begLine + ":" + begColumn + "] " + msg);
 		System.exit(exitCode);
 	}
 
@@ -100,7 +100,7 @@ public class Report {
 	 */
 	public static void error(String msg, int begLine, int begColumn,
 			int endLine, int endColumn, int exitCode) {
-		System.out.println(":-( [" + begLine + ":" + begColumn + "-" + endLine
+		System.err.println(":-( [" + begLine + ":" + begColumn + "-" + endLine
 				+ ":" + endColumn + "] " + msg);
 		System.exit(exitCode);
 	}

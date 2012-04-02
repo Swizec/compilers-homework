@@ -28,11 +28,13 @@ public class Main {
 
 		/* Dolocimo zadnjo fazo prevajanja. */
 		String phase = args.length < 2 ? "" : args[1];
-		/* Opravimo izbrano fazo prevajanja (in vse predhodne). */
+		/* Opravimo izbrano fazo prevajanja (in vse predhodne faze). */
 		if (phase.equals("lexanal"))
 			compiler.lexanal.Main.exec();
+		else if (phase.equals("synanal"))
+			compiler.synanal.Main.exec();
 		else
-			compiler.lexanal.Main.exec();
+			compiler.synanal.Main.exec();
 
 		System.out.print(":-) Done.\n");
 		System.exit(0);

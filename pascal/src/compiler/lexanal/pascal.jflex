@@ -48,6 +48,8 @@ import compiler.synanal.*;
 "}"       { commentDepth--;
             if (commentDepth <= 0) yybegin(YYINITIAL);
           }
+eof { Report.warning("Unclosed comment! "+yytext(), yyline, yycolumn); }
+
 .|[\r\n]  {  }
 }
 
@@ -117,4 +119,4 @@ import compiler.synanal.*;
 [_a-zA-Z][0-9_a-zA-Z]*   { return sym(PascalTok.IDENTIFIER); }
 }
 
-/*   { return sym(PascalTok.error); }*/
+.   { Report.warning("Lex error with: "+yytext(), yyline, yycolumn); }

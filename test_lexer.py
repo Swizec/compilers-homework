@@ -1,26 +1,20 @@
 
-import unittest, os, subprocess
+import unittest
 from lxml import etree
 
-class PascalLexerTestCase(unittest.TestCase):
+from test_commons import PascalTestCase
+
+class PascalLexerTestCase(PascalTestCase):
     source = "" # test input file
     lex = etree.ElementTree(etree.Element('xml'))
 
     @classmethod
     def setUpClass(cls):
-        try:
-            os.remove('lexanal.xml')
-        except OSError:
-            pass
+        super(PascalLexerTestCase, cls).setUpClass()
 
-        if cls.source != None:
-            subprocess.call("java -cp pascal/bin/java_cup/runtime:lib/java-cup-11a.jar:pascal/bin/compiler/.. compiler.Main test/"+cls.source.replace(".pascal", ""),
-                            shell=True,
-                            stdout=None)
-
-            parser = etree.XMLParser(recover=True)
-            cls.lex = etree.parse('lexanal.xml', parser)
-            cls.root = cls.lex.getroot()
+        parser = etree.XMLParser(recover=True)
+        cls.lex = etree.parse('lexanal.xml', parser)
+        cls.root = cls.lex.getroot()
 
     def lex_test(self, tag, name=None, token=None, lexeme=None, line=None, column=None):
         if name:
@@ -134,6 +128,13 @@ class TestOddities(PascalLexerTestCase):
         sequence = ['FUNCTION', 'IDENTIFIER', 'LPARENTHESIS', 'IDENTIFIER', 'IDENTIFIER', 'RPARENTHESIS']
         for i in xrange(len(sequence)):
             self.lex_test(self.root[6+i], token=sequence[i])
+
+class TestUnclosedComment(PascalLexerTestCase):
+    source = "unclosed-comment.pascal"
+
+    def test_error(self):
+        self.lex_test(self.root[0],
+                      'terminal', 'BEGIN')
 
 class TestBigOne(PascalLexerTestCase):
     source = "big_one.pascal"

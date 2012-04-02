@@ -690,6 +690,10 @@ public abstract class lr_parser {
 				if (i == 0) {
 					xml.println("<nonterminal value=\"$\"/>");
 				} else {
+					xml
+							.println("<nonterminal value=\""
+									+ compiler.synanal.Main.pascalNontNames[((Symbol) (stack
+											.elementAt(i))).sym] + "\"/>");
 				}
 			}
 			xml.println("</state>");

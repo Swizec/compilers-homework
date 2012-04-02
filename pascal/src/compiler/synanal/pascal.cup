@@ -1,0 +1,120 @@
+package compiler.synanal;
+
+import java_cup.runtime.*;
+
+import compiler.report.*;
+
+parser code
+{:
+        public void syntax_error(Symbol cur_token) {
+            Report.warning ("Syntax error near word '" + (String)(cur_token.value) + "'.", cur_token.left, cur_token.right);
+        }
+
+        public void report_error(String message, Object info) {
+        }
+
+        public void report_fatal_error(String message, Object info) throws Exception {
+        	throw new Exception(message);
+        }
+:}
+
+terminal String BOOL_CONST, CHAR_CONST, INT_CONST, NIL;
+terminal String IDENTIFIER;
+
+terminal BOOL, CHAR, INT;
+terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
+terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
+terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
+
+non terminal source;
+non terminal program, declaration, block_statement;
+non terminal constant, constant_, type, type_, var, var_, subroutine;
+non terminal value, prefix, infix, subroutine_call, parameter_call;
+non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
+non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
+non terminal statement, statement_, conditional, loop;
+
+precedence left OR;
+precedence left AND;
+precedence nonassoc EQU, NEQ, GTH, LTH, GEQ, LEQ;
+precedence left ADD, SUB;
+precedence left MUL, DIV;
+precedence left PTR;
+precedence nonassoc NOT;
+precedence left DOT,LBRACKET,RBRACKET;
+
+start with source;
+
+source ::= program declaration block_statement DOT;
+
+program ::= | PROGRAM IDENTIFIER SEMIC;
+declaration ::= constant type var subroutine;
+
+/*
+  declarations
+*/
+constant ::= | CONST constant_;
+constant_ ::= IDENTIFIER EQU value SEMIC | IDENTIFIER EQU value SEMIC constant_;
+/* types */
+type ::= | TYPE type_;
+type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
+type_desc ::= type_atom
+    | IDENTIFIER
+    | type_table
+    | type_record
+    | type_pointer
+    | LPARENTHESIS type_desc RPARENTHESIS;
+type_atom ::= BOOL | CHAR | INT;
+type_table ::= ARRAY LBRACKET value DOTS value RBRACKET OF type_desc;
+type_record ::= RECORD type_record_components END;
+type_record_components ::= type_record_component | type_record_component SEMIC type_record_components;
+type_record_component ::= IDENTIFIER COLON type_desc;
+type_pointer ::= PTR type_desc;
+/* variables */
+var ::= | VAR var_;
+var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
+/* subroutines */
+subroutine ::= | procedure subroutine | function subroutine;
+procedure ::= procedure_head declaration block_statement SEMIC;
+procedure_head ::= PROCEDURE IDENTIFIER parameters SEMIC;
+function ::= function_head declaration block_statement SEMIC;
+function_head ::= FUNCTION IDENTIFIER parameters COLON type_desc SEMIC;
+parameters ::= LPARENTHESIS parameter RPARENTHESIS;
+parameter ::= | parameter_desc | parameter_desc SEMIC parameter_desc;
+parameter_desc ::= IDENTIFIER COLON type_desc;
+
+/*
+  values
+*/
+value ::= BOOL_CONST
+    | CHAR_CONST
+    | INT_CONST
+    | NIL
+    | prefix value
+    | value PTR
+    | value infix value
+    | IDENTIFIER
+    | value LBRACKET value RBRACKET
+    | value DOT value
+    | subroutine_call
+    | LBRACKET type_desc RBRACKET
+    | LPARENTHESIS value RPARENTHESIS;
+prefix ::= SUB | ADD | PTR | NOT;
+infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;
+subroutine_call ::= IDENTIFIER LPARENTHESIS parameter_call RPARENTHESIS;
+parameter_call ::= | value | value COMMA parameter_call;
+
+/*
+  statements
+*/
+block_statement ::= BEGIN statement_ END;
+statement_ ::= | statement SEMIC statement_ | statement;
+statement ::= value
+    | value ASSIGN value
+    | conditional
+    | loop;
+conditional ::= IF value THEN statement | IF value THEN statement ELSE statement;
+loop ::= WHILE value DO statement
+    | WHILE value DO block_statement
+    | FOR IDENTIFIER ASSIGN value TO value DO statement
+    | FOR IDENTIFIER ASSIGN value TO value DO block_statement;
