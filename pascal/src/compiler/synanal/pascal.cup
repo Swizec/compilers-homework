@@ -96,7 +96,9 @@ value ::= BOOL_CONST
     | IDENTIFIER
     | value LBRACKET value RBRACKET
     | value DOT value
-    | subroutine_call;
+    | subroutine_call
+    | LBRACKET type_desc RBRACKET
+    | LPARENTHESIS value RPARENTHESIS;
 prefix ::= SUB | ADD | PTR | NOT;
 infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;
 subroutine_call ::= IDENTIFIER LPARENTHESIS parameter_call RPARENTHESIS;

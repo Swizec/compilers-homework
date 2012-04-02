@@ -4,7 +4,7 @@ program hello;
 const
    lol  = 5;
    bla  = ^6;
-   hah  = -7;
+   hah  = (-7+5)*6 div (3*bla);
    beh  = +'c';
    mah  = not nil;
    wat  = true^;
@@ -16,6 +16,7 @@ const
    bla  = a();
    ble  = b(a[c()+3]);
    blu  = a(b(wat.eh), c.a[6+mah]);
+   wha  = [array[2..4] of integer];
 
 type
    a = integer;
