@@ -6,7 +6,10 @@ const
    bla = ^6;
    hah = -7;
    beh = +'c';
-   mah = nil;
+   mah = not nil;
+   wat = true^;
+   yay = 5+6;
+   a   = true and false;
 
 type
    a = integer;

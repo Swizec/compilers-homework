@@ -29,9 +29,18 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 non terminal source;
 non terminal program, declaration, sentence;
 non terminal constant, constant_, type, type_, var, var_, subroutine;
-non terminal value, prefix;
+non terminal value, prefix, infix;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
+
+precedence left OR;
+precedence left AND;
+precedence nonassoc EQU, NEQ, GTH, LTH, GEQ, LEQ;
+precedence left ADD, SUB;
+precedence left MUL, DIV;
+precedence left PTR;
+precedence nonassoc NOT;
+precedence left DOT,LBRACKET,RBRACKET;
 
 start with source;
 
@@ -49,7 +58,12 @@ constant_ ::= IDENTIFIER EQU value SEMIC | IDENTIFIER EQU value SEMIC constant_;
 /* types */
 type ::= | TYPE type_;
 type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
-type_desc ::= type_atom | IDENTIFIER | type_table | type_record | type_pointer | LPARENTHESIS type_desc RPARENTHESIS;
+type_desc ::= type_atom
+    | IDENTIFIER
+    | type_table
+    | type_record
+    | type_pointer
+    | LPARENTHESIS type_desc RPARENTHESIS;
 type_atom ::= BOOL | CHAR | INT;
 type_table ::= ARRAY LBRACKET value DOTS value RBRACKET OF type_desc;
 type_record ::= RECORD type_record_components END;
@@ -72,5 +86,12 @@ parameter_desc ::= IDENTIFIER COLON type_desc;
 /*
   values
 */
-value ::= BOOL_CONST | CHAR_CONST | INT_CONST | NIL | prefix value;
+value ::= BOOL_CONST
+    | CHAR_CONST
+    | INT_CONST
+    | NIL
+    | prefix value
+    | value PTR
+    | value infix value;
 prefix ::= SUB | ADD | PTR | NOT;
+infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;
