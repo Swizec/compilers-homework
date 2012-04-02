@@ -93,6 +93,7 @@ value ::= BOOL_CONST
     | prefix value
     | value PTR
     | value infix value
-    | IDENTIFIER;
+    | IDENTIFIER
+    | value LBRACKET value RBRACKET;
 prefix ::= SUB | ADD | PTR | NOT;
 infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;

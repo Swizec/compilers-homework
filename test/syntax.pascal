@@ -11,6 +11,8 @@ const
    yay  = 5+6;
    a    = true and false;
    whee = hah;
+   meh  = a[yay+5];
+   moh  = meh or b[-6+^c];
 
 type
    a = integer;
