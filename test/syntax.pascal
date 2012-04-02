@@ -84,4 +84,15 @@ end;
 
 begin
    ohai3(true);
+   6+4 := ohai2(false);
+   if ohai() then
+      a := hai;
+
+   if ohai3() then
+      b := 'l'
+   else
+      if 5+3*(3+5) then
+         meow()
+      else
+         6 := 7 div ohai4();
 end.

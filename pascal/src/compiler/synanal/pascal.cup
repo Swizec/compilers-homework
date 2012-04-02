@@ -27,11 +27,12 @@ terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SU
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
 
 non terminal source;
-non terminal program, declaration, sentence, block_sentence, sentence_;
+non terminal program, declaration, block_statement;
 non terminal constant, constant_, type, type_, var, var_, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
+non terminal statement, statement_, conditional;
 
 precedence left OR;
 precedence left AND;
@@ -44,7 +45,7 @@ precedence left DOT,LBRACKET,RBRACKET;
 
 start with source;
 
-source ::= program declaration block_sentence DOT;
+source ::= program declaration block_statement DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
 declaration ::= constant type var subroutine;
@@ -74,9 +75,9 @@ var ::= | VAR var_;
 var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
 /* subroutines */
 subroutine ::= | procedure subroutine | function subroutine;
-procedure ::= procedure_head declaration block_sentence SEMIC;
+procedure ::= procedure_head declaration block_statement SEMIC;
 procedure_head ::= PROCEDURE IDENTIFIER parameters SEMIC;
-function ::= function_head declaration block_sentence SEMIC;
+function ::= function_head declaration block_statement SEMIC;
 function_head ::= FUNCTION IDENTIFIER parameters COLON type_desc SEMIC;
 parameters ::= LPARENTHESIS parameter RPARENTHESIS;
 parameter ::= | parameter_desc | parameter_desc SEMIC parameter_desc;
@@ -104,8 +105,11 @@ subroutine_call ::= IDENTIFIER LPARENTHESIS parameter_call RPARENTHESIS;
 parameter_call ::= | value | value COMMA parameter_call;
 
 /*
-  sentences
+  statements
 */
-block_sentence ::= BEGIN sentence_ END;
-sentence_ ::= | sentence SEMIC sentence_;
-sentence ::= value;
+block_statement ::= BEGIN statement_ END;
+statement_ ::= | statement SEMIC statement_;
+statement ::= value
+    | value ASSIGN value
+    | conditional;
+conditional ::= IF value THEN statement | IF value THEN statement ELSE statement;
