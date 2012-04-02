@@ -95,4 +95,14 @@ begin
          meow()
       else
          6 := 7 div ohai4();
+
+   while 5+23 or 5*10 do
+      a := ohai2(false);
+
+   for i := 8 to ohai(7+b[a+5]) do
+      meow();
+
+   for i := 1 to 100+false do
+      while i div 6 < 6 do
+         i := i+5;
 end.

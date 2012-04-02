@@ -32,7 +32,7 @@ non terminal constant, constant_, type, type_, var, var_, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
-non terminal statement, statement_, conditional;
+non terminal statement, statement_, conditional, loop;
 
 precedence left OR;
 precedence left AND;
@@ -111,5 +111,7 @@ block_statement ::= BEGIN statement_ END;
 statement_ ::= | statement SEMIC statement_;
 statement ::= value
     | value ASSIGN value
-    | conditional;
+    | conditional
+    | loop;
 conditional ::= IF value THEN statement | IF value THEN statement ELSE statement;
+loop ::= WHILE value DO statement | FOR IDENTIFIER ASSIGN value TO value DO statement;
