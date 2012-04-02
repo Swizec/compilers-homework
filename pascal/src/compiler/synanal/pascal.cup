@@ -27,7 +27,7 @@ terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SU
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
 
 non terminal source;
-non terminal program, declaration, sentence;
+non terminal program, declaration, sentence, block_sentence, sentence_;
 non terminal constant, constant_, type, type_, var, var_, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
@@ -44,11 +44,10 @@ precedence left DOT,LBRACKET,RBRACKET;
 
 start with source;
 
-source ::= program declaration sentence DOT;
+source ::= program declaration block_sentence DOT;
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
 declaration ::= constant type var subroutine;
-sentence ::= BEGIN END;
 
 /*
   declarations
@@ -75,9 +74,9 @@ var ::= | VAR var_;
 var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
 /* subroutines */
 subroutine ::= | procedure subroutine | function subroutine;
-procedure ::= procedure_head declaration sentence SEMIC;
+procedure ::= procedure_head declaration block_sentence SEMIC;
 procedure_head ::= PROCEDURE IDENTIFIER parameters SEMIC;
-function ::= function_head declaration sentence SEMIC;
+function ::= function_head declaration block_sentence SEMIC;
 function_head ::= FUNCTION IDENTIFIER parameters COLON type_desc SEMIC;
 parameters ::= LPARENTHESIS parameter RPARENTHESIS;
 parameter ::= | parameter_desc | parameter_desc SEMIC parameter_desc;
@@ -103,3 +102,10 @@ prefix ::= SUB | ADD | PTR | NOT;
 infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;
 subroutine_call ::= IDENTIFIER LPARENTHESIS parameter_call RPARENTHESIS;
 parameter_call ::= | value | value COMMA parameter_call;
+
+/*
+  sentences
+*/
+block_sentence ::= BEGIN sentence_ END;
+sentence_ ::= | sentence SEMIC sentence_;
+sentence ::= value;

@@ -83,4 +83,5 @@ begin
 end;
 
 begin
+   ohai3(true);
 end.
