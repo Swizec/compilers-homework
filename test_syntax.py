@@ -24,6 +24,11 @@ class TestSyntax(PascalSyntaxTestCase):
         # we just abuse this to run things easily
         pass
 
+class TestHeavy(PascalSyntaxTestCase):
+    source = "heavy_syntax.pascal"
+
+    def test_heavy(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()

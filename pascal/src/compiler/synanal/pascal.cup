@@ -67,8 +67,8 @@ type_desc ::= type_atom
 type_atom ::= BOOL | CHAR | INT;
 type_table ::= ARRAY LBRACKET value DOTS value RBRACKET OF type_desc;
 type_record ::= RECORD type_record_components END;
-type_record_components ::= type_record_component | type_record_component type_record_components;
-type_record_component ::= IDENTIFIER COLON type_desc SEMIC;
+type_record_components ::= type_record_component | type_record_component SEMIC type_record_components;
+type_record_component ::= IDENTIFIER COLON type_desc;
 type_pointer ::= PTR type_desc;
 /* variables */
 var ::= | VAR var_;
@@ -108,10 +108,13 @@ parameter_call ::= | value | value COMMA parameter_call;
   statements
 */
 block_statement ::= BEGIN statement_ END;
-statement_ ::= | statement SEMIC statement_;
+statement_ ::= | statement SEMIC statement_ | statement;
 statement ::= value
     | value ASSIGN value
     | conditional
     | loop;
 conditional ::= IF value THEN statement | IF value THEN statement ELSE statement;
-loop ::= WHILE value DO statement | FOR IDENTIFIER ASSIGN value TO value DO statement;
+loop ::= WHILE value DO statement
+    | WHILE value DO block_statement
+    | FOR IDENTIFIER ASSIGN value TO value DO statement
+    | FOR IDENTIFIER ASSIGN value TO value DO block_statement;
