@@ -2,14 +2,15 @@
 program hello;
 
 const
-   lol = 5;
-   bla = ^6;
-   hah = -7;
-   beh = +'c';
-   mah = not nil;
-   wat = true^;
-   yay = 5+6;
-   a   = true and false;
+   lol  = 5;
+   bla  = ^6;
+   hah  = -7;
+   beh  = +'c';
+   mah  = not nil;
+   wat  = true^;
+   yay  = 5+6;
+   a    = true and false;
+   whee = hah;
 
 type
    a = integer;

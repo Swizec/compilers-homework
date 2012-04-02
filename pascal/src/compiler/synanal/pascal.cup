@@ -92,6 +92,7 @@ value ::= BOOL_CONST
     | NIL
     | prefix value
     | value PTR
-    | value infix value;
+    | value infix value
+    | IDENTIFIER;
 prefix ::= SUB | ADD | PTR | NOT;
 infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;
