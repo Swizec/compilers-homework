@@ -105,4 +105,13 @@ begin
    for i := 1 to 100+false do
       while i div 6 < 6 do
          i := i+5;
+
+   if mew() then
+   begin
+      ohai_thar()
+   end
+   else
+   begin
+      a := 5+3
+   end
 end.

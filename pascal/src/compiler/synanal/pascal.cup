@@ -112,9 +112,8 @@ statement_ ::= | statement SEMIC statement_ | statement;
 statement ::= value
     | value ASSIGN value
     | conditional
-    | loop;
+    | loop
+    | block_statement;
 conditional ::= IF value THEN statement | IF value THEN statement ELSE statement;
 loop ::= WHILE value DO statement
-    | WHILE value DO block_statement
-    | FOR IDENTIFIER ASSIGN value TO value DO statement
-    | FOR IDENTIFIER ASSIGN value TO value DO block_statement;
+    | FOR IDENTIFIER ASSIGN value TO value DO statement;
