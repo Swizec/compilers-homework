@@ -50,6 +50,7 @@ start with source;
 
 source ::= program:p declaration:decl block_statement:mainblock DOT
 {:
+ System.out.println("HELLO WORLD");
  AbsProgram program = new AbsProgram((AbsDeclName)p,
                                      (AbsDecls)decl,
                                      (AbsBlockStmt)mainblock
@@ -60,6 +61,7 @@ source ::= program:p declaration:decl block_statement:mainblock DOT
 program ::= | PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
 declaration ::= constant:consts type:types var:vars subroutine:subs
 {:
+ System.out.println("HELLO WORLD");
  AbsDecls decls = new AbsDecls();
  decls.decls.addAll(((AbsDecls)consts).decls);
  /* decls.decls.addAll(((AbsDecls)types).decls);
@@ -77,8 +79,11 @@ constant_ ::= IDENTIFIER:id EQU value:v SEMIC
                       {: RESULT = new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v); :}
 | IDENTIFIER:id EQU value:v SEMIC constant_:c
 {:
+    System.out.println("Const decls!");
     AbsDecls consts = new AbsDecls();
+    System.out.println("Trying to add one");
     consts.decls.add(new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v));
+    System.out.println("Adding the rest");
     consts.decls.addAll(((AbsDecls)c).decls);
 
     RESULT = consts;
@@ -114,14 +119,14 @@ parameter_desc ::= IDENTIFIER COLON type_desc;
 /*
   values
 */
-value ::= BOOL_CONST
-    | CHAR_CONST
-    | INT_CONST
-    | NIL
+value ::= BOOL_CONST:val {: RESULT = new AbsAtomConst(val, AbsAtomConst.BOOL); :}
+    | CHAR_CONST:val {: RESULT = new AbsAtomConst(val, AbsAtomConst.CHAR); :}
+    | INT_CONST:val {: RESULT = new AbsAtomConst(val, AbsAtomConst.INT); :}
+    | NIL {: RESULT = new AbsNilConst(); :}
     | prefix value
     | value PTR
     | value infix value
-    | IDENTIFIER
+    | IDENTIFIER:id {: RESULT = new AbsValName(id); :}
     | value LBRACKET value RBRACKET
     | value DOT value
     | subroutine_call
