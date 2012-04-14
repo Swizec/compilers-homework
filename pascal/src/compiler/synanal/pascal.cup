@@ -57,14 +57,32 @@ source ::= program:p declaration:decl block_statement:mainblock DOT
  RESULT = program;
  :};
 
-program ::= | PROGRAM IDENTIFIER SEMIC;
-declaration ::= constant type var subroutine;
+program ::= | PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
+declaration ::= constant:consts type:types var:vars subroutine:subs
+{:
+ AbsDecls decls = new AbsDecls();
+ decls.decls.addAll(((AbsDecls)consts).decls);
+ /* decls.decls.addAll(((AbsDecls)types).decls);
+ decls.decls.addAll(((AbsDecls)vars).decls);
+ decls.decls.addAll(((AbsDecls)subs).decls);*/
+
+ RESULT = decls;
+ :};
 
 /*
   declarations
 */
-constant ::= | CONST constant_;
-constant_ ::= IDENTIFIER EQU value SEMIC | IDENTIFIER EQU value SEMIC constant_;
+constant ::= {: RESULT = new AbsDecls(); :} | CONST constant_:c {: RESULT = (AbsDecls) c; :};
+constant_ ::= IDENTIFIER:id EQU value:v SEMIC
+                      {: RESULT = new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v); :}
+| IDENTIFIER:id EQU value:v SEMIC constant_:c
+{:
+    AbsDecls consts = new AbsDecls();
+    consts.decls.add(new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v));
+    consts.decls.addAll(((AbsDecls)c).decls);
+
+    RESULT = consts;
+ :};
 /* types */
 type ::= | TYPE type_;
 type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
