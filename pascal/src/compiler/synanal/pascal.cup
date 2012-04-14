@@ -4,6 +4,9 @@ import java_cup.runtime.*;
 
 import compiler.report.*;
 
+import compiler.abstree.*;
+import compiler.abstree.tree.*;
+
 parser code
 {:
         public void syntax_error(Symbol cur_token) {
@@ -45,7 +48,14 @@ precedence left DOT,LBRACKET,RBRACKET;
 
 start with source;
 
-source ::= program declaration block_statement DOT;
+source ::= program:p declaration:decl block_statement:mainblock DOT
+{:
+ AbsProgram program = new AbsProgram((AbsDeclName)p,
+                                     (AbsDecls)decl,
+                                     (AbsBlockStmt)mainblock
+                                     );
+ RESULT = program;
+ :};
 
 program ::= | PROGRAM IDENTIFIER SEMIC;
 declaration ::= constant type var subroutine;
