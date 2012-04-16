@@ -1,5 +1,7 @@
 
-const a=5;
+program abstree;
+
+{const a=5;}
 
 begin
 end.

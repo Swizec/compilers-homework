@@ -50,7 +50,6 @@ start with source;
 
 source ::= program:p declaration:decl block_statement:mainblock DOT
 {:
- System.out.println("HELLO WORLD");
  AbsProgram program = new AbsProgram((AbsDeclName)p,
                                      (AbsDecls)decl,
                                      (AbsBlockStmt)mainblock
@@ -61,14 +60,13 @@ source ::= program:p declaration:decl block_statement:mainblock DOT
 program ::= | PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
 declaration ::= constant:consts type:types var:vars subroutine:subs
 {:
- System.out.println("HELLO WORLD");
- AbsDecls decls = new AbsDecls();
- decls.decls.addAll(((AbsDecls)consts).decls);
+ /*AbsDecls decls = new AbsDecls();
+ /* decls.decls.addAll(((AbsDecls)consts).decls);
  /* decls.decls.addAll(((AbsDecls)types).decls);
  decls.decls.addAll(((AbsDecls)vars).decls);
  decls.decls.addAll(((AbsDecls)subs).decls);*/
 
- RESULT = decls;
+ // RESULT = decls;
  :};
 
 /*
