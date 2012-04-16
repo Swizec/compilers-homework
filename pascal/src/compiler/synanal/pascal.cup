@@ -50,6 +50,7 @@ start with source;
 
 source ::= program:p declaration:decl block_statement:mainblock DOT
 {:
+ System.out.println("HELLO AST");
  AbsProgram program = new AbsProgram((AbsDeclName)p,
                                      (AbsDecls)decl,
                                      (AbsBlockStmt)mainblock
