@@ -90,7 +90,7 @@ constant_ ::= one_constant:c {:
 one_constant ::= IDENTIFIER:id EQU value:v SEMIC
 {:
  RESULT = new AbsConstDecl(new AbsDeclName(id),
-                           new AbsNilConst());
+                           (AbsValExpr)v);
  :};
 /* types */
 type ::= {: RESULT = new AbsDecls(); :} | TYPE type_:t {: RESULT = t; :};
@@ -124,8 +124,8 @@ type_atom ::= BOOL {: RESULT = new AbsAtomType(AbsAtomType.BOOL); :}
 type_array ::= ARRAY LBRACKET value:lo DOTS value:hi RBRACKET OF type_desc:t
 {:
  RESULT = new AbsArrayType((AbsTypeExpr)t,
-                           new AbsNilConst(),
-                           new AbsNilConst());
+                           (AbsValExpr)lo,
+                           (AbsValExpr)hi);
  :};
 type_record ::= RECORD type_record_components:fields END
 {:
@@ -184,19 +184,57 @@ value ::= BOOL_CONST:val {: RESULT = new AbsAtomConst(val, AbsAtomConst.BOOL); :
     | CHAR_CONST:val {: RESULT = new AbsAtomConst(val, AbsAtomConst.CHAR); :}
     | INT_CONST:val {: RESULT = new AbsAtomConst(val, AbsAtomConst.INT); :}
     | NIL {: RESULT = new AbsNilConst(); :}
-    | prefix value
-    | value PTR
-    | value infix value
+    | prefix:p value:v {: RESULT = new AbsUnExpr((Integer)p,
+                                                 (AbsValExpr)v); :}
+    | value:v PTR {: RESULT = new AbsUnExpr(AbsUnExpr.VAL,
+                                            (AbsValExpr)v); :}
+    | value:v1 infix:op value:v2 {: RESULT = new AbsBinExpr((Integer)op,
+                                                            (AbsValExpr)v1,
+                                                            (AbsValExpr)v2); :}
     | IDENTIFIER:id {: RESULT = new AbsValName(id); :}
-    | value LBRACKET value RBRACKET
-    | value DOT value
-    | subroutine_call
-    | LBRACKET type_desc RBRACKET
-    | LPARENTHESIS value RPARENTHESIS;
-prefix ::= SUB | ADD | PTR | NOT;
-infix ::= MUL | DIV | ADD | SUB | EQU | NEQ | LTH | GTH | GEQ | LEQ | AND | OR;
-subroutine_call ::= IDENTIFIER LPARENTHESIS parameter_call RPARENTHESIS;
-parameter_call ::= | value | value COMMA parameter_call;
+    | value:v1 LBRACKET value:v2 RBRACKET {: RESULT = new AbsBinExpr(AbsBinExpr.ARRACCESS,
+                                                                     (AbsValExpr)v1,
+                                                                     (AbsValExpr)v2); :}
+    | value:v1 DOT value:v2 {: RESULT = new AbsBinExpr(AbsBinExpr.RECACCESS,
+                                                       (AbsValExpr)v1,
+                                                       (AbsValExpr)v2); :}
+    | subroutine_call:call {: RESULT = call; :}
+    | LBRACKET type_desc:desc RBRACKET {: RESULT = new AbsAlloc((AbsTypeExpr)desc); :}
+    | LPARENTHESIS value:v RPARENTHESIS {: RESULT = v; :};
+
+prefix ::= SUB {: RESULT = AbsUnExpr.SUB; :}
+    | ADD {: RESULT = AbsUnExpr.ADD; :}
+    | PTR {: RESULT = AbsUnExpr.MEM; :}
+    | NOT {: RESULT = AbsUnExpr.NOT; :};
+infix ::= MUL {: RESULT = AbsBinExpr.MUL; :}
+    | DIV {: RESULT = AbsBinExpr.DIV; :}
+    | ADD {: RESULT = AbsBinExpr.ADD; :}
+    | SUB {: RESULT = AbsBinExpr.SUB; :}
+    | EQU {: RESULT = AbsBinExpr.EQU; :}
+    | NEQ {: RESULT = AbsBinExpr.NEQ; :}
+    | LTH {: RESULT = AbsBinExpr.LTH; :}
+    | GTH {: RESULT = AbsBinExpr.GTH; :}
+    | GEQ {: RESULT = AbsBinExpr.GEQ; :}
+    | LEQ {: RESULT = AbsBinExpr.LEQ; :}
+    | AND {: RESULT = AbsBinExpr.AND; :}
+    | OR {: RESULT = AbsBinExpr.OR; :};
+subroutine_call ::= IDENTIFIER:id LPARENTHESIS parameter_call:params RPARENTHESIS
+{:
+ RESULT = new AbsCallExpr(new AbsValName(id),
+                          (AbsValExprs)params);
+ :};
+parameter_call ::= {: RESULT = new AbsValExprs(); :}
+    | value:v {:
+        AbsValExprs vals = new AbsValExprs();
+        vals.exprs.add((AbsValExpr)v);
+        RESULT = vals;
+        :}
+    | value:v COMMA parameter_call:rest {:
+        AbsValExprs vals = new AbsValExprs();
+        vals.exprs.add((AbsValExpr)v);
+        vals.exprs.addAll(((AbsValExprs)rest).exprs);
+        RESULT = vals;
+    :};
 
 /*
   statements
