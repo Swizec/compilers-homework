@@ -103,19 +103,17 @@ type_record_component ::= IDENTIFIER COLON type_desc;
 type_pointer ::= PTR type_desc;
 /* variables */
 var ::= eps:e {: RESULT = new AbsDecls(); :} | VAR var_:v {: RESULT = v; :};
-var_ ::= one_var:v | one_var:v var_:rest
-{:
- AbsDecls decls = new AbsDecls();
- decls.decls.add((AbsVarDecl)v);
- try {
-     decls.decls.addAll(((AbsDecls)rest).decls);
- }catch (Exception e) {
-     System.out.println(e);
- }
- // decls.decls.addAll(((AbsDecls)rest).decls);
- RESULT = decls;
-
- :};
+var_ ::= one_var:v {: AbsDecls decls = new AbsDecls();
+                    decls.decls.add((AbsVarDecl)v);
+                    RESULT = decls;
+                    :}
+   | one_var:v var_:rest
+   {:
+       AbsDecls decls = new AbsDecls();
+       decls.decls.add((AbsVarDecl)v);
+       decls.decls.addAll(((AbsDecls)rest).decls);
+       RESULT = decls;
+    :};
 one_var ::= IDENTIFIER:id COLON type_desc:t SEMIC
 {:
  RESULT = new AbsVarDecl(new AbsDeclName(id),
