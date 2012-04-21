@@ -31,9 +31,9 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 
 non terminal source;
 non terminal program, declaration, block_statement;
-non terminal constant, constant_, type, type_, var, var_, one_var, subroutine;
+non terminal constant, constant_, type, type_, one_type, var, var_, one_var, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
-non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
+non terminal type_desc, type_atom, type_array, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
 non terminal statement, statement_, conditional, loop;
 non terminal eps;
@@ -49,7 +49,7 @@ precedence left DOT,LBRACKET,RBRACKET;
 
 start with source;
 
-eps ::= ;
+eps ::= {: RESULT = new AbsDecls(); :};
 
 source ::= program:p declaration:decl block_statement:mainblock DOT
 {:
@@ -64,8 +64,8 @@ program ::= PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
 declaration ::= constant:consts type:types var:vars subroutine:subs
 {:
  AbsDecls decls = new AbsDecls();
- /*  decls.decls.addAll(((AbsDecls)consts).decls);
-     decls.decls.addAll(((AbsDecls)types).decls);*/
+ // decls.decls.addAll(((AbsDecls)consts).decls);
+ decls.decls.addAll(((AbsDecls)types).decls);
  decls.decls.addAll(((AbsDecls)vars).decls);
  // decls.decls.addAll(((AbsDecls)subs).decls);*/
 
@@ -87,22 +87,63 @@ constant_ ::= IDENTIFIER:id EQU value:v SEMIC
     RESULT = consts;
  :};
 /* types */
-type ::= | TYPE type_;
-type_ ::= IDENTIFIER EQU type_desc SEMIC | IDENTIFIER EQU type_desc SEMIC type_;
-type_desc ::= type_atom
-    | IDENTIFIER
-    | type_table
-    | type_record
-    | type_pointer
-    | LPARENTHESIS type_desc RPARENTHESIS;
-type_atom ::= BOOL | CHAR | INT;
-type_table ::= ARRAY LBRACKET value DOTS value RBRACKET OF type_desc;
-type_record ::= RECORD type_record_components END;
-type_record_components ::= type_record_component | type_record_component SEMIC type_record_components;
-type_record_component ::= IDENTIFIER COLON type_desc;
-type_pointer ::= PTR type_desc;
+type ::= {: RESULT = new AbsDecls(); :} | TYPE type_:t {: RESULT = t; :};
+type_ ::= one_type:t {:
+                      AbsDecls decls = new AbsDecls();
+                      decls.decls.add((AbsTypeDecl)t);
+                      RESULT = decls;
+                      :}
+    | one_type:t type_:rest {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsTypeDecl)t);
+        decls.decls.addAll(((AbsDecls)rest).decls);
+        RESULT = decls;
+        :};
+one_type ::= IDENTIFIER:id EQU type_desc:desc SEMIC
+{:
+ RESULT = new AbsTypeDecl(new AbsDeclName(id),
+                          (AbsTypeExpr)desc);
+ :};
+type_desc ::= type_atom:atom {: RESULT = atom; :}
+    | IDENTIFIER:id {: RESULT = new AbsTypeName(id); :}
+    | type_array:t {: RESULT = t; :}
+    | type_record:t {: RESULT = t; :}
+    | type_pointer:t {: RESULT = t; :}
+    | LPARENTHESIS type_desc:t RPARENTHESIS {: RESULT = t; :};
+
+type_atom ::= BOOL {: RESULT = new AbsAtomType(AbsAtomType.BOOL); :}
+   | CHAR {: RESULT = new AbsAtomType(AbsAtomType.CHAR); :}
+   | INT {: RESULT = new AbsAtomType(AbsAtomType.INT); :};
+
+type_array ::= ARRAY LBRACKET value:lo DOTS value:hi RBRACKET OF type_desc:t
+{:
+ RESULT = new AbsArrayType((AbsTypeExpr)t,
+                           new AbsNilConst(),
+                           new AbsNilConst());
+ :};
+type_record ::= RECORD type_record_components:fields END
+{:
+ RESULT = new AbsRecordType((AbsDecls)fields);
+ :};
+type_record_components ::= type_record_component:c {:
+                                                    AbsDecls decls = new AbsDecls();
+                                                    decls.decls.add((AbsTypeDecl)c);
+                                                    RESULT = decls;
+                                                    :}
+    | type_record_component:c SEMIC type_record_components:rest {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsTypeDecl)c);
+        decls.decls.addAll(((AbsDecls)rest).decls);
+        RESULT = decls;
+    :};
+type_record_component ::= IDENTIFIER:id COLON type_desc:desc
+{:
+ RESULT = new AbsTypeDecl(new AbsDeclName(id),
+                          (AbsTypeExpr)desc);
+ :};
+type_pointer ::= PTR type_desc:desc {: RESULT = new AbsPointerType((AbsTypeExpr)desc); :};
 /* variables */
-var ::= eps:e {: RESULT = new AbsDecls(); :} | VAR var_:v {: RESULT = v; :};
+var ::= {: RESULT = new AbsDecls(); :} | VAR var_:v {: RESULT = v; :};
 var_ ::= one_var:v {: AbsDecls decls = new AbsDecls();
                     decls.decls.add((AbsVarDecl)v);
                     RESULT = decls;
@@ -117,7 +158,7 @@ var_ ::= one_var:v {: AbsDecls decls = new AbsDecls();
 one_var ::= IDENTIFIER:id COLON type_desc:t SEMIC
 {:
  RESULT = new AbsVarDecl(new AbsDeclName(id),
-                         new AbsAtomType(AbsAtomType.BOOL));
+                         (AbsTypeExpr)t);
  :};
 
 /* subroutines */
