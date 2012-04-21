@@ -31,7 +31,7 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 
 non terminal source;
 non terminal program, declaration, block_statement;
-non terminal constant, constant_, type, type_, one_type, var, var_, one_var, subroutine;
+non terminal constant, constant_, one_constant, type, type_, one_type, var, var_, one_var, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_array, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
@@ -64,7 +64,7 @@ program ::= PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
 declaration ::= constant:consts type:types var:vars subroutine:subs
 {:
  AbsDecls decls = new AbsDecls();
- // decls.decls.addAll(((AbsDecls)consts).decls);
+ decls.decls.addAll(((AbsDecls)consts).decls);
  decls.decls.addAll(((AbsDecls)types).decls);
  decls.decls.addAll(((AbsDecls)vars).decls);
  // decls.decls.addAll(((AbsDecls)subs).decls);*/
@@ -75,16 +75,22 @@ declaration ::= constant:consts type:types var:vars subroutine:subs
 /*
   declarations
 */
-constant ::= {: RESULT = new AbsDecls(); :} | CONST constant_:c {: RESULT = (AbsDecls) c; :};
-constant_ ::= IDENTIFIER:id EQU value:v SEMIC
-                 {: RESULT = new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v); :}
-| IDENTIFIER:id EQU value:v SEMIC constant_:c
+constant ::= {: RESULT = new AbsDecls(); :} | CONST constant_:c {: RESULT =  c; :};
+constant_ ::= one_constant:c {:
+                              AbsDecls decls = new AbsDecls();
+                              decls.decls.add((AbsConstDecl)c);
+                              RESULT = decls; :}
+    | one_constant:c constant_:rest
+    {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsConstDecl)c);
+        decls.decls.addAll(((AbsDecls)rest).decls);
+        RESULT = decls;
+        :};
+one_constant ::= IDENTIFIER:id EQU value:v SEMIC
 {:
-    AbsDecls consts = new AbsDecls();
-    consts.decls.add(new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v));
-    consts.decls.addAll(((AbsDecls)c).decls);
-
-    RESULT = consts;
+ RESULT = new AbsConstDecl(new AbsDeclName(id),
+                           new AbsNilConst());
  :};
 /* types */
 type ::= {: RESULT = new AbsDecls(); :} | TYPE type_:t {: RESULT = t; :};
