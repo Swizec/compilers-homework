@@ -86,4 +86,35 @@ begin
 end;
 
 begin
+      ohai3(true);
+   6+4 := ohai2(false);
+   if ohai() then
+      a := hai;
+
+   if ohai3() then
+      b := 'l'
+   else
+      if 5+3*(3+5) then
+         meow()
+      else
+         6 := 7 div ohai4();
+
+   while 5+23 or 5*10 do
+      a := ohai2(false);
+
+   for i := 8 to ohai(7+b[a+5]) do
+      meow();
+
+   for i := 1 to 100+false do
+      while i div 6 < 6 do
+         i := i+5;
+
+   if mew() then
+   begin
+      ohai_thar()
+   end
+   else
+   begin
+      a := 5+3
+   end
 end.

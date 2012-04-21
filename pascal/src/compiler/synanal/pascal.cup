@@ -277,16 +277,47 @@ parameter_call ::= {: RESULT = new AbsValExprs(); :}
 /*
   statements
 */
-block_statement ::= BEGIN statement_ END
+block_statement ::= BEGIN statement_:s END
 {:
- RESULT = new AbsBlockStmt(new AbsStmts());
+ RESULT = new AbsBlockStmt((AbsStmts)s);
  :};
-statement_ ::= | statement SEMIC statement_ | statement;
-statement ::= value
-    | value ASSIGN value
-    | conditional
-    | loop
-    | block_statement;
-conditional ::= IF value THEN statement | IF value THEN statement ELSE statement;
-loop ::= WHILE value DO statement
-    | FOR IDENTIFIER ASSIGN value TO value DO statement;
+statement_ ::= {: RESULT = new AbsStmts(); :}
+    | statement:s {:
+        AbsStmts stmts = new AbsStmts();
+        stmts.stmts.add((AbsStmt)s);
+        RESULT = stmts;
+        :}
+    | statement:s SEMIC statement_:rest {:
+        AbsStmts stmts = new AbsStmts();
+        stmts.stmts.add((AbsStmt)s);
+        stmts.stmts.addAll(((AbsStmts)rest).stmts);
+        RESULT = stmts;
+    :};
+statement ::= value:v {: RESULT = new AbsExprStmt((AbsValExpr)v); :}
+    | value:dst ASSIGN value:src {: RESULT = new AbsAssignStmt((AbsValExpr)dst,
+                                                               (AbsValExpr)src); :}
+    | conditional:cond {: RESULT = cond; :}
+    | loop:loop {: RESULT = loop; :}
+    | block_statement:block {: RESULT = block; :};
+conditional ::= IF value:cond THEN statement:then
+{:
+ RESULT = new AbsIfStmt((AbsValExpr)cond,
+                        (AbsStmt)then,
+                        new AbsBlockStmt(new AbsStmts()));
+ :}
+| IF value:cond THEN statement:then ELSE statement:els
+{:
+    RESULT = new AbsIfStmt((AbsValExpr)cond,
+                           (AbsStmt)then,
+                           (AbsStmt)els);
+    :};
+loop ::= WHILE value:cond DO statement:s {:
+                                          RESULT = new AbsWhileStmt((AbsValExpr)cond,
+                                                                    (AbsStmt)s);
+ :}
+     | FOR IDENTIFIER:id ASSIGN value:lo TO value:hi DO statement:s {:
+         RESULT = new AbsForStmt(new AbsValName(id),
+                                 (AbsValExpr)lo,
+                                 (AbsValExpr)hi,
+                                 (AbsStmt)s);
+        :};
