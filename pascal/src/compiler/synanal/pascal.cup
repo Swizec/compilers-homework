@@ -34,7 +34,7 @@ non terminal program, declaration, block_statement;
 non terminal constant, constant_, one_constant, type, type_, one_type, var, var_, one_var, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_array, type_record, type_record_components, type_record_component, type_pointer;
-non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
+non terminal procedure, parameters, parameter, one_param, function;
 non terminal statement, statement_, conditional, loop;
 non terminal eps;
 
@@ -67,7 +67,7 @@ declaration ::= constant:consts type:types var:vars subroutine:subs
  decls.decls.addAll(((AbsDecls)consts).decls);
  decls.decls.addAll(((AbsDecls)types).decls);
  decls.decls.addAll(((AbsDecls)vars).decls);
- // decls.decls.addAll(((AbsDecls)subs).decls);*/
+ decls.decls.addAll(((AbsDecls)subs).decls);
 
  RESULT = decls;
  :};
@@ -168,14 +168,52 @@ one_var ::= IDENTIFIER:id COLON type_desc:t SEMIC
  :};
 
 /* subroutines */
-subroutine ::= | procedure subroutine | function subroutine;
-procedure ::= procedure_head declaration block_statement SEMIC;
-procedure_head ::= PROCEDURE IDENTIFIER parameters SEMIC;
-function ::= function_head declaration block_statement SEMIC;
-function_head ::= FUNCTION IDENTIFIER parameters COLON type_desc SEMIC;
-parameters ::= LPARENTHESIS parameter RPARENTHESIS;
-parameter ::= | parameter_desc | parameter_desc SEMIC parameter_desc;
-parameter_desc ::= IDENTIFIER COLON type_desc;
+subroutine ::= {: RESULT = new AbsDecls(); :}
+    | procedure:p subroutine:rest {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsProcDecl)p);
+        decls.decls.addAll(((AbsDecls)rest).decls);
+        RESULT = decls;
+        :}
+    | function:f subroutine:rest {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsFunDecl)f);
+        decls.decls.addAll(((AbsDecls)rest).decls);
+        RESULT = decls;
+        :};
+procedure ::= PROCEDURE IDENTIFIER:id parameters:params SEMIC declaration:decls block_statement:block SEMIC
+{:
+ RESULT = new AbsProcDecl(new AbsDeclName(id),
+                          (AbsDecls)params,
+                          (AbsDecls)decls,
+                          (AbsBlockStmt)block);
+ :};
+function ::= FUNCTION IDENTIFIER:id parameters:params COLON type_desc:t SEMIC declaration:decls block_statement:block SEMIC
+{:
+ RESULT = new AbsFunDecl(new AbsDeclName(id),
+                         (AbsDecls)params,
+                         (AbsTypeExpr)t,
+                         (AbsDecls)decls,
+                         (AbsBlockStmt)block);
+ :};
+parameters ::= LPARENTHESIS parameter:p RPARENTHESIS {: RESULT = p; :};
+parameter ::= {: RESULT = new AbsDecls(); :}
+    | one_param:p {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsDecl)p);
+        RESULT = decls;
+        :}
+    | one_param:p SEMIC parameter:rest {:
+        AbsDecls decls = new AbsDecls();
+        decls.decls.add((AbsDecl)p);
+        decls.decls.addAll(((AbsDecls)rest).decls);
+        RESULT = decls;
+    :};
+one_param ::= IDENTIFIER:id COLON type_desc:t
+{:
+ RESULT = new AbsVarDecl(new AbsDeclName(id),
+                         (AbsTypeExpr)t);
+ :};
 
 /*
   values
