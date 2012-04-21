@@ -1,7 +1,9 @@
 
 program abstree;
 
-{const a=5;}
+var
+   a : integer;
+   b : array[1..5] of integer;
 
 begin
 end.

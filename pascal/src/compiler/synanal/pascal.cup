@@ -31,11 +31,12 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 
 non terminal source;
 non terminal program, declaration, block_statement;
-non terminal constant, constant_, type, type_, var, var_, subroutine;
+non terminal constant, constant_, type, type_, var, var_, one_var, subroutine;
 non terminal value, prefix, infix, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_table, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, procedure_head, parameters, parameter, parameter_desc, function, function_head;
 non terminal statement, statement_, conditional, loop;
+non terminal eps;
 
 precedence left OR;
 precedence left AND;
@@ -48,9 +49,10 @@ precedence left DOT,LBRACKET,RBRACKET;
 
 start with source;
 
+eps ::= ;
+
 source ::= program:p declaration:decl block_statement:mainblock DOT
 {:
- System.out.println("HELLO AST");
  AbsProgram program = new AbsProgram((AbsDeclName)p,
                                      (AbsDecls)decl,
                                      (AbsBlockStmt)mainblock
@@ -58,16 +60,16 @@ source ::= program:p declaration:decl block_statement:mainblock DOT
  RESULT = program;
  :};
 
-program ::= | PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
+program ::= PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
 declaration ::= constant:consts type:types var:vars subroutine:subs
 {:
- /*AbsDecls decls = new AbsDecls();
- /* decls.decls.addAll(((AbsDecls)consts).decls);
- /* decls.decls.addAll(((AbsDecls)types).decls);
+ AbsDecls decls = new AbsDecls();
+ /*  decls.decls.addAll(((AbsDecls)consts).decls);
+     decls.decls.addAll(((AbsDecls)types).decls);*/
  decls.decls.addAll(((AbsDecls)vars).decls);
- decls.decls.addAll(((AbsDecls)subs).decls);*/
+ // decls.decls.addAll(((AbsDecls)subs).decls);*/
 
- // RESULT = decls;
+ RESULT = decls;
  :};
 
 /*
@@ -75,14 +77,11 @@ declaration ::= constant:consts type:types var:vars subroutine:subs
 */
 constant ::= {: RESULT = new AbsDecls(); :} | CONST constant_:c {: RESULT = (AbsDecls) c; :};
 constant_ ::= IDENTIFIER:id EQU value:v SEMIC
-                      {: RESULT = new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v); :}
+                 {: RESULT = new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v); :}
 | IDENTIFIER:id EQU value:v SEMIC constant_:c
 {:
-    System.out.println("Const decls!");
     AbsDecls consts = new AbsDecls();
-    System.out.println("Trying to add one");
     consts.decls.add(new AbsConstDecl(new AbsDeclName(id), (AbsValExpr)v));
-    System.out.println("Adding the rest");
     consts.decls.addAll(((AbsDecls)c).decls);
 
     RESULT = consts;
@@ -103,8 +102,26 @@ type_record_components ::= type_record_component | type_record_component SEMIC t
 type_record_component ::= IDENTIFIER COLON type_desc;
 type_pointer ::= PTR type_desc;
 /* variables */
-var ::= | VAR var_;
-var_ ::= IDENTIFIER COLON type_desc SEMIC | IDENTIFIER COLON type_desc SEMIC var_;
+var ::= eps:e {: RESULT = new AbsDecls(); :} | VAR var_:v {: RESULT = v; :};
+var_ ::= one_var:v | one_var:v var_:rest
+{:
+ AbsDecls decls = new AbsDecls();
+ decls.decls.add((AbsVarDecl)v);
+ try {
+     decls.decls.addAll(((AbsDecls)rest).decls);
+ }catch (Exception e) {
+     System.out.println(e);
+ }
+ // decls.decls.addAll(((AbsDecls)rest).decls);
+ RESULT = decls;
+
+ :};
+one_var ::= IDENTIFIER:id COLON type_desc:t SEMIC
+{:
+ RESULT = new AbsVarDecl(new AbsDeclName(id),
+                         new AbsAtomType(AbsAtomType.BOOL));
+ :};
+
 /* subroutines */
 subroutine ::= | procedure subroutine | function subroutine;
 procedure ::= procedure_head declaration block_statement SEMIC;
@@ -139,7 +156,10 @@ parameter_call ::= | value | value COMMA parameter_call;
 /*
   statements
 */
-block_statement ::= BEGIN statement_ END;
+block_statement ::= BEGIN statement_ END
+{:
+ RESULT = new AbsBlockStmt(new AbsStmts());
+ :};
 statement_ ::= | statement SEMIC statement_ | statement;
 statement ::= value
     | value ASSIGN value
