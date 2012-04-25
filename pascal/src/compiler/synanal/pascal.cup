@@ -51,12 +51,14 @@ start with source;
 
 eps ::= {: RESULT = new AbsDecls(); :};
 
-source ::= program:p declaration:decl block_statement:mainblock DOT
+source ::= program:p declaration:decl block_statement:mainblock DOT:d
 {:
  AbsProgram program = new AbsProgram((AbsDeclName)p,
                                      (AbsDecls)decl,
                                      (AbsBlockStmt)mainblock
                                      );
+ program.setBeg(p.toString(), pleft, pright);
+ program.setEnd(d.toString(), dleft, dright);
  RESULT = program;
  :};
 
@@ -68,6 +70,9 @@ declaration ::= constant:consts type:types var:vars subroutine:subs
  decls.decls.addAll(((AbsDecls)types).decls);
  decls.decls.addAll(((AbsDecls)vars).decls);
  decls.decls.addAll(((AbsDecls)subs).decls);
+
+ decls.setBeg(consts.toString(), constsleft, constsright);
+ decls.setEnd(subs.toString(), subsleft, subsright);
 
  RESULT = decls;
  :};
@@ -85,12 +90,16 @@ constant_ ::= one_constant:c {:
         AbsDecls decls = new AbsDecls();
         decls.decls.add((AbsConstDecl)c);
         decls.decls.addAll(((AbsDecls)rest).decls);
+
         RESULT = decls;
         :};
-one_constant ::= IDENTIFIER:id EQU value:v SEMIC
+one_constant ::= IDENTIFIER:id EQU value:v SEMIC:s
 {:
- RESULT = new AbsConstDecl(new AbsDeclName(id),
-                           (AbsValExpr)v);
+ AbsConstDecl c = new AbsConstDecl(new AbsDeclName(id),
+                                   (AbsValExpr)v);
+ c.setBeg(id.toString(), idleft, idright);
+ c.setEnd(s.toString(), sleft, sright);
+ RESULT = c;
  :};
 /* types */
 type ::= {: RESULT = new AbsDecls(); :} | TYPE type_:t {: RESULT = t; :};
@@ -105,12 +114,15 @@ type_ ::= one_type:t {:
         decls.decls.addAll(((AbsDecls)rest).decls);
         RESULT = decls;
         :};
-one_type ::= IDENTIFIER:id EQU type_desc:desc SEMIC
+one_type ::= IDENTIFIER:id EQU type_desc:desc SEMIC:s
 {:
- RESULT = new AbsTypeDecl(new AbsDeclName(id),
+ AbsTypeDecl t = new AbsTypeDecl(new AbsDeclName(id),
                           (AbsTypeExpr)desc);
+ t.setBeg(id.toString(), idleft, idright);
+ t.setEnd(s.toString(), sleft, sright);
+ RESULT = t;
  :};
-type_desc ::= type_atom:atom {: RESULT = atom; :}
+type_desc ::= type_atom:atom {: AbsAtomType a = (AbsAtomType)atom; a.setBeg(atom.toString(), atomleft, atomright); a.setEnd(atom.toString(), atomleft, atomright); RESULT = a; :}
     | IDENTIFIER:id {: RESULT = new AbsTypeName(id); :}
     | type_array:t {: RESULT = t; :}
     | type_record:t {: RESULT = t; :}
@@ -121,15 +133,21 @@ type_atom ::= BOOL {: RESULT = new AbsAtomType(AbsAtomType.BOOL); :}
    | CHAR {: RESULT = new AbsAtomType(AbsAtomType.CHAR); :}
    | INT {: RESULT = new AbsAtomType(AbsAtomType.INT); :};
 
-type_array ::= ARRAY LBRACKET value:lo DOTS value:hi RBRACKET OF type_desc:t
+type_array ::= ARRAY:a LBRACKET value:lo DOTS value:hi RBRACKET OF type_desc:td
 {:
- RESULT = new AbsArrayType((AbsTypeExpr)t,
-                           (AbsValExpr)lo,
-                           (AbsValExpr)hi);
+ AbsArrayType t = new AbsArrayType((AbsTypeExpr)td,
+                                   (AbsValExpr)lo,
+                                   (AbsValExpr)hi);
+ t.setBeg(a.toString(), aleft, aright);
+ t.setEnd(td.toString(), tdleft, tdright);
+ RESULT = t;
  :};
-type_record ::= RECORD type_record_components:fields END
+type_record ::= RECORD:r type_record_components:fields END:e
 {:
- RESULT = new AbsRecordType((AbsDecls)fields);
+ AbsRecordType t = new AbsRecordType((AbsDecls)fields);
+ t.setBeg(r.toString(), rleft, rright);
+ t.setEnd(e.toString(), eleft, eright);
+ RESULT = t;
  :};
 type_record_components ::= type_record_component:c {:
                                                     AbsDecls decls = new AbsDecls();

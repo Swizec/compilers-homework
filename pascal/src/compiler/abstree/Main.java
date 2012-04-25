@@ -5,6 +5,7 @@ import java.io.*;
 import compiler.report.*;
 import compiler.lexanal.*;
 import compiler.synanal.*;
+import compiler.abstree.*;
 import compiler.abstree.tree.*;
 
 public class Main {
