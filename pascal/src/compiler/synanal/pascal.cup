@@ -62,7 +62,11 @@ source ::= program:p declaration:decl block_statement:mainblock DOT:d
  RESULT = program;
  :};
 
-program ::= PROGRAM IDENTIFIER:id SEMIC {: RESULT = new AbsDeclName(id); :};
+program ::= PROGRAM IDENTIFIER:id SEMIC {: RESULT = (AbsDeclName)(new AbsDeclName(id))
+                                         .setBeg(id.toString(),
+                                                 idleft, idright)
+                                         .setEnd(id.toString(),
+                                                 idleft, idright); :};
 declaration ::= constant:consts type:types var:vars subroutine:subs
 {:
  AbsDecls decls = new AbsDecls();
@@ -95,7 +99,11 @@ constant_ ::= one_constant:c {:
         :};
 one_constant ::= IDENTIFIER:id EQU value:v SEMIC:s
 {:
- AbsConstDecl c = new AbsConstDecl(new AbsDeclName(id),
+ AbsConstDecl c = new AbsConstDecl((AbsDeclName)(new AbsDeclName(id))
+                                                .setBeg(id.toString(),
+                                                        idleft, idright)
+                                                .setEnd(id.toString(),
+                                                        idleft, idright),
                                    (AbsValExpr)v);
  c.setBeg(id.toString(), idleft, idright);
  c.setEnd(s.toString(), sleft, sright);

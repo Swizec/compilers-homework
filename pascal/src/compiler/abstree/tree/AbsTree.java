@@ -4,12 +4,12 @@ import compiler.abstree.AbsVisitor;
 
 /**
  * Abstraktno sintaksno drevo.
- * 
+ *
  * (Da se izognemo celi vrsti metod za delo s polji razredov paketa
  * `compiler.abstree', so vsa polja (in vse metode) v paketu `compiler.abstree'
  * definirane kot `public'. Pri programiranju se drzimo pravila, da vrednosti
  * teh polj le beremo, nastavljamo pa jih le preko konstruktorjev.)
- * 
+ *
  * @see AbsDecl
  * @see AbsDecls
  * @see AbsProgram
@@ -20,9 +20,9 @@ import compiler.abstree.AbsVisitor;
  * @see AbsValExprs
  */
 public abstract class AbsTree {
-	
+
 	/** Oznaka za napako.
-	 * 
+	 *
 	 * V kolikor velja <code>error==true</code>, so vsi ostalo podatki v drevesu neveljavi. */
 	public boolean error = false;
 
@@ -58,41 +58,46 @@ public abstract class AbsTree {
 	}
 
 	/** Doloci zacetek te stavcne oblike v vhodni datoteki. */
-	public void setBeg(String lexeme, int line, int column) {
+	public AbsTree setBeg(String lexeme, int line, int column) {
 		begLine = line;
 		begColumn = column;
+                return this;
 	}
 
 	/** Doloci zacetek te stavcne oblike v vhodni datoteki. */
-	public void setBeg(AbsTree tree) {
+	public AbsTree setBeg(AbsTree tree) {
 		begLine = tree.begLine;
 		begColumn = tree.begColumn;
 	}
 
 	/** Doloci konec te stavcne oblike v vhodni datoteki. */
-	public void setEnd(String lexeme, int line, int column) {
+	public AbsTree setEnd(String lexeme, int line, int column) {
 		endLine = line;
 		endColumn = column + lexeme.length() - 1;
+                return this;
 	}
 
 	/** Doloci konec te stavcne oblike v vhodni datoteki. */
-	public void setEnd(AbsTree tree) {
+	public AbsTree setEnd(AbsTree tree) {
 		endLine = tree.endLine;
 		endColumn = tree.endColumn;
+                return this;
 	}
 
 	/** Doloci zacetek in konec stavcne oblike v vhodni datoteki. */
-	public void setPos(String lexeme, int line, int column) {
+	public AbsTree setPos(String lexeme, int line, int column) {
 		setBeg(lexeme, line, column);
 		setEnd(lexeme, line, column);
+                return this;
 	}
 
 	/** Doloci zacetek in konec stavcne oblike v vhodni datoteki. */
-	public void setPos(AbsTree tree) {
+	public AbsTree setPos(AbsTree tree) {
 		setBeg(tree);
 		setEnd(tree);
+                return this;
 	}
-	
+
 	public abstract void accept(AbsVisitor visitor);
 
 }
