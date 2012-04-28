@@ -1,0 +1,5 @@
+
+program semanal;
+
+begin
+end.
