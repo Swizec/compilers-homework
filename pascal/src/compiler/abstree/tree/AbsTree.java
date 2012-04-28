@@ -68,6 +68,7 @@ public abstract class AbsTree {
 	public AbsTree setBeg(AbsTree tree) {
 		begLine = tree.begLine;
 		begColumn = tree.begColumn;
+                return this;
 	}
 
 	/** Doloci konec te stavcne oblike v vhodni datoteki. */
