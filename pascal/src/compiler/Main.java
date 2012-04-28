@@ -35,8 +35,10 @@ public class Main {
 			compiler.synanal.Main.exec();
 		else if (phase.equals("abstree"))
 			compiler.abstree.Main.exec();
+		else if (phase.equals("semanal"))
+			compiler.semanal.Main.exec();
 		else
-			compiler.abstree.Main.exec();
+			compiler.semanal.Main.exec();
 
 		System.out.print(":-) Done.\n");
 		System.exit(0);

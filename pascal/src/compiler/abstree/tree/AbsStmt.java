@@ -4,7 +4,7 @@ package compiler.abstree.tree;
  * Stavki.
  * 
  * @see AbsAssignStmt
- * @see AbsBeginStmt
+ * @see AbsBlockStmt
  * @see AbsExprStmt
  * @see AbsForStmt
  * @see AbsIfStmt
