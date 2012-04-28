@@ -114,12 +114,16 @@ type ::= {: RESULT = new AbsDecls(); :} | TYPE type_:t {: RESULT = t; :};
 type_ ::= one_type:t {:
                       AbsDecls decls = new AbsDecls();
                       decls.decls.add((AbsTypeDecl)t);
+                      decls.setBeg(t.toString(), tleft, tright);
+                      decls.setEnd(t.toString(), tleft, tright);
                       RESULT = decls;
                       :}
     | one_type:t type_:rest {:
         AbsDecls decls = new AbsDecls();
         decls.decls.add((AbsTypeDecl)t);
         decls.decls.addAll(((AbsDecls)rest).decls);
+        decls.setBeg(t.toString(), tleft, tright);
+        decls.setEnd(rest.toString(), restleft, restright);
         RESULT = decls;
         :};
 one_type ::= IDENTIFIER:id EQU type_desc:desc SEMIC:s
@@ -174,20 +178,28 @@ type_record ::= RECORD:r type_record_components:fields END:e
 type_record_components ::= type_record_component:c {:
                                                     AbsDecls decls = new AbsDecls();
                                                     decls.decls.add((AbsTypeDecl)c);
+                                                    decls.setBeg(c.toString(),
+                                                                 cleft, cright);
+                                                    decls.setEnd(c.toString(),
+                                                                 cleft, cright);
                                                     RESULT = decls;
                                                     :}
     | type_record_component:c SEMIC type_record_components:rest {:
         AbsDecls decls = new AbsDecls();
         decls.decls.add((AbsTypeDecl)c);
         decls.decls.addAll(((AbsDecls)rest).decls);
+        decls.setBeg(c.toString(), cleft, cright);
+        decls.setEnd(rest.toString(), restleft, restright);
         RESULT = decls;
     :};
 type_record_component ::= IDENTIFIER:id COLON type_desc:desc
 {:
- RESULT = new AbsTypeDecl((AbsDeclName)(new AbsDeclName(id))
+ RESULT = (new AbsTypeDecl((AbsDeclName)(new AbsDeclName(id))
                                        .setBeg(id.toString(), idleft, idright)
                                        .setEnd(id.toString(), idleft, idright),
-                          (AbsTypeExpr)desc);
+                           (AbsTypeExpr)desc))
+           .setBeg(id.toString(), idleft, idright)
+           .setEnd(desc.toString(), descleft, descright);
  :};
 type_pointer ::= PTR:p type_desc:desc
 {: RESULT = (AbsPointerType)(new AbsPointerType((AbsTypeExpr)desc))
@@ -360,14 +372,12 @@ infix ::= MUL {: RESULT = AbsBinExpr.MUL; :}
     | OR {: RESULT = AbsBinExpr.OR; :};
 subroutine_call ::= IDENTIFIER:id LPARENTHESIS parameter_call:params RPARENTHESIS:r
 {:
- RESULT = (AbsCallExpr)(new AbsCallExpr((AbsValName)(new AbsValName(id))
-                                                    .setBeg(id.toString(),
-                                                            idleft, idright)
-                                                    .setEnd(id.toString(),
-                                                            idleft, idright),
-                                        (AbsValExprs)params))
-                       .setBeg(id.toString(), idleft, idright)
-                       .setEnd(r.toString(), rleft, rright);
+ RESULT = (new AbsCallExpr((AbsValName)(new AbsValName(id))
+                                       .setBeg(id.toString(), idleft, idright)
+                                      .setEnd(id.toString(), idleft, idright),
+                           (AbsValExprs)params))
+           .setBeg(id.toString(), idleft, idright)
+           .setEnd(r.toString(), rleft, rright);
  :};
 parameter_call ::= {: RESULT = new AbsValExprs(); :}
     | value:v {:
@@ -389,47 +399,65 @@ parameter_call ::= {: RESULT = new AbsValExprs(); :}
 /*
   statements
 */
-block_statement ::= BEGIN statement_:s END
+block_statement ::= BEGIN:b statement_:s END:e
 {:
- RESULT = new AbsBlockStmt((AbsStmts)s);
+ RESULT = (new AbsBlockStmt((AbsStmts)s))
+          .setBeg(b.toString(), bleft, bright)
+          .setEnd(e.toString(), eleft, eright);
  :};
 statement_ ::= {: RESULT = new AbsStmts(); :}
     | statement:s {:
         AbsStmts stmts = new AbsStmts();
         stmts.stmts.add((AbsStmt)s);
+        stmts.setBeg(s.toString(), sleft, sright);
+        stmts.setEnd(s.toString(), sleft, sright);
         RESULT = stmts;
         :}
     | statement:s SEMIC statement_:rest {:
         AbsStmts stmts = new AbsStmts();
         stmts.stmts.add((AbsStmt)s);
         stmts.stmts.addAll(((AbsStmts)rest).stmts);
+        stmts.setBeg(s.toString(), sleft, sright);
+        stmts.setEnd(rest.toString(), restleft, restright);
         RESULT = stmts;
     :};
-statement ::= value:v {: RESULT = new AbsExprStmt((AbsValExpr)v); :}
-    | value:dst ASSIGN value:src {: RESULT = new AbsAssignStmt((AbsValExpr)dst,
-                                                               (AbsValExpr)src); :}
+statement ::= value:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
+                                   .setBeg(v.toString(), vleft, vright)
+                                   .setEnd(v.toString(), vleft, vright); :}
+| value:dst ASSIGN value:src {: RESULT = (new AbsAssignStmt((AbsValExpr)dst,
+                                                            (AbsValExpr)src))
+                                         .setBeg(dst.toString(), dstleft, dstright)
+                                         .setEnd(src.toString(), srcleft, srcright); :}
     | conditional:cond {: RESULT = cond; :}
     | loop:loop {: RESULT = loop; :}
     | block_statement:block {: RESULT = block; :};
-conditional ::= IF value:cond THEN statement:then
+conditional ::= IF:i value:cond THEN statement:then
 {:
- RESULT = new AbsIfStmt((AbsValExpr)cond,
+ RESULT = (new AbsIfStmt((AbsValExpr)cond,
                         (AbsStmt)then,
-                        new AbsBlockStmt(new AbsStmts()));
+                         new AbsBlockStmt(new AbsStmts())))
+           .setBeg(i.toString(), ileft, iright)
+           .setEnd(then.toString(), thenleft, thenright);
  :}
-| IF value:cond THEN statement:then ELSE statement:els
+| IF:i value:cond THEN statement:then ELSE statement:els
 {:
-    RESULT = new AbsIfStmt((AbsValExpr)cond,
-                           (AbsStmt)then,
-                           (AbsStmt)els);
+    RESULT = (new AbsIfStmt((AbsValExpr)cond,
+                            (AbsStmt)then,
+                            (AbsStmt)els))
+             .setBeg(i.toString(), ileft, iright)
+             .setEnd(els.toString(), elsleft, elsright);
     :};
-loop ::= WHILE value:cond DO statement:s {:
-                                          RESULT = new AbsWhileStmt((AbsValExpr)cond,
-                                                                    (AbsStmt)s);
+loop ::= WHILE:w value:cond DO statement:s {:
+                                            RESULT = (new AbsWhileStmt((AbsValExpr)cond,
+                                                                       (AbsStmt)s))
+                                                     .setBeg(w.toString(), wleft, wright)
+                                                     .setEnd(s.toString(), sleft, sright);
  :}
-     | FOR IDENTIFIER:id ASSIGN value:lo TO value:hi DO statement:s {:
-         RESULT = new AbsForStmt(new AbsValName(id),
-                                 (AbsValExpr)lo,
-                                 (AbsValExpr)hi,
-                                 (AbsStmt)s);
-        :};
+   | FOR:f IDENTIFIER:id ASSIGN value:lo TO value:hi DO statement:s {:
+       RESULT = (new AbsForStmt(new AbsValName(id),
+                               (AbsValExpr)lo,
+                               (AbsValExpr)hi,
+                               (AbsStmt)s))
+                .setBeg(f.toString(), fleft, fright)
+                .setEnd(s.toString(), sleft, sright);
+       :};
