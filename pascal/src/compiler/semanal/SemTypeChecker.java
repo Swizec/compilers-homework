@@ -4,6 +4,7 @@ package compiler.semanal;
 import compiler.report.*;
 import compiler.abstree.AbsVisitor;
 import compiler.abstree.tree.*;
+import compiler.semanal.type.*;
 
 public class SemTypeChecker implements AbsVisitor {
 
@@ -29,8 +30,8 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsAtomConst acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemAtomType type = new SemAtomType(acceptor.type);
+        SemDesc.setActualType(acceptor, type);
     }
 
     @Override
@@ -58,8 +59,11 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsConstDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.value.accept(this);
+        SemType type = SemDesc.getActualType(acceptor.value);
+        if (type != null) {
+            SemDesc.setActualType(acceptor, type);
+        }
     }
 
     @Override

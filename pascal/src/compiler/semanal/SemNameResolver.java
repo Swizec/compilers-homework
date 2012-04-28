@@ -29,8 +29,14 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsAtomConst acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        if (acceptor.type == AbsAtomConst.INT) {
+            try {
+                SemDesc.setActualConst(acceptor, Integer.parseInt(acceptor.value));
+            }catch (Exception e) {
+                System.out.println(String.format("int parse error at (%d, %d)",
+                                                 acceptor.begLine, acceptor.endLine));
+            }
+        }
     }
 
     @Override
@@ -58,8 +64,18 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsConstDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        try {
+            SemTable.ins(acceptor.name.name, acceptor);
+        }catch(SemIllegalInsertException e) {
+            isDeclaredError(acceptor.name.name, acceptor.begLine, acceptor.begColumn);
+        }
+
+        acceptor.value.accept(this);
+
+        Integer val = SemDesc.getActualConst(acceptor.value);
+        if (val != null) {
+            SemDesc.setActualConst(acceptor, val);
+        }
     }
 
     @Override
@@ -177,6 +193,21 @@ public class SemNameResolver implements AbsVisitor {
 	public void visit(AbsWhileStmt acceptor) {
         Thread.dumpStack();
         Report.error("Unimplemented visitor method.", 1);
+    }
+
+    private void isDeclaredError(String name, int line, int col){
+        System.out.println(String.format("var %s is redefined at (%d,%d)", name, line, col));
+        error = true;
+    }
+
+    private void notAValueError(String name, int line, int col){
+        System.out.println(String.format("const %s can not be evalueted at (%d,%d)", name, line, col));
+        error = true;
+    }
+
+    private void notDeclaredError(String name, int line, int col){
+        System.out.println(String.format("var %s is undefined at (%d,%d)", name, line, col));
+        error = true;
     }
 
 }
