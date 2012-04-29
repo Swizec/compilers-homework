@@ -38,7 +38,21 @@ const
       mew(m);
    end;
 begin
-end;
+end; { mew }
+
+function ohai3(a : boolean; b : array[1..7] of integer): boolean;
+   function o():char;
+      function ohai3():boolean;
+      begin
+      end;
+   begin
+   end; { o }
+   procedure e(a : boolean);
+   begin
+   end; { e }
+begin
+end; { ohai3 }
+
 
 begin
 end.

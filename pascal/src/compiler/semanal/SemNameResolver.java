@@ -143,8 +143,24 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsFunDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemTable.newScope();
+        try {
+            SemTable.ins(acceptor.name.name, acceptor);
+        }catch (SemIllegalInsertException e) {
+            isDeclaredError(acceptor.name.name, acceptor);
+        }
+        acceptor.pars.accept(this);
+        acceptor.type.accept(this);
+        acceptor.decls.accept(this);
+        acceptor.stmt.accept(this);
+
+        SemTable.oldScope();
+
+        try {
+            SemTable.ins(acceptor.name.name, acceptor);
+        }catch (SemIllegalInsertException e) {
+            isDeclaredError(acceptor.name.name, acceptor);
+        }
     }
 
     @Override
