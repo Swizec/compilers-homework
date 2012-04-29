@@ -119,7 +119,7 @@ public class SemNameResolver implements AbsVisitor {
     @Override
 	public void visit(AbsDeclName acceptor) {
         Thread.dumpStack();
-        Report.error("This shouldn't happen");
+        Report.error("This shouldn't happen", 1);
     }
 
     @Override

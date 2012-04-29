@@ -32,15 +32,16 @@ terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROC
 non terminal source;
 non terminal program, declaration, block_statement;
 non terminal constant, constant_, one_constant, type, type_, one_type, var, var_, one_var, subroutine;
-non terminal value, prefix, infix, subroutine_call, parameter_call;
+non terminal value, prefix, bin_expr, subroutine_call, parameter_call;
 non terminal type_desc, type_atom, type_array, type_record, type_record_components, type_record_component, type_pointer;
 non terminal procedure, parameters, parameter, one_param, function;
 non terminal statement, statement_, conditional, loop;
 non terminal eps;
 
+precedence left EQU, NEQ;
 precedence left OR;
 precedence left AND;
-precedence nonassoc EQU, NEQ, GTH, LTH, GEQ, LEQ;
+precedence left GTH, LTH, GEQ, LEQ;
 precedence left ADD, SUB;
 precedence left MUL, DIV;
 precedence left PTR;
@@ -314,7 +315,7 @@ value ::= BOOL_CONST:val {: RESULT = (new AbsAtomConst(val, AbsAtomConst.BOOL))
                                       .setEnd(val.toString(), valleft, valright); :}
     | INT_CONST:val {: RESULT = (new AbsAtomConst(val, AbsAtomConst.INT))
                                       .setBeg(val.toString(), valleft, valright)
-                                      .setEnd(val.toString(), valleft, valright); :}
+              .setEnd(val.toString(), valleft, valright); :}
     | NIL:n {: RESULT = (new AbsNilConst())
                         .setBeg(n.toString(), nleft, nright)
                         .setEnd(n.toString(), nleft, nright); :}
@@ -324,13 +325,6 @@ value ::= BOOL_CONST:val {: RESULT = (new AbsAtomConst(val, AbsAtomConst.BOOL))
     | value:v PTR:p {: RESULT = (new AbsUnExpr(AbsUnExpr.VAL, (AbsValExpr)v))
                                  .setBeg(v.toString(), vleft, vright)
                                  .setEnd(p.toString(), pleft, pright); :}
-    | value:v1 infix:op value:v2 {: RESULT = (new AbsBinExpr((Integer)op,
-                                                             (AbsValExpr)v1,
-                                                             (AbsValExpr)v2))
-                                              .setBeg(v1.toString(),
-                                                      v1left, v1right)
-                                              .setEnd(v2.toString(),
-                                                      v2left, v2right); :}
      | IDENTIFIER:id {: RESULT = (new AbsValName(id))
                                   .setBeg(id.toString(), idleft, idright)
                                   .setEnd(id.toString(), idleft, idright); :}
@@ -351,25 +345,99 @@ value ::= BOOL_CONST:val {: RESULT = (new AbsAtomConst(val, AbsAtomConst.BOOL))
               (new AbsAlloc((AbsTypeExpr)desc))
                .setBeg(l.toString(), lleft, lright)
                .setEnd(r.toString(), rleft, rright); :}
-    | LPARENTHESIS:l value:v RPARENTHESIS:r {: RESULT = v; :};
+               | LPARENTHESIS:l value:v RPARENTHESIS:r {: RESULT = v; :}
+    | bin_expr:v {: RESULT = v; :};
 
 prefix ::= SUB {: RESULT = AbsUnExpr.SUB; :}
     | ADD {: RESULT = AbsUnExpr.ADD; :}
     | PTR {: RESULT = AbsUnExpr.MEM; :}
     | NOT {: RESULT = AbsUnExpr.NOT; :};
 
-infix ::= MUL {: RESULT = AbsBinExpr.MUL; :}
-    | DIV {: RESULT = AbsBinExpr.DIV; :}
-    | ADD {: RESULT = AbsBinExpr.ADD; :}
-    | SUB {: RESULT = AbsBinExpr.SUB; :}
-    | EQU {: RESULT = AbsBinExpr.EQU; :}
-    | NEQ {: RESULT = AbsBinExpr.NEQ; :}
-    | LTH {: RESULT = AbsBinExpr.LTH; :}
-    | GTH {: RESULT = AbsBinExpr.GTH; :}
-    | GEQ {: RESULT = AbsBinExpr.GEQ; :}
-    | LEQ {: RESULT = AbsBinExpr.LEQ; :}
-    | AND {: RESULT = AbsBinExpr.AND; :}
-    | OR {: RESULT = AbsBinExpr.OR; :};
+bin_expr ::=  value:v1 MUL value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.MUL,
+                                                                 (AbsValExpr)v1,
+                                                                 (AbsValExpr)v2))
+                                                 .setBeg(v1.toString(),
+                                                      v1left, v1right)
+                                              .setEnd(v2.toString(),
+                                                      v2left, v2right); :}
+    | value:v1 DIV value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.DIV,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 ADD value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.ADD,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 SUB value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.SUB,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 EQU value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.EQU,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 NEQ value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.NEQ,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 LTH value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.LTH,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 GTH value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.GTH,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 GEQ value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.GEQ,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 LEQ value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.LEQ,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 AND value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.AND,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :}
+    | value:v1 OR value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.AND,
+                                                        (AbsValExpr)v1,
+                                                        (AbsValExpr)v2))
+                                         .setBeg(v1.toString(),
+                                                 v1left, v1right)
+                                         .setEnd(v2.toString(),
+                                                 v2left, v2right); :};
+
 subroutine_call ::= IDENTIFIER:id LPARENTHESIS parameter_call:params RPARENTHESIS:r
 {:
  RESULT = (new AbsCallExpr((AbsValName)(new AbsValName(id))

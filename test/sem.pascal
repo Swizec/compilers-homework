@@ -40,7 +40,7 @@ const
       mew(m);
    end;
 begin
-end; { mew }
+end;
 
 function ohai3(a : boolean; b : array[1..7] of integer): boolean;
    function o():char;
@@ -48,12 +48,12 @@ function ohai3(a : boolean; b : array[1..7] of integer): boolean;
       begin
       end;
    begin
-   end; { o }
+   end;
    procedure e(a : boolean);
    begin
-   end; { e }
+   end;
 begin
-end; { ohai3 }
+end;
 
 function ohai4(a : boolean): integer;
 begin
@@ -84,4 +84,7 @@ begin
          i := i+5;
 
    aa := [integer];
+   aa := aa = 2+5+5*3 > 3*4 div -5;
+   4 + 5 = 4-3*10 < 4 > 6 >= 5 <= 10 or 3 and 6;
+   3+4*5*3 div 5+3
 end.
