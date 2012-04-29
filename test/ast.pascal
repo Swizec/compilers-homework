@@ -19,18 +19,19 @@ const
    wha  = [array[2..4] of integer];
 
 type
-   a = integer;
-   b = boolean;
-   c = a;
-   d = array[2..5] of integer;
-   e = array[1..3] of d;
-   f = record
-          f : integer;
-          g : e;
-          h : array[3+5..8] of array[5*3..a+5] of boolean
-       end;
-   h = ^f;
-   i = (integer);
+   a   = integer;
+   b   = boolean;
+   c   = a;
+   d   = array[2..5] of integer;
+   e   = array[1..3] of d;
+   f   = record
+            f : integer;
+            g : e;
+            h : array[3+5..8] of array[5*3..a+5] of boolean
+         end;
+   h   = ^f;
+   i   = (integer);
+   sdf = ^boolean;
 
 var
    a : boolean;
@@ -85,7 +86,7 @@ begin
 end;
 
 begin
-      ohai3(true);
+   ohai3(true);
    6+4 := ohai2(false);
    if ohai() then
       a := hai;

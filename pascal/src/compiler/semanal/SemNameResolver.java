@@ -36,8 +36,8 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsAssignStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.dstExpr.accept(this);
+        acceptor.srcExpr.accept(this);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class SemNameResolver implements AbsVisitor {
     @Override
 	public void visit(AbsDeclName acceptor) {
         Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        Report.error("This shouldn't happen");
     }
 
     @Override
@@ -137,8 +137,13 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsForStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        AbsDecl decl = SemTable.fnd(acceptor.name.name);
+        if (decl == null) {
+            notDeclaredError(acceptor.name.name, acceptor);
+        }
+        acceptor.loBound.accept(this);
+        acceptor.hiBound.accept(this);
+        acceptor.stmt.accept(this);
     }
 
     @Override
@@ -165,8 +170,9 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsIfStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.cond.accept(this);
+        acceptor.thenStmt.accept(this);
+        acceptor.elseStmt.accept(this);
     }
 
     @Override
@@ -293,8 +299,8 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsWhileStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.cond.accept(this);
+        acceptor.stmt.accept(this);
     }
 
     private void isDeclaredError(String name, AbsTree loc){

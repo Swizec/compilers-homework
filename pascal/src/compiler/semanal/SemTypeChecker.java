@@ -24,8 +24,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsAssignStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO
     }
 
     @Override
@@ -80,14 +79,12 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsExprStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO
     }
 
     @Override
 	public void visit(AbsForStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO
     }
 
     @Override
@@ -97,8 +94,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsIfStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO
     }
 
     @Override
@@ -171,8 +167,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsWhileStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO
     }
 
 }
