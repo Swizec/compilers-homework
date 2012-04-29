@@ -345,7 +345,7 @@ value ::= BOOL_CONST:val {: RESULT = (new AbsAtomConst(val, AbsAtomConst.BOOL))
               (new AbsAlloc((AbsTypeExpr)desc))
                .setBeg(l.toString(), lleft, lright)
                .setEnd(r.toString(), rleft, rright); :}
-               | LPARENTHESIS:l value:v RPARENTHESIS:r {: RESULT = v; :}
+    | LPARENTHESIS:l value:v RPARENTHESIS:r {: RESULT = v; :}
     | bin_expr:v {: RESULT = v; :};
 
 prefix ::= SUB {: RESULT = AbsUnExpr.SUB; :}
