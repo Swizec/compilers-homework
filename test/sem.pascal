@@ -8,20 +8,20 @@ const
    beh  = +'c';
 
 type
-   a   = integer;
-   b   = boolean;
-   c   = a;
-   d   = array[2..5] of integer;
-   e   = array[1..bla] of d;
-   f   = record
-            f      : integer;
-            g      : d;
-            h      : array[3+5..8] of array[5*3..hah+5] of boolean;
-            a      : record
-                        blabla : integer
-                     end
-         end;
-   sdf = ^integer;
+   a    = integer;
+   b    = boolean;
+   c    = a;
+   d    = array[2..5] of integer;
+   e    = array[1..bla] of d;
+   f    = record
+             f      : integer;
+             g      : d;
+             h      : array[3+5..8] of array[5*3..hah+5] of boolean;
+             a      : record
+                         blabla : integer
+                      end
+          end;
+   sdf  = ^integer;
 
 var
    aa : boolean;
@@ -82,4 +82,6 @@ begin
    for i := 1 to 100+false do
       while i div 6 < 6 do
          i := i+5;
+
+   aa := [integer];
 end.

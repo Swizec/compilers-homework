@@ -12,8 +12,7 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsAlloc acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.type.accept(this);
     }
 
     @Override
@@ -182,8 +181,7 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsPointerType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.type.accept(this);
     }
 
     @Override
