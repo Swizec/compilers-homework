@@ -8,6 +8,7 @@ import compiler.abstree.tree.*;
 public class SemNameResolver implements AbsVisitor {
 
     public boolean error = false;
+    private int record_depth = 0;
 
     @Override
 	public void visit(AbsAlloc acceptor) {
@@ -17,8 +18,20 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsArrayType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.loBound.accept(this);
+        acceptor.hiBound.accept(this);
+
+        Integer hval = SemDesc.getActualConst(acceptor.hiBound);
+        Integer lval = SemDesc.getActualConst(acceptor.loBound);
+
+        if (lval == null) {
+            notAValueError("loBound", acceptor);
+        }
+        if (hval == null) {
+            notAValueError("hiBound", acceptor);
+        }
+
+        acceptor.type.accept(this);
     }
 
     @Override
@@ -41,8 +54,7 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsAtomType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // nothing
     }
 
     @Override
@@ -86,10 +98,12 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsConstDecl acceptor) {
-        try {
-            SemTable.ins(acceptor.name.name, acceptor);
-        }catch(SemIllegalInsertException e) {
-            isDeclaredError(acceptor.name.name, acceptor.begLine, acceptor.begColumn);
+        if (record_depth == 0) {
+            try {
+                SemTable.ins(acceptor.name.name, acceptor);
+            }catch(SemIllegalInsertException e) {
+                isDeclaredError(acceptor.name.name, acceptor);
+            }
         }
 
         acceptor.value.accept(this);
@@ -103,7 +117,6 @@ public class SemNameResolver implements AbsVisitor {
     @Override
 	public void visit(AbsDeclName acceptor) {
         Thread.dumpStack();
-        System.out.println("Hello World");
         Report.error("Unimplemented visitor method.", 1);
     }
 
@@ -140,8 +153,7 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsNilConst acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // not a thing to do
     }
 
     @Override
@@ -164,8 +176,9 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsRecordType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        record_depth++;
+        acceptor.fields.accept(this);
+        record_depth--;
     }
 
     @Override
@@ -177,14 +190,25 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsTypeDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        if (record_depth == 0) {
+            try {
+                SemTable.ins(acceptor.name.name, acceptor);
+            } catch (SemIllegalInsertException e) {
+                isDeclaredError(acceptor.name.name, acceptor);
+            }
+        }
+        acceptor.type.accept(this);
+        SemDesc.setNameDecl(acceptor.name, acceptor);
     }
 
     @Override
 	public void visit(AbsTypeName acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        AbsDecl decl = SemTable.fnd(acceptor.name);
+        if (decl == null) {
+            notDeclaredError(acceptor.name, acceptor);
+        }else{
+            SemDesc.setNameDecl(acceptor, decl);
+        }
     }
 
     @Override
@@ -210,7 +234,7 @@ public class SemNameResolver implements AbsVisitor {
         public void visit(AbsValName acceptor) {
         AbsDecl decl = SemTable.fnd(acceptor.name);
         if (decl == null) {
-            notDeclaredError(acceptor.name, acceptor.begLine, acceptor.endLine);
+            notDeclaredError(acceptor.name, acceptor);
         }else{
             SemDesc.setNameDecl(acceptor, decl);
             Integer val = SemDesc.getActualConst(decl);
@@ -222,8 +246,14 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsVarDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        if (record_depth == 0){
+            try {
+                SemTable.ins(acceptor.name.name, acceptor);
+            } catch (SemIllegalInsertException e) {
+                isDeclaredError(acceptor.name.name, acceptor);
+            }
+        }
+        acceptor.type.accept(this);
     }
 
     @Override
@@ -232,18 +262,21 @@ public class SemNameResolver implements AbsVisitor {
         Report.error("Unimplemented visitor method.", 1);
     }
 
-    private void isDeclaredError(String name, int line, int col){
-        System.out.println(String.format("var %s is redefined at (%d,%d)", name, line, col));
+    private void isDeclaredError(String name, AbsTree loc){
+        System.out.println(String.format("var %s is redefined at (%d,%d)",
+                                         name, loc.begLine, loc.endLine));
         error = true;
     }
 
-    private void notAValueError(String name, int line, int col){
-        System.out.println(String.format("const %s can not be evalueted at (%d,%d)", name, line, col));
+    private void notAValueError(String name, AbsTree loc){
+        System.out.println(String.format("const %s can not be evaluated at (%d,%d)",
+                                         name, loc.begLine, loc.endLine));
         error = true;
     }
 
-    private void notDeclaredError(String name, int line, int col){
-        System.out.println(String.format("var %s is undefined at (%d,%d)", name, line, col));
+    private void notDeclaredError(String name, AbsTree loc){
+        System.out.println(String.format("var %s is undefined at (%d,%d)",
+                                         name, loc.begLine, loc.endLine));
         error = true;
     }
 
