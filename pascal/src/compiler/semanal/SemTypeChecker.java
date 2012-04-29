@@ -42,8 +42,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsBinExpr acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO: ensure the two types match
     }
 
     @Override
@@ -154,8 +153,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsUnExpr acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO: wat?
     }
 
     @Override
