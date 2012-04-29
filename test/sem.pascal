@@ -27,5 +27,18 @@ var
    bb : char;
    cc : f;
 
+procedure mew();
+const
+   m = 5;
+
+   procedure bla();
+   var
+      m : integer;
+   begin
+      mew(m);
+   end;
+begin
+end;
+
 begin
 end.

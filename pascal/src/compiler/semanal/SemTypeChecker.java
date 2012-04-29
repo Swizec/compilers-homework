@@ -116,8 +116,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsProcDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        // TODO
     }
 
     @Override

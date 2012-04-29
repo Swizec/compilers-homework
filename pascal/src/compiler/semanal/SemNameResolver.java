@@ -92,8 +92,11 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsCallExpr acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.args.accept(this);
+        AbsDecl decl = SemTable.fnd(acceptor.name.name);
+        if (decl == null) {
+            notDeclaredError(acceptor.name.name, acceptor);
+        }
     }
 
     @Override
@@ -129,8 +132,7 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsExprStmt acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.expr.accept(this);
     }
 
     @Override
@@ -164,8 +166,24 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsProcDecl acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemTable.newScope();
+        try {
+            SemTable.ins(acceptor.name.name, acceptor);
+        }catch(SemIllegalInsertException e) {
+            isDeclaredError(acceptor.name.name, acceptor);
+        }
+
+        acceptor.pars.accept(this);
+        acceptor.decls.accept(this);
+        acceptor.stmt.accept(this);
+
+        SemTable.oldScope();
+
+        try {
+            SemTable.ins(acceptor.name.name, acceptor);
+        }catch(SemIllegalInsertException e) {
+            isDeclaredError(acceptor.name.name, acceptor);
+        }
     }
 
     @Override
@@ -226,8 +244,9 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsValExprs acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        for (AbsValExpr expr : acceptor.exprs) {
+            expr.accept(this);
+        }
     }
 
     @Override
