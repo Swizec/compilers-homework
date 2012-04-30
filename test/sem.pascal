@@ -29,7 +29,7 @@ var
    cc : f;
    i  : integer;
 
-{procedure mew();
+procedure mew();
 const
    m = 5;
 
@@ -58,7 +58,7 @@ end;
 function ohai4(a : boolean): integer;
 begin
 end;
-
+{
 
 
 begin

@@ -76,10 +76,7 @@ public class SemTypeChecker implements AbsVisitor {
     @Override
 	public void visit(AbsConstDecl acceptor) {
         acceptor.value.accept(this);
-        SemType type = SemDesc.getActualType(acceptor.value);
-        if (type != null) {
-            SemDesc.setActualType(acceptor, type);
-        }
+        SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.value));
     }
 
     @Override
@@ -107,7 +104,12 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsFunDecl acceptor) {
-        // TODO
+        acceptor.pars.accept(this);
+        acceptor.type.accept(this);
+        acceptor.decls.accept(this);
+        acceptor.stmt.accept(this);
+
+        SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.type));
     }
 
     @Override
@@ -130,7 +132,11 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsProcDecl acceptor) {
-        // TODO
+        acceptor.pars.accept(this);
+        acceptor.decls.accept(this);
+        acceptor.stmt.accept(this);
+
+        SemDesc.setActualType(acceptor, new SemAtomType(SemAtomType.VOID));
     }
 
     @Override
@@ -189,7 +195,8 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsValName acceptor) {
-        // TODO: stuff!
+        SemDesc.setActualType(acceptor,
+                              SemDesc.getActualType(SemDesc.getNameDecl(acceptor)));
     }
 
     @Override
