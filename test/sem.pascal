@@ -4,7 +4,7 @@ program semanal;
 const
    lol  = 5;
    bla  = 5;
-   hah  = (-7+5)*6 div (3*bla);
+   hah  = 7;
    beh  = +'c';
 
 type
@@ -16,10 +16,7 @@ type
    f    = record
              f      : integer;
              g      : d;
-             h      : array[3+5..8] of array[5*3..hah+5] of boolean;
-             a      : record
-                         blabla : integer
-                      end
+             h      : array[3+5..8] of array[5*3..hah+5] of boolean
           end;
    sdf  = ^integer;
 
@@ -63,7 +60,12 @@ end;
 
 begin
    ohai3(true, bb);
-   6+4 := ohai3(false);
+
+   aa := (6+4 = 5) and false or true;
+   i := bb[2];
+{   i := f.f;}
+
+   {6+4 := ohai3(false);
 
    if ohai3(false, bb) then
       a := cc;
@@ -72,10 +74,10 @@ begin
       b := 'l'
    else
       mew(5);
-  {    if 5+3*(3+5) = 3 then
-         mew(5)
-      else
-  6 := 7 div ohai4(true) * 15 div 1*5;}
+   if 5+3*(3+5) = 3 then
+      mew(5)
+   else
+      6 := 7 div ohai4(true) * 15 div 1*5;
 
    while false do
       a := ohai4(false);
@@ -84,7 +86,7 @@ begin
       while ohai3(true, bb) do
          i := i+5;
 
-   aa := [integer];
+   aa := [integer];}
 {   aa := aa = 2+5+5*3 > 3*4 div -5;
    4 + 5 = 4-3*10 < 4 > 6 >= 5 <= 10 or 3 and 6;
    3+4*5*3 div 5+3}

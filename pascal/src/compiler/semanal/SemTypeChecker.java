@@ -45,7 +45,19 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsAssignStmt acceptor) {
-        // TODO
+        acceptor.dstExpr.accept(this);
+        acceptor.srcExpr.accept(this);
+
+        SemType ft = SemDesc.getActualType(acceptor.dstExpr);
+        SemType st = SemDesc.getActualType(acceptor.srcExpr);
+
+        assert_coerces(ft, st, acceptor);
+
+        if (ft instanceof SemAtomType || ft instanceof SemPointerType){
+            SemDesc.setActualType(acceptor, ft);
+        }else{
+            integerPointerTypeError(acceptor);
+        }
     }
 
     @Override
@@ -62,7 +74,58 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsBinExpr acceptor) {
-        // TODO: ensure the two types match
+        acceptor.fstExpr.accept(this);
+        acceptor.sndExpr.accept(this);
+
+        SemType ft = SemDesc.getActualType(acceptor.fstExpr);
+        SemType st = SemDesc.getActualType(acceptor.sndExpr);
+
+        switch (acceptor.oper) {
+        case AbsBinExpr.ADD:
+        case AbsBinExpr.SUB:
+        case AbsBinExpr.MUL:
+        case AbsBinExpr.DIV:
+            assert_coerces(ft, st, acceptor);
+            if (!st.coercesTo(typeInt)) {
+                integerTypeError(acceptor);
+            }
+            SemDesc.setActualType(acceptor, typeInt);
+            break;
+        case AbsBinExpr.EQU:
+        case AbsBinExpr.NEQ:
+        case AbsBinExpr.LTH:
+        case AbsBinExpr.GTH:
+        case AbsBinExpr.LEQ:
+        case AbsBinExpr.GEQ:
+            assert_coerces(ft, st, acceptor);
+            if (!(ft instanceof SemAtomType || ft instanceof SemPointerType)) {
+                integerPointerTypeError(acceptor);
+            }
+            SemDesc.setActualType(acceptor, typeBool);
+            break;
+        case AbsBinExpr.AND:
+        case AbsBinExpr.OR:
+            assert_coerces(ft, st, acceptor);
+            assert_bool(acceptor.fstExpr, acceptor);
+            SemDesc.setActualType(acceptor, typeBool);
+            break;
+        case AbsBinExpr.ARRACCESS:
+            if (ft instanceof SemArrayType) {
+                assert_int(acceptor.sndExpr, acceptor);
+                SemDesc.setActualType(acceptor, ((SemArrayType) ft).type);
+            }else{
+                arrayTypeError(acceptor);
+            }
+            break;
+        case AbsBinExpr.RECACCESS:
+            SemRecordType aa = (SemRecordType)ft;
+            for(int i=0; i<aa.getNumFields(); i++) {
+                if(aa.getFieldName(i).name.equals(((AbsValName)acceptor.sndExpr).name)) {
+                    SemDesc.setActualType(acceptor, aa.getFieldType(i));
+                }
+            }
+            break;
+        }
     }
 
     @Override
@@ -171,7 +234,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsNilConst acceptor) {
-        SemDesc.setActualType(acceptor, typeVoid)
+        SemDesc.setActualType(acceptor, typeVoid);
     }
 
     @Override
@@ -238,7 +301,7 @@ public class SemTypeChecker implements AbsVisitor {
 	public void visit(AbsTypeName acceptor) {
         SemType type = SemDesc.getActualType((AbsTree)SemDesc.getNameDecl(acceptor));
         if (type != null) {
-            SemDesc.setActualType(acceptor, type);
+           SemDesc.setActualType(acceptor, type);
         }else{
             noTypeError(acceptor);
         }
@@ -246,7 +309,30 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsUnExpr acceptor) {
-        // TODO: wat?
+        acceptor.expr.accept(this);
+
+        SemType type = SemDesc.getActualType(acceptor.expr);
+
+        switch (acceptor.oper) {
+        case AbsUnExpr.ADD:
+        case AbsUnExpr.SUB:
+            assert_int(acceptor.expr, acceptor);
+            break;
+        case AbsUnExpr.NOT:
+            assert_bool(acceptor.expr, acceptor);
+            break;
+        case AbsUnExpr.MEM:
+            SemPointerType ptr = new SemPointerType(type);
+            SemDesc.setActualType(acceptor, ptr);
+            break;
+        case AbsUnExpr.VAL:
+            if (type instanceof SemPointerType){
+                SemDesc.setActualType(acceptor, ((SemPointerType) type).type);
+            }else{
+                pointerTypeError(acceptor);
+            }
+            break;
+        }
     }
 
     @Override
@@ -278,11 +364,16 @@ public class SemTypeChecker implements AbsVisitor {
 
     private void noTypeError(AbsTree loc) {
         Report.error(String.format("cannot resolve type at (%d, %d)",
-                                   loc.begLine, loc.begColumn), 1);
+                                loc.begLine, loc.begColumn), 1);
     }
 
     private void subprogramTypeError(String name, AbsTree loc) {
         Report.error(String.format("%s is not a subprogram at (%d, %d)",
+                                   name, loc.begLine, loc.begColumn), 1);
+    }
+
+    private void recordNameError(String name, AbsTree loc) {
+        Report.error(String.format("record element '%s' redeclared at (%d, %d)",
                                    name, loc.begLine, loc.begColumn), 1);
     }
 
@@ -301,6 +392,29 @@ public class SemTypeChecker implements AbsVisitor {
                                    loc.begLine, loc.begColumn), 1);
     }
 
+    private void integerPointerTypeError(AbsTree loc) {
+        Report.error(String.format("integer or pointer expected at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+    private void arrayTypeError(AbsTree loc) {
+        Report.error(String.format("array expected at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+    private void recordTypeError(AbsTree loc) {
+        Report.error(String.format("record expected at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+
+    private void pointerTypeError(AbsTree loc) {
+        Report.error(String.format("pointer expected at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+
+    private void missmatchError(AbsTree loc) {
+        Report.error(String.format("types don't match at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+
 
     private void assert_bool(AbsValExpr cond, AbsTree loc) {
         SemType b = SemDesc.getActualType(cond);
@@ -314,6 +428,12 @@ public class SemTypeChecker implements AbsVisitor {
         SemType i = SemDesc.getActualType(cond);
         if (!i.coercesTo(typeInt)){
             integerTypeError(loc);
+        }
+    }
+
+    private void assert_coerces(SemType f, SemType s, AbsTree loc) {
+        if (!f.coercesTo(s)) {
+            missmatchError(loc);
         }
     }
 
