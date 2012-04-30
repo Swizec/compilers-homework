@@ -123,7 +123,18 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsForStmt acceptor) {
-        // TODO
+        acceptor.name.accept(this);
+        acceptor.loBound.accept(this);
+        acceptor.hiBound.accept(this);
+        acceptor.stmt.accept(this);
+
+        assert_int(acceptor.loBound, acceptor);
+        assert_int(acceptor.hiBound, acceptor);
+
+        SemType var = SemDesc.getActualType(SemDesc.getNameDecl(acceptor.name));
+        if (!var.coercesTo(typeInt)) {
+            integerTypeError(acceptor);
+        }
     }
 
     @Override
@@ -151,7 +162,11 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsIfStmt acceptor) {
-        // TODO
+        acceptor.cond.accept(this);
+        acceptor.thenStmt.accept(this);
+        acceptor.elseStmt.accept(this);
+
+        assert_bool(acceptor.cond, acceptor);
     }
 
     @Override
@@ -255,7 +270,10 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsWhileStmt acceptor) {
-        // TODO
+        acceptor.cond.accept(this);
+        acceptor.stmt.accept(this);
+
+        assert_bool(acceptor.cond, acceptor);
     }
 
     private void noTypeError(AbsTree loc) {
@@ -269,8 +287,34 @@ public class SemTypeChecker implements AbsVisitor {
     }
 
     private void argumentsTypeError(AbsTree loc) {
-        Report.error(String.format("calling with wrong type arguments (%d, %d)",
+        Report.error(String.format("calling with wrong type arguments at (%d, %d)",
                                    loc.begLine, loc.begColumn), 1);
+    }
+
+    private void booleanTypeError(AbsTree loc) {
+        Report.error(String.format("boolean expected at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+
+    private void integerTypeError(AbsTree loc) {
+        Report.error(String.format("integer expected at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+
+
+    private void assert_bool(AbsValExpr cond, AbsTree loc) {
+        SemType b = SemDesc.getActualType(cond);
+        if (!(b instanceof SemAtomType)
+            || ((SemAtomType)b).type != SemAtomType.BOOL){
+            booleanTypeError(loc);
+        }
+    }
+
+    private void assert_int(AbsValExpr cond, AbsTree loc) {
+        SemType i = SemDesc.getActualType(cond);
+        if (!i.coercesTo(typeInt)){
+            integerTypeError(loc);
+        }
     }
 
 }

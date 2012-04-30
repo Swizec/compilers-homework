@@ -137,6 +137,8 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsForStmt acceptor) {
+        acceptor.name.accept(this);
+
         AbsDecl decl = SemTable.fnd(acceptor.name.name);
         if (decl == null) {
             notDeclaredError(acceptor.name.name, acceptor);

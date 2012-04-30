@@ -65,26 +65,27 @@ begin
    ohai3(true, bb);
    6+4 := ohai3(false);
 
-{   if ohai3() then
+   if ohai3(false, bb) then
       a := cc;
 
-   if ohai3() then
+   if ohai3(false, bb) then
       b := 'l'
    else
-      if 5+3*(3+5) then
-         mew()
+      mew(5);
+  {    if 5+3*(3+5) = 3 then
+         mew(5)
       else
-         6 := 7 div ohai4(true) * 15 div 1*5;
+  6 := 7 div ohai4(true) * 15 div 1*5;}
 
-   while 5+23 or 5*10 do
+   while false do
       a := ohai4(false);
 
-   for i := 1 to 100+false do
-      while i div 6 < 6 do
+   for i := 1 to 100 do
+      while ohai3(true, bb) do
          i := i+5;
 
    aa := [integer];
-   aa := aa = 2+5+5*3 > 3*4 div -5;
+{   aa := aa = 2+5+5*3 > 3*4 div -5;
    4 + 5 = 4-3*10 < 4 > 6 >= 5 <= 10 or 3 and 6;
    3+4*5*3 div 5+3}
 end.
