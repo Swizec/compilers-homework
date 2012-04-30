@@ -23,13 +23,13 @@ type
           end;
    sdf  = ^integer;
 
-{var
+var
    aa : boolean;
    bb : char;
    cc : f;
    i  : integer;
 
-procedure mew();
+{procedure mew();
 const
    m = 5;
 
