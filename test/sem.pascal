@@ -3,7 +3,7 @@ program semanal;
 
 const
    lol  = 5;
-   bla  = 2;
+   bla  = 5;
    hah  = (-7+5)*6 div (3*bla);
    beh  = +'c';
 
@@ -23,7 +23,7 @@ type
           end;
    sdf  = ^integer;
 
-var
+{var
    aa : boolean;
    bb : char;
    cc : f;
@@ -87,4 +87,6 @@ begin
    aa := aa = 2+5+5*3 > 3*4 div -5;
    4 + 5 = 4-3*10 < 4 > 6 >= 5 <= 10 or 3 and 6;
    3+4*5*3 div 5+3
+end.}
+begin
 end.

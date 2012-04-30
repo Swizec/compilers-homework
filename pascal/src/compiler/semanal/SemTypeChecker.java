@@ -1,6 +1,8 @@
 
 package compiler.semanal;
 
+import java.util.HashMap;
+
 import compiler.report.*;
 import compiler.abstree.AbsVisitor;
 import compiler.abstree.tree.*;
@@ -10,16 +12,32 @@ public class SemTypeChecker implements AbsVisitor {
 
     public boolean error = false;
 
+    private HashMap<Integer, SemRecordType> records =
+        new HashMap<Integer, SemRecordType>();
+    private Integer record_depth = 0;
+
     @Override
 	public void visit(AbsAlloc acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemAtomType type = new SemAtomType(SemAtomType.INT);
+        SemDesc.setActualType(acceptor, type);
     }
 
     @Override
 	public void visit(AbsArrayType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.type.accept(this);
+        acceptor.loBound.accept(this);
+        acceptor.hiBound.accept(this);
+
+        SemType type = SemDesc.getActualType(acceptor.type);
+        Integer loBound = SemDesc.getActualConst(acceptor.loBound);
+        Integer hiBound = SemDesc.getActualConst(acceptor.hiBound);
+
+        if (type != null) {
+            SemDesc.setActualType(acceptor,
+                                  new SemArrayType(type, loBound, hiBound));
+        }else{
+            noTypeError(acceptor);
+        }
     }
 
     @Override
@@ -35,8 +53,8 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsAtomType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemAtomType type = new SemAtomType(acceptor.type);
+        SemDesc.setActualType(acceptor, type);
     }
 
     @Override
@@ -105,8 +123,9 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsPointerType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.type.accept(this);
+        SemDesc.setActualType(acceptor,
+                              new SemPointerType(SemDesc.getActualType(acceptor.type)));
     }
 
     @Override
@@ -122,8 +141,11 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsRecordType acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        record_depth++;
+        records.put(record_depth, new SemRecordType());
+        acceptor.fields.accept(this);
+        SemDesc.setActualType(acceptor, records.get(record_depth));
+        record_depth--;
     }
 
     @Override
@@ -135,13 +157,23 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsTypeDecl acceptor) {
-        // TODO: things go here
+        acceptor.type.accept(this);
+        SemType type = SemDesc.getActualType(acceptor.type);
+        if (type != null) {
+            SemDesc.setActualType(acceptor, type);
+        }else{
+            noTypeError(acceptor);
+        }
     }
 
     @Override
 	public void visit(AbsTypeName acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemType type = SemDesc.getActualType((AbsTree)SemDesc.getNameDecl(acceptor));
+        if (type != null) {
+            SemDesc.setActualType(acceptor, type);
+        }else{
+            noTypeError(acceptor);
+        }
     }
 
     @Override
@@ -168,6 +200,11 @@ public class SemTypeChecker implements AbsVisitor {
     @Override
 	public void visit(AbsWhileStmt acceptor) {
         // TODO
+    }
+
+    private void noTypeError(AbsTree loc) {
+        Report.error(String.format("cannot resolve type at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
     }
 
 }
