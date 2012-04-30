@@ -1,5 +1,5 @@
 
-program hello;
+program abstree;
 
 const
    lol  = 5;
@@ -19,21 +19,24 @@ const
    wha  = [array[2..4] of integer];
 
 type
-   a = integer;
-   b = boolean;
-   c = a;
-   d = array[2..5] of integer;
-   e = array[1..3] of d;
-   f = record
-          f : integer;
-          g : e
-       end;
-   h = ^f;
-   i = (integer);
+   a   = integer;
+   b   = boolean;
+   c   = a;
+   d   = array[2..5] of integer;
+   e   = array[1..3] of d;
+   f   = record
+            f : integer;
+            g : e;
+            h : array[3+5..8] of array[5*3..a+5] of boolean
+         end;
+   h   = ^f;
+   i   = (integer);
+   sdf = ^boolean;
 
 var
-   eh  : integer;
-   meh : d;
+   a : boolean;
+   b : char;
+   c : integer;
 
 procedure mew();
 begin

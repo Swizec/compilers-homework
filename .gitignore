@@ -1,2 +1,4 @@
 *.xml
 *.pyc
+pascal/src/compiler/synanal/PascalSyn.java
+pascal/src/compiler/synanal/PascalTok.java
