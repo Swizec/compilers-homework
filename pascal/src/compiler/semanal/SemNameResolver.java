@@ -91,6 +91,7 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsCallExpr acceptor) {
+        acceptor.name.accept(this);
         acceptor.args.accept(this);
         AbsDecl decl = SemTable.fnd(acceptor.name.name);
         if (decl == null) {

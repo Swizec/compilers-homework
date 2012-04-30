@@ -11,7 +11,7 @@ type
    a    = integer;
    b    = boolean;
    c    = a;
-   d    = array[2..5] of integer;
+   d    = array[1..7] of integer;
    e    = array[1..bla] of d;
    f    = record
              f      : integer;
@@ -25,11 +25,11 @@ type
 
 var
    aa : boolean;
-   bb : char;
+   bb : d;
    cc : f;
    i  : integer;
 
-procedure mew();
+procedure mew(a :integer );
 const
    m = 5;
 
@@ -58,14 +58,14 @@ end;
 function ohai4(a : boolean): integer;
 begin
 end;
-{
+
 
 
 begin
-   ohai3(true);
+   ohai3(true, bb);
    6+4 := ohai3(false);
 
-   if ohai3() then
+{   if ohai3() then
       a := cc;
 
    if ohai3() then
@@ -86,7 +86,7 @@ begin
    aa := [integer];
    aa := aa = 2+5+5*3 > 3*4 div -5;
    4 + 5 = 4-3*10 < 4 > 6 >= 5 <= 10 or 3 and 6;
-   3+4*5*3 div 5+3
-end.}
-begin
+   3+4*5*3 div 5+3}
 end.
+{begin
+end.}

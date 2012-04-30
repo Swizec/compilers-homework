@@ -11,6 +11,9 @@ import compiler.semanal.type.*;
 public class SemTypeChecker implements AbsVisitor {
 
     public boolean error = false;
+    private SemType typeInt = new SemAtomType(SemAtomType.INT);
+    private SemType typeBool = new SemAtomType(SemAtomType.BOOL);
+    private SemType typeVoid = new SemAtomType(SemAtomType.VOID);
 
     private HashMap<Integer, SemRecordType> records =
         new HashMap<Integer, SemRecordType>();
@@ -69,8 +72,29 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsCallExpr acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        acceptor.name.accept(this);
+        acceptor.args.accept(this);
+
+        SemType type = SemDesc.getActualType(SemDesc.getNameDecl(acceptor.name));
+
+        if (type instanceof SemSubprogramType) {
+            SemSubprogramType thisType =
+                new SemSubprogramType(((SemSubprogramType) type).getResultType());
+
+            for (AbsValExpr args : acceptor.args.exprs) {
+                SemType argType = SemDesc.getActualType(args);
+                thisType.addParType(argType);
+            }
+
+            if (type.coercesTo(thisType)) {
+                SemSubprogramType sub = (SemSubprogramType) type;
+                SemDesc.setActualType(acceptor, sub.getResultType());
+            }else{
+                argumentsTypeError(acceptor);
+            }
+        }else{
+            subprogramTypeError(acceptor.name.name, acceptor);
+        }
     }
 
     @Override
@@ -94,7 +118,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsExprStmt acceptor) {
-        // TODO
+        acceptor.expr.accept(this);
     }
 
     @Override
@@ -106,10 +130,23 @@ public class SemTypeChecker implements AbsVisitor {
 	public void visit(AbsFunDecl acceptor) {
         acceptor.pars.accept(this);
         acceptor.type.accept(this);
+
+        SemType resultType = SemDesc.getActualType(acceptor.type);
+        SemSubprogramType type = new SemSubprogramType(resultType);
+
+        for (AbsDecl decl: acceptor.pars.decls){
+            SemType paramType = SemDesc.getActualType(decl);
+            if (paramType != null){
+                type.addParType(paramType);
+            }else{
+                noTypeError(acceptor);
+            }
+        }
+
+        SemDesc.setActualType(acceptor, type);
+
         acceptor.decls.accept(this);
         acceptor.stmt.accept(this);
-
-        SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.type));
     }
 
     @Override
@@ -119,8 +156,7 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsNilConst acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        SemDesc.setActualType(acceptor, typeVoid)
     }
 
     @Override
@@ -133,10 +169,21 @@ public class SemTypeChecker implements AbsVisitor {
     @Override
 	public void visit(AbsProcDecl acceptor) {
         acceptor.pars.accept(this);
+
+        SemSubprogramType type = new SemSubprogramType(typeVoid);
+
+        for (AbsDecl decl: acceptor.pars.decls){
+            SemType paramType = SemDesc.getActualType(decl);
+            if (paramType != null){
+                type.addParType(paramType);
+            }else{
+                noTypeError(acceptor);
+            }
+        }
+        SemDesc.setActualType(acceptor, type);
+
         acceptor.decls.accept(this);
         acceptor.stmt.accept(this);
-
-        SemDesc.setActualType(acceptor, new SemAtomType(SemAtomType.VOID));
     }
 
     @Override
@@ -189,8 +236,9 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsValExprs acceptor) {
-        Thread.dumpStack();
-        Report.error("Unimplemented visitor method.", 1);
+        for (AbsValExpr expr : acceptor.exprs) {
+            expr.accept(this);
+        }
     }
 
     @Override
@@ -212,6 +260,16 @@ public class SemTypeChecker implements AbsVisitor {
 
     private void noTypeError(AbsTree loc) {
         Report.error(String.format("cannot resolve type at (%d, %d)",
+                                   loc.begLine, loc.begColumn), 1);
+    }
+
+    private void subprogramTypeError(String name, AbsTree loc) {
+        Report.error(String.format("%s is not a subprogram at (%d, %d)",
+                                   name, loc.begLine, loc.begColumn), 1);
+    }
+
+    private void argumentsTypeError(AbsTree loc) {
+        Report.error(String.format("calling with wrong type arguments (%d, %d)",
                                    loc.begLine, loc.begColumn), 1);
     }
 
