@@ -51,5 +51,10 @@ public class SemSubprogramType extends SemType {
 		} else
 			return false;
 	}
+	
+	@Override
+	public int size() {
+		return -1;
+	}
 
 }

@@ -37,8 +37,10 @@ public class Main {
 			compiler.abstree.Main.exec();
 		else if (phase.equals("semanal"))
 			compiler.semanal.Main.exec();
+		else if (phase.equals("frames"))
+			compiler.frames.Main.exec();
 		else
-			compiler.semanal.Main.exec();
+			compiler.frames.Main.exec();
 
 		System.out.print(":-) Done.\n");
 		System.exit(0);
