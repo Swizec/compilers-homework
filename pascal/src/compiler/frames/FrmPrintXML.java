@@ -409,7 +409,10 @@ public class FrmPrintXML implements AbsVisitor {
 			SemType actualType = SemDesc.getActualType(acceptor); if (actualType != null) actualType.toXML(xml);
 		}
 		{
-			FrmDesc.getAccess(acceptor).toXML(xml);
+			FrmAccess access = FrmDesc.getAccess(acceptor);
+                        if (access != null) {
+                            access.toXML(xml);
+                        }
 		}
 		acceptor.name.accept(this);
 		acceptor.type.accept(this);

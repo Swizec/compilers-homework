@@ -18,7 +18,7 @@ class PascalSemTestCase(PascalTestCase):
 
 
 class TestAST(PascalSemTestCase):
-    source = "sem.pascal"
+    source = "frames.pascal"
 
     def test_syntax(self):
         # we just abuse this to run things easily
