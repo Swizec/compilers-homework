@@ -15,4 +15,9 @@ public class SemTypeError extends SemType {
 		return false;
 	}
 
+	@Override
+	public int size() {
+		return -1;
+	}
+
 }

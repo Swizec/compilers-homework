@@ -30,4 +30,9 @@ public class SemPointerType extends SemType {
 			return false;
 	}
 	
+	@Override
+	public int size() {
+		return 4;
+	}
+	
 }

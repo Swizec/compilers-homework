@@ -36,4 +36,9 @@ public class SemArrayType extends SemType {
 			return false;
 	}
 	
+	@Override
+	public int size() {
+		return (hiBound - loBound + 1) * type.size();
+	}
+
 }

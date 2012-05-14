@@ -13,4 +13,6 @@ import compiler.report.*;
 public abstract class SemType implements XMLable {
 	
 	public abstract boolean coercesTo(SemType type);
+	
+	public abstract int size();
 }

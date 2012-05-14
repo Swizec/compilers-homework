@@ -36,7 +36,7 @@ public class SemRecordType extends SemType {
 
 	@Override
 	public void toXML(PrintStream xml) {
-		xml.print("<semtype kind=\"RECORD\">\n");
+		xml.print("<semtype kind=\"RECORD" + this.hashCode() + "\">\n");
 		for (int i = 0; i < getNumFields(); i++) getFieldType(i).toXML(xml);
 		xml.print("</semtype>\n");
 	}
@@ -51,6 +51,15 @@ public class SemRecordType extends SemType {
 			return true;
 		} else
 			return false;
+	}
+
+	@Override
+	public int size() {
+		int sum = 0;
+		for (int i = 0; i < getNumFields(); i++) {
+			sum = sum + this.getFieldType(i).size();
+		}
+		return sum;
 	}
 
 }
