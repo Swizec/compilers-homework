@@ -19,8 +19,8 @@ public class FrmEvaluator implements AbsVisitor {
 	public void visit(AbsConstDecl acceptor) {
     }
 
-    @Override
-    public void visit(AbsFunDecl acceptor) {
+    /*    @Override
+    public void visit(AbsSub acceptor) {
         FrmFrame frame = new FrmFrame(acceptor, SemDesc.getScope(acceptor));
         sizeArgs = 0;
 
@@ -52,7 +52,7 @@ public class FrmEvaluator implements AbsVisitor {
         }
 
         FrmDesc.setFrame(acceptor, frame);
-    }
+        }*/
 
     @Override
     public void visit(AbsProgram acceptor) {
@@ -66,6 +66,40 @@ public class FrmEvaluator implements AbsVisitor {
         }
 
         FrmFrame frame = new FrmFrame(acceptor, 0);
+        FrmDesc.setFrame(acceptor, frame);
+    }
+
+    @Override
+    public void visit(AbsFunDecl acceptor) {
+        FrmFrame frame = new FrmFrame(acceptor, SemDesc.getScope(acceptor));
+        sizeArgs = 0;
+
+        for (AbsDecl decl : acceptor.pars.decls) {
+            if (decl instanceof AbsVarDecl) {
+                AbsVarDecl varDecl = (AbsVarDecl)decl;
+                FrmArgAccess access = new FrmArgAccess(varDecl, frame);
+                FrmDesc.setAccess(varDecl, access);
+                sizeArgs += 4;
+            }
+        }
+        for (AbsDecl decl : acceptor.decls.decls) {
+            if (decl instanceof AbsVarDecl) {
+                AbsVarDecl varDecl = (AbsVarDecl)decl;
+                FrmLocAccess access = new FrmLocAccess(varDecl, frame);
+                frame.locVars.add(access);
+                FrmDesc.setAccess(varDecl, access);
+            }
+            decl.accept(this);
+        }
+
+        isAnyCall = false;
+        acceptor.stmt.accept(this);
+        frame.sizeArgs = sizeArgs;
+
+        if (isAnyCall) {
+            frame.sizeArgs += 4;
+        }
+
         FrmDesc.setFrame(acceptor, frame);
     }
 
