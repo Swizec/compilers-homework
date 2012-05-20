@@ -3,6 +3,8 @@ package compiler.frames;
 import java.io.*;
 
 import compiler.abstree.tree.*;
+import compiler.semanal.*;
+import compiler.semanal.type.*;
 
 /** Dostop do argumenta funkcije.  */
 public class FrmArgAccess extends FrmAccess {
@@ -19,7 +21,10 @@ public class FrmArgAccess extends FrmAccess {
 	public FrmArgAccess(AbsVarDecl var, FrmFrame frame) {
 		this.var = var;
 		this.frame = frame;
-		this.offset = 4 + frame.numArgs * 4;
+		
+		SemType type = SemDesc.getActualType(var);
+		this.offset = 4 + frame.sizeArgs;
+		frame.sizeArgs = frame.sizeArgs + type.size();
 		frame.numArgs++;
 	}
 

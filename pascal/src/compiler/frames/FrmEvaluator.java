@@ -62,6 +62,9 @@ public class FrmEvaluator implements AbsVisitor {
             }
             decl.accept(this);
         }
+
+        FrmFrame frame = new FrmFrame(acceptor, 0);
+        FrmDesc.setFrame(acceptor, frame);
     }
 
     @Override
