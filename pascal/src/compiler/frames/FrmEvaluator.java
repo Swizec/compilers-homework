@@ -72,7 +72,7 @@ public class FrmEvaluator implements AbsVisitor {
     @Override
     public void visit(AbsFunDecl acceptor) {
         FrmFrame frame = new FrmFrame(acceptor, SemDesc.getScope(acceptor));
-        sizeArgs = 0;
+        int sizeArgs = 0;
 
         for (AbsDecl decl : acceptor.pars.decls) {
             if (decl instanceof AbsVarDecl) {
@@ -106,7 +106,7 @@ public class FrmEvaluator implements AbsVisitor {
     @Override
     public void visit(AbsProcDecl acceptor) {
         FrmFrame frame = new FrmFrame(acceptor, SemDesc.getScope(acceptor));
-        sizeArgs = 0;
+        int sizeArgs = 0;
 
         for (AbsDecl decl : acceptor.pars.decls) {
             if (decl instanceof AbsVarDecl) {
