@@ -1,10 +1,18 @@
 package compiler.imcode;
 
+import java.util.LinkedList;
+
 import compiler.report.*;
 import compiler.abstree.*;
 import compiler.abstree.tree.*;
 
 public class IMCodeGenerator implements AbsVisitor {
+
+	public LinkedList<ImcChunk> chunks;
+
+	public IMCodeGenerator() {
+		chunks = new LinkedList<ImcChunk>();
+	}
 
 	@Override
 	public void visit(AbsAlloc acceptor) {

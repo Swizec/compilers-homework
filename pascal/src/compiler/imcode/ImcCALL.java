@@ -12,10 +12,14 @@ public class ImcCALL extends ImcExpr {
 
 	/** Argumenti funkcijskega klica (vkljucno s FP).  */
 	public LinkedList<ImcExpr> args;
+	
+	/** Velikost argumentov (vklju"cno s FP).  */
+	public LinkedList<Integer> size;
 
 	public ImcCALL(FrmLabel label) {
 		this.label = label;
 		this.args = new LinkedList<ImcExpr>();
+		this.size = new LinkedList<Integer>();
 	}
 
 	@Override
@@ -42,6 +46,7 @@ public class ImcCALL extends ImcExpr {
 			linStmt.stmts.add(new ImcMOVE(new ImcTEMP(temp), linArg.expr));
 			linCall.args.add(new ImcTEMP(temp));
 		}
+		linCall.size = this.size;
 		FrmTemp temp = new FrmTemp();
 		linStmt.stmts.add(new ImcMOVE(new ImcTEMP(temp), linCall));
 		return new ImcESEQ(linStmt, new ImcTEMP(temp));
