@@ -56,8 +56,8 @@ public class Main {
 		program.accept(new FrmEvaluator());
 
 		/* Izracunamo kose programa. */
-		/*IMCodeGenerator code = new IMCodeGenerator();
+		IMCodeGenerator code = new IMCodeGenerator();
 		program.accept(code);
-		chunks = code.chunks;*/
+		chunks = code.chunks;
 	}
 }
