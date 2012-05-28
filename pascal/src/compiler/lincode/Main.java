@@ -1,4 +1,4 @@
-package compiler.imcode;
+package compiler.lincode;
 
 import java.io.*;
 import java.util.*;
@@ -9,6 +9,7 @@ import compiler.synanal.*;
 import compiler.abstree.tree.*;
 import compiler.semanal.*;
 import compiler.frames.*;
+import compiler.imcode.*;
 
 public class Main {
 	
@@ -55,13 +56,21 @@ public class Main {
 		program.accept(new FrmEvaluator());
 
 		/* Izracunamo kose programa. */
-		PrintStream xml = XML.open("imcode");
+		PrintStream xml = XML.open("lincode");
 		IMCodeGenerator code = new IMCodeGenerator();
 		program.accept(code);
 		chunks = code.chunks;
 		for (ImcChunk chunk : chunks) {
+			if (chunk instanceof ImcCodeChunk) {
+				ImcCodeChunk codeChunk = (ImcCodeChunk) chunk;
+				codeChunk.lincode = codeChunk.imcode.linear();
+			}
+		}
+		for (ImcChunk chunk : chunks) {
 			chunk.toXML(xml);
 		}
-		XML.close("imcode", xml);
+		XML.close("lincode", xml);
+		
+		new Interpreter(chunks);
 	}
 }

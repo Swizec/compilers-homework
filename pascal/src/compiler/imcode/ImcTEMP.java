@@ -15,7 +15,11 @@ public class ImcTEMP extends ImcExpr {
 
 	@Override
 	public void toXML(PrintStream xml) {
+            try {
 		xml.print("<imcnode kind=\"TEMP\" value=\"" + temp.name() + "\"/>\n");
+            }catch (NullPointerException e) {
+                xml.print("<imcnode kind=\"TEMP\" value=\"null\"/>\n");
+            }
 	}
 
 	@Override

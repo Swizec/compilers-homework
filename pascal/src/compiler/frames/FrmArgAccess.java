@@ -21,10 +21,10 @@ public class FrmArgAccess extends FrmAccess {
 	public FrmArgAccess(AbsVarDecl var, FrmFrame frame) {
 		this.var = var;
 		this.frame = frame;
-
+		
 		SemType type = SemDesc.getActualType(var);
 		this.offset = 4 + frame.sizeArgs;
-		frame.sizeArgs = frame.sizeArgs + 4;
+		frame.sizeArgs = frame.sizeArgs + type.size();
 		frame.numArgs++;
 	}
 
