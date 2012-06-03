@@ -20,7 +20,7 @@ public class SystemFunctions {
             subprogram("getint", AbsAtomType.INT);
             subprogram("ord", params("ord", AbsAtomType.CHAR), AbsAtomType.INT);
             subprogram("chr", params("chr", AbsAtomType.INT), AbsAtomType.CHAR);
-            //subprogram("free", params("free",
+            subprogram("free", SemAtomType.VOID);
         }catch (SemIllegalInsertException e) { }
     }
 
