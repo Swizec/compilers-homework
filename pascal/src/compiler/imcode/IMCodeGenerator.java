@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import compiler.abstree.AbsVisitor;
 import compiler.abstree.tree.*;
 import compiler.semanal.SemDesc;
+import compiler.semanal.SystemFunctions;
 import compiler.semanal.type.*;
 import compiler.frames.*;
 import compiler.report.*;
@@ -145,10 +146,20 @@ public class IMCodeGenerator implements AbsVisitor {
 
     @Override
 	public void visit(AbsCallExpr acceptor) {
-        FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
-        ImcCALL call = new ImcCALL(frame.label);
+        ImcCALL call;
 
-        call.args.add(new ImcTEMP(frame.FP));
+        if (SystemFunctions.isSystem(acceptor)) {
+            FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
+            call = new ImcCALL(FrmLabel.newLabel(acceptor.name.name));
+
+            call.args.add(new ImcCONST(SystemFunctions.FAKE_FP));
+        }else{
+            FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
+            call = new ImcCALL(frame.label);
+
+            call.args.add(new ImcTEMP(frame.FP));
+        }
+
         call.size.add(4);
 
         for (AbsValExpr expr : acceptor.args.exprs) {

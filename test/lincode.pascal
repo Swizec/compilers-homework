@@ -1,11 +1,9 @@
 
 program lincode;
 
-var i:integer;
+var c:char;
 
 begin
-   for i:=1 to 100 do
-   begin
-      i;
-   end
+   c := 'A';
+   putch(c);
 end.
