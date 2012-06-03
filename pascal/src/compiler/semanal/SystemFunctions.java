@@ -18,7 +18,9 @@ public class SystemFunctions {
             subprogram("putint", params("putint", AbsAtomType.INT));
             subprogram("getch", AbsAtomType.CHAR);
             subprogram("getint", AbsAtomType.INT);
-            subprogram("ord", params("ord", AbsAtomType.CHAR), AbsAtomType.CHAR);
+            subprogram("ord", params("ord", AbsAtomType.CHAR), AbsAtomType.INT);
+            subprogram("chr", params("chr", AbsAtomType.INT), AbsAtomType.CHAR);
+            //subprogram("free", params("free",
         }catch (SemIllegalInsertException e) { }
     }
 

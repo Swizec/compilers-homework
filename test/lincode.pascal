@@ -9,8 +9,7 @@ begin
    c := 'A';
    putch(c);
    putint(100);
-   {c := getch();
-   putch(c);}
+   putch(getch());
 
    i := getint();
    putint(i);
