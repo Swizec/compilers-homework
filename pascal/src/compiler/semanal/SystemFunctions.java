@@ -17,9 +17,12 @@ public class SystemFunctions {
             subprogram("putch", params("putch", AbsAtomType.CHAR));
             subprogram("putint", params("putint", AbsAtomType.INT));
             subprogram("getch", AbsAtomType.CHAR);
+            subprogram("getint", AbsAtomType.INT);
+            subprogram("ord", params("ord", AbsAtomType.CHAR), AbsAtomType.CHAR);
         }catch (SemIllegalInsertException e) { }
     }
 
+    // creates a params definition
     private static AbsDecls params(String name, int paramType) {
         AbsVarDecl param = new AbsVarDecl(new AbsDeclName(name),
                                           new AbsAtomType(paramType));
@@ -48,6 +51,19 @@ public class SystemFunctions {
 
         AbsFunDecl node = new AbsFunDecl(new AbsDeclName(name),
                                          new AbsDecls(),
+                                         new AbsAtomType(returnType),
+                                         null,
+                                         null);
+
+        subprogram(node, returnType);
+    }
+
+    // defines a function with params
+    private static void subprogram(String name, AbsDecls params, int returnType)
+        throws SemIllegalInsertException {
+
+        AbsFunDecl node = new AbsFunDecl(new AbsDeclName(name),
+                                         params,
                                          new AbsAtomType(returnType),
                                          null,
                                          null);
