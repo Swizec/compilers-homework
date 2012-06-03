@@ -7,4 +7,6 @@ begin
    c := 'A';
    putch(c);
    putint(100);
+   c := getch();
+   putch(c);
 end.

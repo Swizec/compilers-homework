@@ -2,6 +2,7 @@
 package compiler.semanal;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import compiler.abstree.tree.*;
 import compiler.semanal.type.SemAtomType;
@@ -15,7 +16,7 @@ public class SystemFunctions {
         try {
             subprogram("putch", params("putch", AbsAtomType.CHAR));
             subprogram("putint", params("putint", AbsAtomType.INT));
-            //subprogram("getch", AbsAtomType.CHAR);
+            subprogram("getch", AbsAtomType.CHAR);
         }catch (SemIllegalInsertException e) { }
     }
 
@@ -32,7 +33,7 @@ public class SystemFunctions {
         return params;
     }
 
-    // defines a procedure
+    // defines a procedure with params
     private static void subprogram(String name, AbsDecls params)
         throws SemIllegalInsertException {
 
@@ -41,12 +42,28 @@ public class SystemFunctions {
         subprogram(node, SemAtomType.VOID);
     }
 
-    // defines a function
+    // defines a function without params
+    private static void subprogram(String name, int returnType)
+        throws SemIllegalInsertException {
+
+        AbsFunDecl node = new AbsFunDecl(new AbsDeclName(name),
+                                         new AbsDecls(),
+                                         new AbsAtomType(returnType),
+                                         null,
+                                         null);
+
+        subprogram(node, returnType);
+    }
+
+    // defines a subprogram
     private static void subprogram(AbsSubprogramDecl node, int returnType)
         throws SemIllegalInsertException {
 
         SemSubprogramType type = new SemSubprogramType(new SemAtomType(returnType));
-        type.addParType(SemDesc.getActualType(node.pars.decls.get(0)));
+
+        for (Iterator<AbsDecl> it = node.pars.decls.iterator(); it.hasNext();) {
+            type.addParType(SemDesc.getActualType(it.next()));
+        }
 
         SemTable.ins(node.name.name, node);
         SemDesc.setActualType(node, type);
