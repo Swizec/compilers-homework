@@ -16,7 +16,7 @@ program queens;
             var
                 i : integer;
                 j : integer;
-                ok : boolean;       
+                ok : boolean;
         begin
             if current_chessboard^.num_queens = chessboard_size then
                 begin

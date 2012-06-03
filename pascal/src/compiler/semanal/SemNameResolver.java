@@ -59,6 +59,11 @@ public class SemNameResolver implements AbsVisitor {
     @Override
 	public void visit(AbsBinExpr acceptor) {
         acceptor.fstExpr.accept(this);
+
+        if (acceptor.oper == AbsBinExpr.RECACCESS) {
+            record_depth++;
+        }
+
         acceptor.sndExpr.accept(this);
 
         Integer fval = SemDesc.getActualConst(acceptor.fstExpr);
@@ -81,6 +86,10 @@ public class SemNameResolver implements AbsVisitor {
                 }
                 break;
             }
+        }
+
+        if (acceptor.oper == AbsBinExpr.RECACCESS) {
+            record_depth--;
         }
     }
 
@@ -276,14 +285,16 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
         public void visit(AbsValName acceptor) {
-        AbsDecl decl = SemTable.fnd(acceptor.name);
-        if (decl == null) {
-            notDeclaredError(acceptor.name, acceptor);
-        }else{
-            SemDesc.setNameDecl(acceptor, decl);
-            Integer val = SemDesc.getActualConst(decl);
-            if (val != null) {
-                SemDesc.setActualConst(acceptor, val);
+        if (record_depth == 0) {
+            AbsDecl decl = SemTable.fnd(acceptor.name);
+            if (decl == null) {
+                notDeclaredError(acceptor.name, acceptor);
+            }else{
+                SemDesc.setNameDecl(acceptor, decl);
+                Integer val = SemDesc.getActualConst(decl);
+                if (val != null) {
+                    SemDesc.setActualConst(acceptor, val);
+                }
             }
         }
     }
