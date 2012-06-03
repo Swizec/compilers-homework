@@ -12,28 +12,46 @@ public class SystemFunctions {
     private static ArrayList<String> names = new ArrayList<String>();
 
     public static void fillData() {
-        names.add("putch");
-
         try {
-            putch();
+            subprogram("putch", params("putch", AbsAtomType.CHAR));
+            subprogram("putint", params("putint", AbsAtomType.INT));
+            //subprogram("getch", AbsAtomType.CHAR);
         }catch (SemIllegalInsertException e) { }
     }
 
-    private static void putch() throws SemIllegalInsertException {
-        AbsDeclName name = new AbsDeclName("putch");
-        AbsVarDecl param = new AbsVarDecl(name, new AbsAtomType(AbsAtomType.CHAR));
+    private static AbsDecls params(String name, int paramType) {
+        AbsVarDecl param = new AbsVarDecl(new AbsDeclName(name),
+                                          new AbsAtomType(paramType));
+        SemAtomType _paramType = new SemAtomType(paramType);
 
-        SemDesc.setActualType(param, new SemAtomType(SemAtomType.CHAR));
+        SemDesc.setActualType(param, _paramType);
 
         AbsDecls params = new AbsDecls();
         params.decls.add(param);
 
-        AbsProcDecl node = new AbsProcDecl(name, params, null, null);
-        SemSubprogramType type = new SemSubprogramType(new SemAtomType(SemAtomType.VOID));
-        type.addParType(new SemAtomType(SemAtomType.CHAR));
+        return params;
+    }
 
-        SemTable.ins(name.name, node);
+    // defines a procedure
+    private static void subprogram(String name, AbsDecls params)
+        throws SemIllegalInsertException {
+
+        AbsProcDecl node = new AbsProcDecl(new AbsDeclName(name), params, null, null);
+
+        subprogram(node, SemAtomType.VOID);
+    }
+
+    // defines a function
+    private static void subprogram(AbsSubprogramDecl node, int returnType)
+        throws SemIllegalInsertException {
+
+        SemSubprogramType type = new SemSubprogramType(new SemAtomType(returnType));
+        type.addParType(SemDesc.getActualType(node.pars.decls.get(0)));
+
+        SemTable.ins(node.name.name, node);
         SemDesc.setActualType(node, type);
+
+        names.add(node.name.name);
     }
 
     public static boolean isSystem(AbsCallExpr call) {
