@@ -1,7 +1,7 @@
 package compiler.synanal;
 
 import java_cup.runtime.*;
- 
+
 import compiler.report.*;
 
 import compiler.abstree.*;
@@ -38,9 +38,9 @@ non terminal procedure, parameters, parameter, one_param, function;
 non terminal statement, statement_, conditional, loop;
 non terminal eps;
 
-precedence left EQU, NEQ;
-precedence left OR;
 precedence left AND;
+precedence left OR;
+precedence left EQU, NEQ;
 precedence left GTH, LTH, GEQ, LEQ;
 precedence left ADD, SUB;
 precedence left MUL, DIV;
@@ -430,7 +430,7 @@ bin_expr ::=  value:v1 MUL value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.MUL,
                                                  v1left, v1right)
                                          .setEnd(v2.toString(),
                                                  v2left, v2right); :}
-    | value:v1 OR value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.AND,
+    | value:v1 OR value:v2 {: RESULT = (new AbsBinExpr(AbsBinExpr.OR,
                                                         (AbsValExpr)v1,
                                                         (AbsValExpr)v2))
                                          .setBeg(v1.toString(),
