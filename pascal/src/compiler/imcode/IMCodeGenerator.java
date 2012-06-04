@@ -212,12 +212,16 @@ public class IMCodeGenerator implements AbsVisitor {
 
         seq.stmts.add(new ImcMOVE(name, lo));
         seq.stmts.add(sl);
-        seq.stmts.add(new ImcCJUMP(new ImcBINOP(ImcBINOP.LEQ, name, hi), tl.label, fl.label));
+        seq.stmts.add(new ImcCJUMP(new ImcBINOP(ImcBINOP.LEQ, name, hi),
+                                   tl.label,
+                                   fl.label));
         seq.stmts.add(tl);
         acceptor.stmt.accept(this);
         seq.stmts.add((ImcStmt)result());
-        seq.stmts.add(new ImcMOVE(new ImcBINOP(ImcBINOP.ADD, name,
-                                                 new ImcCONST(1)), name));
+        seq.stmts.add(new ImcMOVE(name,
+                                  new ImcBINOP(ImcBINOP.ADD,
+                                               name,
+                                               new ImcCONST(1))));
         seq.stmts.add(new ImcJUMP(sl.label));
         seq.stmts.add(fl);
 

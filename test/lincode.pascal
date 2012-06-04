@@ -16,7 +16,8 @@ var
    current_chessboard : ^chessboard;
 
 begin
-   if (current_chessboard^.num_queens + 1) - i = (current_chessboard^.used_cols[i] - j) or
-      (current_chessboard^.num_queens + 1) - i = (j - current_chessboard^.used_cols[i]) then
-      ok := false;
+   for i:=1 to 10 do
+   begin
+      putint(i)
+   end
 end.
