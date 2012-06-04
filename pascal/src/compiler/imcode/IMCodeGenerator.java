@@ -415,7 +415,6 @@ public class IMCodeGenerator implements AbsVisitor {
     }
 
     private void visitValName(FrmAccess access, AbsConstDecl decl, FrmFrame frame) {
-        System.out.println("MEOW");
         result(new ImcCONST(SemDesc.getActualConst(decl)));
     }
 
