@@ -17,8 +17,12 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsArrayType acceptor) {
+        int tmp = record_depth;
+        record_depth = 0;
+        acceptor.type.accept(this);
         acceptor.loBound.accept(this);
         acceptor.hiBound.accept(this);
+        record_depth = tmp;
 
         Integer hval = SemDesc.getActualConst(acceptor.hiBound);
         Integer lval = SemDesc.getActualConst(acceptor.loBound);
