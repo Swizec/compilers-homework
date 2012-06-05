@@ -120,7 +120,7 @@ public class IMCodeGenerator implements AbsVisitor {
             ImcBINOP tIndex = new ImcBINOP(ImcBINOP.SUB,
                                            index,
                                            new ImcCONST(aType.loBound));
-            ImcBINOP tOffset = new ImcBINOP(ImcBINOP.ADD,
+            ImcBINOP tOffset = new ImcBINOP(ImcBINOP.MUL,
                                             tIndex,
                                             new ImcCONST(aType.type.size()));
 
