@@ -17,8 +17,12 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsArrayType acceptor) {
+        int tmp = record_depth;
+        record_depth = 0;
+        acceptor.type.accept(this);
         acceptor.loBound.accept(this);
         acceptor.hiBound.accept(this);
+        record_depth = tmp;
 
         Integer hval = SemDesc.getActualConst(acceptor.hiBound);
         Integer lval = SemDesc.getActualConst(acceptor.loBound);
@@ -59,6 +63,11 @@ public class SemNameResolver implements AbsVisitor {
     @Override
 	public void visit(AbsBinExpr acceptor) {
         acceptor.fstExpr.accept(this);
+
+        if (acceptor.oper == AbsBinExpr.RECACCESS) {
+            record_depth++;
+        }
+
         acceptor.sndExpr.accept(this);
 
         Integer fval = SemDesc.getActualConst(acceptor.fstExpr);
@@ -81,6 +90,10 @@ public class SemNameResolver implements AbsVisitor {
                 }
                 break;
             }
+        }
+
+        if (acceptor.oper == AbsBinExpr.RECACCESS) {
+            record_depth--;
         }
     }
 
@@ -211,6 +224,8 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
 	public void visit(AbsProgram acceptor) {
+        SystemFunctions.fillData();
+
         acceptor.decls.accept(this);
         acceptor.stmt.accept(this);
     }
@@ -274,14 +289,16 @@ public class SemNameResolver implements AbsVisitor {
 
     @Override
         public void visit(AbsValName acceptor) {
-        AbsDecl decl = SemTable.fnd(acceptor.name);
-        if (decl == null) {
-            notDeclaredError(acceptor.name, acceptor);
-        }else{
-            SemDesc.setNameDecl(acceptor, decl);
-            Integer val = SemDesc.getActualConst(decl);
-            if (val != null) {
-                SemDesc.setActualConst(acceptor, val);
+        if (record_depth == 0) {
+            AbsDecl decl = SemTable.fnd(acceptor.name);
+            if (decl == null) {
+                notDeclaredError(acceptor.name, acceptor);
+            }else{
+                SemDesc.setNameDecl(acceptor, decl);
+                Integer val = SemDesc.getActualConst(decl);
+                if (val != null) {
+                    SemDesc.setActualConst(acceptor, val);
+                }
             }
         }
     }

@@ -5,23 +5,11 @@ import compiler.abstree.AbsVisitor;
 /**
  * Deklaracije: funkcija.
  */
-public class AbsFunDecl extends AbsDecl {
+public class AbsFunDecl extends AbsSubprogramDecl {
 
-	/** Ime. */
-	public AbsDeclName name;
-	
-	/** Parametri. */
-	public AbsDecls pars;
-	
 	/** Tip. */
 	public AbsTypeExpr type;
-	
-	/** Deklaracije. */
-	public AbsDecls decls;
-	
-	/** Stavek. */
-	public AbsBlockStmt stmt;
-	
+
 	public AbsFunDecl(AbsDeclName name, AbsDecls pars, AbsTypeExpr type, AbsDecls decls, AbsBlockStmt stmt) {
 		this.name = name;
 		this.pars = pars;
@@ -29,7 +17,7 @@ public class AbsFunDecl extends AbsDecl {
 		this.decls = decls;
 		this.stmt = stmt;
 	}
-	
+
 	public void accept(AbsVisitor visitor) {
 		visitor.visit(this);
 	}
