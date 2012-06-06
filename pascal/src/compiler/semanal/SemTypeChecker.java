@@ -343,9 +343,11 @@ public class SemTypeChecker implements AbsVisitor {
         case AbsUnExpr.ADD:
         case AbsUnExpr.SUB:
             assert_int(acceptor.expr, acceptor);
+            SemDesc.setActualType(acceptor, type);
             break;
         case AbsUnExpr.NOT:
             assert_bool(acceptor.expr, acceptor);
+            SemDesc.setActualType(acceptor, type);
             break;
         case AbsUnExpr.MEM:
             SemPointerType ptr = new SemPointerType(type);
