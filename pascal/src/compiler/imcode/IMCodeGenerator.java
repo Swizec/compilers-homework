@@ -109,9 +109,10 @@ public class IMCodeGenerator implements AbsVisitor {
 
             break;
         case AbsBinExpr.ARRACCESS:
-            noMem = true;
+            //noMem = true;
             acceptor.fstExpr.accept(this);
             ImcExpr arr = (ImcExpr)result();
+            System.out.println(arr);
             SemArrayType aType = (SemArrayType)SemDesc.getActualType(acceptor.fstExpr);
 
             noMem = false;
