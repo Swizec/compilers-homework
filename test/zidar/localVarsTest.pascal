@@ -1,6 +1,6 @@
 program a;
-	var i:integer;
-	function d(i:integer):integer;
+var i : integer;
+	function d(i: integer):integer;
 		procedure f();
 		begin
 			putint(i)
