@@ -167,6 +167,15 @@ public class IMCodeGenerator implements AbsVisitor {
         for (AbsValExpr expr : acceptor.args.exprs) {
             expr.accept(this);
 
+            if (SemDesc.getActualType(expr) instanceof SemRecordType ||
+                SemDesc.getActualType(expr) instanceof SemArrayType) {
+
+                ImcExpr e = (ImcExpr)result();
+                if (e instanceof ImcMEM) {
+                    result(((ImcMEM)e).expr);
+                }
+            }
+
             call.args.add((ImcExpr)result());
             call.size.add(4);
         }
