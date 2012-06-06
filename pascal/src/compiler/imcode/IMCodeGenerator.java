@@ -173,6 +173,8 @@ public class IMCodeGenerator implements AbsVisitor {
                 ImcExpr e = (ImcExpr)result();
                 if (e instanceof ImcMEM) {
                     result(((ImcMEM)e).expr);
+                }else{
+                    result(e);
                 }
             }
 
