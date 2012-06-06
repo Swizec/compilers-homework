@@ -29,7 +29,7 @@ begin
    for i:= 1 to 5 do
    begin
       putint(a^.b[i]);
-            putch(chr(10))
+      putch(chr(10))
    end
 end.
 

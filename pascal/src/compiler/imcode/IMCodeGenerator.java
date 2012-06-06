@@ -112,7 +112,6 @@ public class IMCodeGenerator implements AbsVisitor {
             //noMem = true;
             acceptor.fstExpr.accept(this);
             ImcExpr arr = (ImcExpr)result();
-            System.out.println(arr);
             SemArrayType aType = (SemArrayType)SemDesc.getActualType(acceptor.fstExpr);
 
             noMem = false;

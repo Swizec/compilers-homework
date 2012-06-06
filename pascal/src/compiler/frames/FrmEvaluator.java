@@ -140,13 +140,14 @@ public class FrmEvaluator implements AbsVisitor {
     @Override
     public void visit(AbsRecordType acceptor) {
         int offset = 0;
-        for (AbsDecl decl : acceptor.fields.decls)
+        for (AbsDecl decl : acceptor.fields.decls) {
             if (decl instanceof AbsVarDecl) {
                 AbsVarDecl varDecl = (AbsVarDecl)decl;
                 FrmCmpAccess access = new FrmCmpAccess(varDecl, offset);
                 FrmDesc.setAccess(varDecl, access);
                 offset = offset + SemDesc.getActualType(varDecl.type).size();
             }
+        }
     }
 
     @Override
