@@ -13,7 +13,6 @@ import compiler.report.*;
 public class IMCodeGenerator implements AbsVisitor {
 
     public LinkedList<ImcChunk> chunks;
-    public LinkedList<ImcStmt> stmts;
 
     private FrmFrame curFrame = null;
 
@@ -355,7 +354,7 @@ public class IMCodeGenerator implements AbsVisitor {
             result(((ImcMEM)result()).expr);
             break;
         case AbsUnExpr.VAL:
-            result(new ImcMEM((ImcExpr)result()));
+            result((ImcExpr)result());
             break;
         }
     }

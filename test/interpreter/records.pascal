@@ -19,7 +19,7 @@ begin
    putint(a^.a);
    putch(chr(10));
 
-   b.a := 66;
+   b.a := 65;
    putint(b.a);
    putch(chr(10));
 end.
