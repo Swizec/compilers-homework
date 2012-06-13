@@ -21,8 +21,9 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsAlloc acceptor) {
-        SemAtomType type = new SemAtomType(SemAtomType.INT);
-        SemDesc.setActualType(acceptor, type);
+        acceptor.type.accept(this);
+        SemDesc.setActualType(acceptor,
+                              new SemPointerType(SemDesc.getActualType(acceptor.type)));
     }
 
     @Override
