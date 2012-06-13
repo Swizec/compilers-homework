@@ -21,8 +21,9 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsAlloc acceptor) {
-        SemAtomType type = new SemAtomType(SemAtomType.INT);
-        SemDesc.setActualType(acceptor, type);
+        acceptor.type.accept(this);
+        SemDesc.setActualType(acceptor,
+                              new SemPointerType(SemDesc.getActualType(acceptor.type)));
     }
 
     @Override
@@ -78,11 +79,13 @@ public class SemTypeChecker implements AbsVisitor {
 
     @Override
 	public void visit(AbsBinExpr acceptor) {
+
         acceptor.fstExpr.accept(this);
         acceptor.sndExpr.accept(this);
 
         SemType ft = SemDesc.getActualType(acceptor.fstExpr);
         SemType st = SemDesc.getActualType(acceptor.sndExpr);
+
 
         switch (acceptor.oper) {
         case AbsBinExpr.ADD:
@@ -122,11 +125,15 @@ public class SemTypeChecker implements AbsVisitor {
             }
             break;
         case AbsBinExpr.RECACCESS:
-            SemRecordType aa = (SemRecordType)ft;
-            for(int i=0; i<aa.getNumFields(); i++) {
-                if(aa.getFieldName(i).name.equals(((AbsValName)acceptor.sndExpr).name)) {
-                    SemDesc.setActualType(acceptor, aa.getFieldType(i));
+            if (ft instanceof SemRecordType) {
+                SemRecordType aa = (SemRecordType)ft;
+                for(int i=0; i<aa.getNumFields(); i++) {
+                    if(aa.getFieldName(i).name.equals(((AbsValName)acceptor.sndExpr).name)) {
+                        SemDesc.setActualType(acceptor, aa.getFieldType(i));
+                    }
                 }
+            }else{
+                recordTypeError(acceptor);
             }
             break;
         }
@@ -277,9 +284,11 @@ public class SemTypeChecker implements AbsVisitor {
     @Override
 	public void visit(AbsRecordType acceptor) {
         record_depth++;
+
         records.put(record_depth, new SemRecordType());
         acceptor.fields.accept(this);
         SemDesc.setActualType(acceptor, records.get(record_depth));
+
         record_depth--;
     }
 
@@ -294,8 +303,26 @@ public class SemTypeChecker implements AbsVisitor {
 	public void visit(AbsTypeDecl acceptor) {
         acceptor.type.accept(this);
         SemType type = SemDesc.getActualType(acceptor.type);
+
         if (type != null) {
-            SemDesc.setActualType(acceptor, type);
+            if (record_depth == 0) {
+                SemDesc.setActualType(acceptor, type);
+            }else{
+                SemRecordType aa = records.get(record_depth);
+
+                boolean error = false;
+                for (int i=0; i<aa.getNumFields(); i++) {
+                    if (aa.getFieldName(i).name.equals(acceptor.name.name)) {
+                        recordNameError(acceptor.name.name, acceptor);
+                        error = true;
+                        break;
+                    }
+                }
+
+                if (!error) {
+                    aa.addField(acceptor.name, SemDesc.getActualType(acceptor.type));
+                }
+            }
         }else{
             noTypeError(acceptor);
         }
@@ -321,9 +348,11 @@ public class SemTypeChecker implements AbsVisitor {
         case AbsUnExpr.ADD:
         case AbsUnExpr.SUB:
             assert_int(acceptor.expr, acceptor);
+            SemDesc.setActualType(acceptor, type);
             break;
         case AbsUnExpr.NOT:
             assert_bool(acceptor.expr, acceptor);
+            SemDesc.setActualType(acceptor, type);
             break;
         case AbsUnExpr.MEM:
             SemPointerType ptr = new SemPointerType(type);
@@ -436,7 +465,8 @@ public class SemTypeChecker implements AbsVisitor {
     }
 
     private void assert_coerces(SemType f, SemType s, AbsTree loc) {
-        if (!f.coercesTo(s)) {
+        // System.out.println(String.format("%s, %s", f, s));
+        if (f != null && !f.coercesTo(s)) {
             missmatchError(loc);
         }
     }

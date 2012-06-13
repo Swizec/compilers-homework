@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import compiler.abstree.AbsVisitor;
 import compiler.abstree.tree.*;
 import compiler.semanal.SemDesc;
+import compiler.semanal.SystemFunctions;
 import compiler.semanal.type.*;
 import compiler.frames.*;
 import compiler.report.*;
@@ -12,7 +13,8 @@ import compiler.report.*;
 public class IMCodeGenerator implements AbsVisitor {
 
     public LinkedList<ImcChunk> chunks;
-    public LinkedList<ImcStmt> stmts;
+
+    private FrmFrame curFrame = null;
 
     private ImcCode result;
     private ImcCode result() {
@@ -23,7 +25,8 @@ public class IMCodeGenerator implements AbsVisitor {
     private void result(ImcCode result) {
         this.result = result;
     }
-    private boolean noMem = false;
+    //    private boolean noMem = false;
+    private LinkedList<Boolean> noMem = new LinkedList<Boolean>();
 
     public IMCodeGenerator() {
         chunks = new LinkedList<ImcChunk>();
@@ -78,7 +81,8 @@ public class IMCodeGenerator implements AbsVisitor {
 	public void visit(AbsBinExpr acceptor) {
         switch (acceptor.oper) {
         case AbsBinExpr.RECACCESS:
-            noMem = false;
+            noMem.addFirst(true);
+
             acceptor.fstExpr.accept(this);
             ImcExpr rec = (ImcExpr)result();
             SemRecordType rType = (SemRecordType)SemDesc.getActualType(acceptor.fstExpr);
@@ -102,29 +106,30 @@ public class IMCodeGenerator implements AbsVisitor {
                                                new ImcCONST(offset))));
             }
 
-            noMem = false;
+            noMem.removeFirst();
 
             break;
         case AbsBinExpr.ARRACCESS:
-            noMem = true;
+            noMem.addFirst(false);
+
             acceptor.fstExpr.accept(this);
             ImcExpr arr = (ImcExpr)result();
             SemArrayType aType = (SemArrayType)SemDesc.getActualType(acceptor.fstExpr);
 
-            noMem = false;
+            noMem.removeFirst();
             acceptor.sndExpr.accept(this);
             ImcExpr index = (ImcExpr)result();
-            noMem = true;
+            noMem.addFirst(true);
 
             ImcBINOP tIndex = new ImcBINOP(ImcBINOP.SUB,
                                            index,
                                            new ImcCONST(aType.loBound));
-            ImcBINOP tOffset = new ImcBINOP(ImcBINOP.ADD,
+            ImcBINOP tOffset = new ImcBINOP(ImcBINOP.MUL,
                                             tIndex,
                                             new ImcCONST(aType.type.size()));
 
             result(new ImcMEM(new ImcBINOP(ImcBINOP.ADD, arr, tOffset)));
-            noMem = false;
+            noMem.removeFirst();
 
             break;
         default:
@@ -145,14 +150,35 @@ public class IMCodeGenerator implements AbsVisitor {
 
     @Override
 	public void visit(AbsCallExpr acceptor) {
-        FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
-        ImcCALL call = new ImcCALL(frame.label);
+        ImcCALL call;
 
-        call.args.add(new ImcTEMP(frame.FP));
+        if (SystemFunctions.isSystem(acceptor)) {
+            FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
+            call = new ImcCALL(FrmLabel.newLabel(acceptor.name.name));
+
+            call.args.add(new ImcCONST(SystemFunctions.FAKE_FP));
+        }else{
+            FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
+            call = new ImcCALL(frame.label);
+
+            call.args.add(new ImcTEMP(curFrame.FP));
+        }
+
         call.size.add(4);
 
         for (AbsValExpr expr : acceptor.args.exprs) {
             expr.accept(this);
+
+            if (SemDesc.getActualType(expr) instanceof SemRecordType ||
+                SemDesc.getActualType(expr) instanceof SemArrayType) {
+
+                ImcExpr e = (ImcExpr)result();
+                if (e instanceof ImcMEM) {
+                    result(((ImcMEM)e).expr);
+                }else{
+                    result(e);
+                }
+            }
 
             call.args.add((ImcExpr)result());
             call.size.add(4);
@@ -201,12 +227,16 @@ public class IMCodeGenerator implements AbsVisitor {
 
         seq.stmts.add(new ImcMOVE(name, lo));
         seq.stmts.add(sl);
-        seq.stmts.add(new ImcCJUMP(new ImcBINOP(ImcBINOP.LEQ, name, hi), tl.label, fl.label));
+        seq.stmts.add(new ImcCJUMP(new ImcBINOP(ImcBINOP.LEQ, name, hi),
+                                   tl.label,
+                                   fl.label));
         seq.stmts.add(tl);
         acceptor.stmt.accept(this);
         seq.stmts.add((ImcStmt)result());
-        seq.stmts.add(new ImcMOVE(new ImcBINOP(ImcBINOP.ADD, name,
-                                                 new ImcCONST(1)), name));
+        seq.stmts.add(new ImcMOVE(name,
+                                  new ImcBINOP(ImcBINOP.ADD,
+                                               name,
+                                               new ImcCONST(1))));
         seq.stmts.add(new ImcJUMP(sl.label));
         seq.stmts.add(fl);
 
@@ -216,9 +246,14 @@ public class IMCodeGenerator implements AbsVisitor {
     @Override
 	public void visit(AbsFunDecl acceptor) {
         FrmFrame frame = FrmDesc.getFrame(acceptor);
+        FrmFrame tmpFrame = curFrame;
+        curFrame = frame;
+
         acceptor.stmt.accept(this);
         chunks.add(new ImcCodeChunk(frame, (ImcStmt)result()));
         acceptor.decls.accept(this);
+
+        curFrame = tmpFrame;
     }
 
     @Override
@@ -256,15 +291,23 @@ public class IMCodeGenerator implements AbsVisitor {
     @Override
 	public void visit(AbsProcDecl acceptor) {
         FrmFrame frame = FrmDesc.getFrame(acceptor);
+        FrmFrame tmpFrame = curFrame;
+        curFrame = frame;
+
         acceptor.stmt.accept(this);
         chunks.add(new ImcCodeChunk(frame, (ImcStmt)result()));
         acceptor.decls.accept(this);
+
+        curFrame = tmpFrame;
     }
 
     @Override
 	public void visit(AbsProgram acceptor) {
 
         FrmFrame frame = FrmDesc.getFrame(acceptor);
+        curFrame = frame;
+        noMem.add(false); // init noMem
+
         acceptor.stmt.accept(this);
         chunks.add(new ImcCodeChunk(frame, (ImcStmt)result()));
 
@@ -343,7 +386,9 @@ public class IMCodeGenerator implements AbsVisitor {
             visitValName((FrmLocAccess)access, decl, frame);
         }
         if (decl instanceof AbsFunDecl) {
+            noMem.addFirst(true);
             visitValName(access, (AbsFunDecl)decl, frame);
+            noMem.removeFirst();
         }
         if (decl instanceof AbsConstDecl) {
             visitValName(access, (AbsConstDecl)decl, frame);
@@ -351,7 +396,7 @@ public class IMCodeGenerator implements AbsVisitor {
     }
 
     private void visitValName(FrmVarAccess access, AbsDecl decl, FrmFrame frame) {
-        if (noMem) {
+        if (noMem.getFirst()) {
             result(new ImcNAME(access.label));
         }else{
             result(new ImcMEM(new ImcNAME(access.label)));
@@ -359,13 +404,18 @@ public class IMCodeGenerator implements AbsVisitor {
     }
 
     private void visitValName(FrmArgAccess access, AbsDecl decl, FrmFrame frame) {
-        if (noMem) {
+        ImcExpr t = new ImcTEMP(curFrame.FP);
+        for(int i=0; i<curFrame.level - access.frame.level; i++) {
+            t = new ImcMEM(t);
+        }
+
+        if (noMem.getFirst()) {
             result(new ImcBINOP(ImcBINOP.ADD,
-                                new ImcTEMP(access.frame.FP),
+                                t,
                                 new ImcCONST(access.offset)));
         }else{
             result(new ImcMEM(new ImcBINOP(ImcBINOP.ADD,
-                                           new ImcTEMP(access.frame.FP),
+                                           t,
                                            new ImcCONST(access.offset))));
         }
 
@@ -376,20 +426,25 @@ public class IMCodeGenerator implements AbsVisitor {
     }
 
     private void visitValName(FrmLocAccess access, AbsDecl decl, FrmFrame frame) {
-        if (noMem) {
+        ImcExpr t = new ImcTEMP(curFrame.FP);
+        for(int i=0; i<curFrame.level - access.frame.level; i++) {
+            t = new ImcMEM(t);
+        }
+
+        if (noMem.getFirst()) {
             result(new ImcBINOP(ImcBINOP.ADD,
-                                new ImcTEMP(access.frame.FP),
+                                t,
                                 new ImcCONST(access.offset)));
         }else{
             result(new ImcMEM(new ImcBINOP(ImcBINOP.ADD,
-                                           new ImcTEMP(access.frame.FP),
+                                           t,
                                            new ImcCONST(access.offset))));
         }
     }
 
     private void visitValName(FrmAccess access, AbsFunDecl decl, FrmFrame frame) {
         SemType type = SemDesc.getActualType(decl);
-        if (noMem) {
+        if (noMem.getFirst()) {
             result(new ImcTEMP(frame.RV));
         }else{
             result(new ImcMEM(new ImcTEMP(frame.RV)));
@@ -400,7 +455,6 @@ public class IMCodeGenerator implements AbsVisitor {
     }
 
     private void visitValName(FrmAccess access, AbsConstDecl decl, FrmFrame frame) {
-        System.out.println("MEOW");
         result(new ImcCONST(SemDesc.getActualConst(decl)));
     }
 

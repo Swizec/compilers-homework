@@ -5,20 +5,8 @@ import compiler.abstree.AbsVisitor;
 /**
  * Deklaracije: procedura.
  */
-public class AbsProcDecl extends AbsDecl {
+public class AbsProcDecl extends AbsSubprogramDecl {
 
-	/** Ime. */
-	public AbsDeclName name;
-	
-	/** Parametri. */
-	public AbsDecls pars;
-	
-	/** Deklaracije. */
-	public AbsDecls decls;
-	
-	/** Stavek. */
-	public AbsBlockStmt stmt;
-	
 	public AbsProcDecl(AbsDeclName name, AbsDecls pars, AbsDecls decls, AbsBlockStmt stmt) {
 		this.name = name;
 		this.pars = pars;
