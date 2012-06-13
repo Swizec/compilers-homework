@@ -13,6 +13,8 @@ var
    a : ^r;
    i : integer;
 
+
+procedure dump(rec : r);
 procedure printAr(ar : array[1..5] of integer);
    var i : integer;
    begin
@@ -24,36 +26,34 @@ procedure printAr(ar : array[1..5] of integer);
       putch(chr(10))
    end; { printAr }
 
-procedure dump(rec : ^r);
-
 begin
-   putint(rec^.a);
+   putint(rec.a);
    putch(chr(10));
 
-   if rec^.b then
+   if rec.b then
       putch('y')
    else
       putch('n');
    putch(chr(10));
 
-   putch(rec^.c);
+   putch(rec.c);
    putch(chr(10));
 
    for i := 1 to 5 do
    begin
-      putint(rec^.ar[i]);
+      putint(rec.ar[i]);
       putch(' ')
    end;
    putch(chr(10));
 
-   printAr(rec^.ar)
+   printAr(rec.ar)
 end;
 
 begin
    a := [r];
 
    a^.a := 5;
-   a^.b := true;
+   a^.b := false;
    for i := 1 to 5 do
       a^.ar[i] := i;
    a^.c := 'b';
@@ -77,7 +77,7 @@ begin
    end;
    putch(chr(10));
 
-   printAr(a^.ar);
+   {printAr(a^.ar);}
 
-   dump(a)
+   dump(a^)
 end.
