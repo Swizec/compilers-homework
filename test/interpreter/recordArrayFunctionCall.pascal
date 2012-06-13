@@ -1,10 +1,10 @@
 program randomgenerator;
-    
-    var 
+
+    var
         randomSeed:integer;
 
     procedure run();
-        type 
+        type
             r= record
                 a:integer;
                 d:integer;
@@ -12,17 +12,18 @@ program randomgenerator;
                 b:array[1..5] of integer;
                 c:integer
             end;
-        var 
+        var
             a:^r;
             i:integer;
-    begin
+        begin
+           a := [r];
         for i:= 1 to 5 do
             begin
                 a^.b[i] := i;
                 putint(a^.b[i]);
                 putch(chr(10))
             end;
-        
+
         putch(chr(10));
         putch(chr(10));
         for i:= 1 to 5 do
