@@ -1,5 +1,5 @@
 program pointertest;
-	var 
+	var
 		j:^integer;
 	procedure neki(a:^integer);
 	begin
