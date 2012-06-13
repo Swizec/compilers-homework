@@ -125,11 +125,15 @@ public class SemTypeChecker implements AbsVisitor {
             }
             break;
         case AbsBinExpr.RECACCESS:
-            SemRecordType aa = (SemRecordType)ft;
-            for(int i=0; i<aa.getNumFields(); i++) {
-                if(aa.getFieldName(i).name.equals(((AbsValName)acceptor.sndExpr).name)) {
-                    SemDesc.setActualType(acceptor, aa.getFieldType(i));
+            if (ft instanceof SemRecordType) {
+                SemRecordType aa = (SemRecordType)ft;
+                for(int i=0; i<aa.getNumFields(); i++) {
+                    if(aa.getFieldName(i).name.equals(((AbsValName)acceptor.sndExpr).name)) {
+                        SemDesc.setActualType(acceptor, aa.getFieldType(i));
+                    }
                 }
+            }else{
+                recordTypeError(acceptor);
             }
             break;
         }
