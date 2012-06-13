@@ -110,7 +110,7 @@ public class IMCodeGenerator implements AbsVisitor {
 
             break;
         case AbsBinExpr.ARRACCESS:
-            noMem.addFirst(true);
+            noMem.addFirst(false);
 
             acceptor.fstExpr.accept(this);
             ImcExpr arr = (ImcExpr)result();
@@ -358,7 +358,7 @@ public class IMCodeGenerator implements AbsVisitor {
             result(((ImcMEM)result()).expr);
             break;
         case AbsUnExpr.VAL:
-            result((ImcExpr)result());
+            result(new ImcMEM((ImcExpr)result()));
             break;
         }
     }
