@@ -499,6 +499,9 @@ public class IMCodeGenerator implements AbsVisitor {
         seq.stmts.add(new ImcCJUMP(cond, tl.label, fl.label));
         seq.stmts.add(tl);
 
+        // s temi expressioni bi blo treba neki narest
+        // dat jih v zacasno spremenljivko al neki ...
+
         acceptor.thenVal.accept(this);
         seq.stmts.add((ImcExpr)result());
         seq.stmts.add(new ImcJUMP(el.label));
