@@ -117,6 +117,8 @@ eof { Report.warning("Unclosed comment! "+yytext(), yyline, yycolumn); }
 '[\x20-\x7E]*'   { return sym(PascalTok.CHAR_CONST); }
 
 [_a-zA-Z][0-9_a-zA-Z]*   { return sym(PascalTok.IDENTIFIER); }
+
+"?" { return sym(PascalTok.IN_IF);  }
 }
 
 .   { Report.warning("Lex error with: "+yytext(), yyline, yycolumn); }
