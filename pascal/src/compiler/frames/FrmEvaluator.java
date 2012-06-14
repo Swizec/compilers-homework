@@ -214,4 +214,10 @@ public class FrmEvaluator implements AbsVisitor {
         acceptor.cond.accept(this);
         acceptor.stmt.accept(this);
     }
+
+    @Override
+	public void visit(AbsInIfStmt acceptor) {
+        //Thread.dumpStack();
+	//	Report.error("Unimplemented visitor method.", 1);
+    }
 }

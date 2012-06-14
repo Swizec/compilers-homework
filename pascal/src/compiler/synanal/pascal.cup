@@ -523,13 +523,13 @@ conditional ::= IF:i value:cond THEN statement:then
              .setBeg(i.toString(), ileft, iright)
              .setEnd(els.toString(), elsleft, elsright);
     :};
-inline_if ::= value IN_IF value COLON value
+inline_if ::= value:cond IN_IF:i value:then COLON value:els
 {:
- /* RESULT = (new AbsIfStmt((AbsValExpr)cond,
-                            (AbsStmt)then,
-                            (AbsStmt)els))
+ RESULT = (new AbsInIfStmt((AbsValExpr)cond,
+                           (AbsValExpr)then,
+                           (AbsValExpr)els))
         .setBeg(i.toString(), ileft, iright)
-        .setEnd(els.toString(), elsleft, elsright);*/
+        .setEnd(els.toString(), elsleft, elsright);
     :};
 loop ::= WHILE:w value:cond DO statement:s {:
                                             RESULT = (new AbsWhileStmt((AbsValExpr)cond,

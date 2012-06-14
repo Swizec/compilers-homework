@@ -230,6 +230,16 @@ public class AbsPrintXML implements AbsVisitor {
 		xml.print("</absnode>\n");
 	}
 
+    public void visit(AbsInIfStmt acceptor) {
+		if (acceptor.error) { xml.println("<abserror kind=\"InIfStmt\"/>"); return; }
+		xml.print("<absnode " + printPos(acceptor) + " kind=\"InIfStmt\">\n");
+		acceptor.cond.accept(this);
+		acceptor.thenVal.accept(this);
+		acceptor.elseVal.accept(this);
+		xml.print("</absnode>\n");
+    }
+
+
 	public void visit(AbsNilConst acceptor) {
 		if (acceptor.error) { xml.println("<abserror kind=\"NilConst\"/>"); return; }
 		xml.print("<absnode " + printPos(acceptor) + " kind=\"NilConst\">\n");

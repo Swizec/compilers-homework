@@ -427,4 +427,10 @@ public class FrmPrintXML implements AbsVisitor {
 		xml.print("</absnode>\n");
 	}
 
+@Override
+	public void visit(AbsInIfStmt acceptor) {
+        //Thread.dumpStack();
+	//	Report.error("Unimplemented visitor method.", 1);
+    }
+
 }

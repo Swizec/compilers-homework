@@ -483,4 +483,10 @@ public class IMCodeGenerator implements AbsVisitor {
         result(seq);
     }
 
+
+    @Override
+	public void visit(AbsInIfStmt acceptor) {
+        //Thread.dumpStack();
+	//	Report.error("Unimplemented visitor method.", 1);
+    }
 }
