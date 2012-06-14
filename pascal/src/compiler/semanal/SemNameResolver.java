@@ -340,10 +340,11 @@ public class SemNameResolver implements AbsVisitor {
     }
 
 
-@Override
+    @Override
 	public void visit(AbsInIfStmt acceptor) {
-        //Thread.dumpStack();
-	//	Report.error("Unimplemented visitor method.", 1);
+        acceptor.cond.accept(this);
+        acceptor.thenVal.accept(this);
+        acceptor.elseVal.accept(this);
     }
 }
 

@@ -395,6 +395,29 @@ public class SemTypeChecker implements AbsVisitor {
         assert_bool(acceptor.cond, acceptor);
     }
 
+    @Override
+	public void visit(AbsInIfStmt acceptor) {
+        acceptor.cond.accept(this);
+        acceptor.thenVal.accept(this);
+        acceptor.elseVal.accept(this);
+
+        assert_bool(acceptor.cond, acceptor);
+
+        SemType then_type = SemDesc.getActualType(acceptor.thenVal);
+        SemType else_type = SemDesc.getActualType(acceptor.elseVal);
+
+        if (then_type instanceof SemSubprogramType) {
+            then_type = ((SemSubprogramType)then_type).getResultType();
+        }
+        if (else_type instanceof SemSubprogramType) {
+            else_type = ((SemSubprogramType)else_type).getResultType();
+        }
+
+        assert_coerces(then_type, else_type, acceptor);
+
+        SemDesc.setActualType(acceptor, then_type);
+    }
+
     private void noTypeError(AbsTree loc) {
         Report.error(String.format("cannot resolve type at (%d, %d)",
                                 loc.begLine, loc.begColumn), 1);
@@ -469,12 +492,6 @@ public class SemTypeChecker implements AbsVisitor {
         if (f != null && !f.coercesTo(s)) {
             missmatchError(loc);
         }
-    }
-
-    @Override
-	public void visit(AbsInIfStmt acceptor) {
-        //Thread.dumpStack();
-	//	Report.error("Unimplemented visitor method.", 1);
     }
 
 }

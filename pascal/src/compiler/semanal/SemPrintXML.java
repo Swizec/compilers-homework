@@ -416,8 +416,16 @@ public class SemPrintXML implements AbsVisitor {
 
     @Override
 	public void visit(AbsInIfStmt acceptor) {
-        //Thread.dumpStack();
-	//	Report.error("Unimplemented visitor method.", 1);
+        if (acceptor.error) { xml.print("<abserror kind=\"InIfStmt\"/>\n"); return; }
+        xml.print("<absnode " + printPos(acceptor) + " kind=\"InIfStmt\">\n");
+        acceptor.cond.accept(this);
+        acceptor.thenVal.accept(this);
+        acceptor.elseVal.accept(this);
+        {
+            //AbsDecl decl = SemDesc.getNameDecl(acceptor); if (decl != null) xml.print("<seminfo kind=\"DECL\" value=\"" + decl.hashCode() + "\"/>\n");
+            SemType actualType = SemDesc.getActualType(acceptor); if (actualType != null) actualType.toXML(xml);
+        }
+        xml.print("</absnode>\n");
     }
 
 }
