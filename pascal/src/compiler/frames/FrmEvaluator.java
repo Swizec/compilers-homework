@@ -206,7 +206,6 @@ public class FrmEvaluator implements AbsVisitor {
 
     @Override
 	public void visit(AbsValName acceptor) {
-        // TODO poglej
     }
 
     @Override
@@ -217,7 +216,6 @@ public class FrmEvaluator implements AbsVisitor {
 
     @Override
 	public void visit(AbsInIfStmt acceptor) {
-        //Thread.dumpStack();
-	//	Report.error("Unimplemented visitor method.", 1);
+
     }
 }

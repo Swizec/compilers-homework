@@ -486,7 +486,28 @@ public class IMCodeGenerator implements AbsVisitor {
 
     @Override
 	public void visit(AbsInIfStmt acceptor) {
-        //Thread.dumpStack();
-	//	Report.error("Unimplemented visitor method.", 1);
+
+        ImcSEQ seq = new ImcSEQ();
+
+        acceptor.cond.accept(this);
+        ImcExpr cond = (ImcExpr)result();
+
+        ImcLABEL tl = new ImcLABEL(FrmLabel.newLabel());
+        ImcLABEL fl = new ImcLABEL(FrmLabel.newLabel());
+        ImcLABEL el = new ImcLABEL(FrmLabel.newLabel());
+
+        seq.stmts.add(new ImcCJUMP(cond, tl.label, fl.label));
+        seq.stmts.add(tl);
+
+        acceptor.thenVal.accept(this);
+        seq.stmts.add((ImcExpr)result());
+        seq.stmts.add(new ImcJUMP(el.label));
+        seq.stmts.add(fl);
+
+        acceptor.elseVal.accept(this);
+        seq.stmts.add((ImcExpr)result());
+        seq.stmts.add(el);
+
+        result(seq);
     }
 }

@@ -2,23 +2,25 @@
 program inline;
 
 var
-   a : integer;
-   b : boolean;
+   a  : integer;
+   b  : boolean;
+   bb : ^boolean;
 
-function i():integer;
+{function i():integer;
 begin
    i := 5;
 end; { i }
 
 procedure bla();
 begin
-end;
+end;}
 
 begin
+   bb := [boolean];
    b := true;
-   a := b ? 1 : i();
+   a := b ? 1 : 2;
 
-   b ? bla() : bla();
+{   b ? bla() : bla();}
 
    putint(a);
    putch(chr(10));
