@@ -503,7 +503,9 @@ statement ::= value:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
                                                                     (AbsValExpr)src))
                                          .setBeg(dst.toString(), dstleft, dstright)
                                          .setEnd(src.toString(), srcleft, srcright); :}
-    | inline_if:in_if {: RESULT = in_if; :}
+    | inline_if:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
+                                   .setBeg(v.toString(), vleft, vright)
+                                   .setEnd(v.toString(), vleft, vright); :}
     | conditional:cond {: RESULT = cond; :}
     | loop:loop {: RESULT = loop; :}
     | block_statement:block {: RESULT = block; :};
