@@ -7,7 +7,7 @@ var
 
 begin
    b := true;
-   b ? 1 : 2;
+   a := b ? 1 : 2;
 
    putint(a);
    putch(chr(10));

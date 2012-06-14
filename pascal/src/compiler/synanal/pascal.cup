@@ -499,7 +499,11 @@ statement ::= value:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
                                                                 (AbsValExpr)src))
                                          .setBeg(dst.toString(), dstleft, dstright)
                                          .setEnd(src.toString(), srcleft, srcright); :}
-    | inline_if {: :}
+    | value:dst ASSIGN inline_if:src {: RESULT = (new AbsAssignStmt((AbsValExpr)dst,
+                                                                    (AbsValExpr)src))
+                                         .setBeg(dst.toString(), dstleft, dstright)
+                                         .setEnd(src.toString(), srcleft, srcright); :}
+    | inline_if:in_if {: RESULT = in_if; :}
     | conditional:cond {: RESULT = cond; :}
     | loop:loop {: RESULT = loop; :}
     | block_statement:block {: RESULT = block; :};
