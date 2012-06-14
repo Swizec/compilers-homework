@@ -28,6 +28,7 @@ terminal BOOL, CHAR, INT;
 terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
 terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
+terminal IN_IF;
 
 non terminal source;
 non terminal program, declaration, block_statement;
@@ -37,6 +38,7 @@ non terminal type_desc, type_atom, type_array, type_record, type_record_componen
 non terminal procedure, parameters, parameter, one_param, function;
 non terminal statement, statement_, conditional, loop;
 non terminal eps;
+non terminal inline_if;
 
 precedence left AND;
 precedence left OR;
@@ -47,6 +49,7 @@ precedence left MUL, DIV;
 precedence left PTR;
 precedence nonassoc NOT;
 precedence left DOT,LBRACKET,RBRACKET;
+precedence left IN_IF;
 
 start with source;
 
@@ -492,10 +495,11 @@ statement_ ::= {: RESULT = new AbsStmts(); :}
 statement ::= value:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
                                    .setBeg(v.toString(), vleft, vright)
                                    .setEnd(v.toString(), vleft, vright); :}
-| value:dst ASSIGN value:src {: RESULT = (new AbsAssignStmt((AbsValExpr)dst,
-                                                            (AbsValExpr)src))
+    | value:dst ASSIGN value:src {: RESULT = (new AbsAssignStmt((AbsValExpr)dst,
+                                                                (AbsValExpr)src))
                                          .setBeg(dst.toString(), dstleft, dstright)
                                          .setEnd(src.toString(), srcleft, srcright); :}
+    | inline_if {: :}
     | conditional:cond {: RESULT = cond; :}
     | loop:loop {: RESULT = loop; :}
     | block_statement:block {: RESULT = block; :};
@@ -514,6 +518,14 @@ conditional ::= IF:i value:cond THEN statement:then
                             (AbsStmt)els))
              .setBeg(i.toString(), ileft, iright)
              .setEnd(els.toString(), elsleft, elsright);
+    :};
+inline_if ::= value IN_IF value COLON value
+{:
+ /* RESULT = (new AbsIfStmt((AbsValExpr)cond,
+                            (AbsStmt)then,
+                            (AbsStmt)els))
+        .setBeg(i.toString(), ileft, iright)
+        .setEnd(els.toString(), elsleft, elsright);*/
     :};
 loop ::= WHILE:w value:cond DO statement:s {:
                                             RESULT = (new AbsWhileStmt((AbsValExpr)cond,
