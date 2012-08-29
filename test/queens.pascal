@@ -16,7 +16,7 @@ begin
    putch(' ');
    for i := 1 to chessboard_size do
       putint(arr[i]);
-   putch(chr(10));
+   putch(chr(10))
 end; { printA }
 
 procedure printB(arr : array[1..chessboard_size] of boolean);
@@ -30,13 +30,13 @@ begin
          putint(1)
       else
          putint(0);
-   putch(chr(10));
+   putch(chr(10))
 end; { printA }
 
 procedure debug(c : char);
 begin
    putch(c);
-   putch(chr(10));
+   putch(chr(10))
 end; { debug }
 
 procedure solver();

@@ -414,9 +414,9 @@ public class IMCodeGenerator implements AbsVisitor {
                                 t,
                                 new ImcCONST(access.offset)));
         }else{
-            result(new ImcMEM(new ImcBINOP(ImcBINOP.ADD,
+            result(new ImcBINOP(ImcBINOP.ADD,
                                            t,
-                                           new ImcCONST(access.offset))));
+                                           new ImcCONST(access.offset)));
         }
 
         SemType type = SemDesc.getActualType(access.var);
