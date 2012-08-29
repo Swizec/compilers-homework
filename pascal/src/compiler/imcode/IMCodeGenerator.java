@@ -98,7 +98,7 @@ public class IMCodeGenerator implements AbsVisitor {
                 }
                 offset += rType.getFieldType(i).size();
             }
-            if (sType instanceof SemRecordType) {
+            if (sType instanceof SemRecordType || sType instanceof SemArrayType) {
                 result(new ImcBINOP(ImcBINOP.ADD, rec, new ImcCONST(offset)));
             }else{
                 result(new ImcMEM(new ImcBINOP(ImcBINOP.ADD,

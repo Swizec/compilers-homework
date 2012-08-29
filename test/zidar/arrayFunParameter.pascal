@@ -1,8 +1,8 @@
 program randomgenerator;
-    
+
     const arrSize = 20;
 
-    var 
+    var
         i:integer;
         a:array[1..arrSize] of integer;
 
@@ -14,7 +14,7 @@ program randomgenerator;
     end;
 begin
     a[3] := 4;
-    
+
     putint(a[3]);
     printArr(5,a)
 
@@ -22,6 +22,6 @@ end.
 
 {
 This is Pascal compiler:
-44
+445
 :-) Done.
 }
