@@ -29,6 +29,7 @@ public class IMCodeGenerator implements AbsVisitor {
     private LinkedList<Boolean> noMem = new LinkedList<Boolean>();
 
     private LinkedList<ImcLABEL> endlabels = new LinkedList<ImcLABEL>();
+    private LinkedList<ImcLABEL> startlabels = new LinkedList<ImcLABEL>();
 
     public IMCodeGenerator() {
         chunks = new LinkedList<ImcChunk>();
@@ -232,7 +233,9 @@ public class IMCodeGenerator implements AbsVisitor {
         ImcLABEL tl = new ImcLABEL(FrmLabel.newLabel());
         ImcLABEL fl = new ImcLABEL(FrmLabel.newLabel());
         ImcLABEL sl = new ImcLABEL(FrmLabel.newLabel());
+        ImcLABEL finl = new ImcLABEL(FrmLabel.newLabel());
 
+        startlabels.push(finl);
         endlabels.push(fl);
 
         seq.stmts.add(new ImcMOVE(name, lo));
@@ -243,6 +246,7 @@ public class IMCodeGenerator implements AbsVisitor {
         seq.stmts.add(tl);
         acceptor.stmt.accept(this);
         seq.stmts.add((ImcStmt)result());
+        seq.stmts.add(finl);
         seq.stmts.add(new ImcMOVE(name,
                                   new ImcBINOP(ImcBINOP.ADD,
                                                name,
@@ -478,7 +482,7 @@ public class IMCodeGenerator implements AbsVisitor {
         ImcLABEL fl = new ImcLABEL(FrmLabel.newLabel());
         ImcLABEL sl = new ImcLABEL(FrmLabel.newLabel());
 
-
+        startlabels.push(tl);
         endlabels.push(fl);
 
         seq.stmts.add(sl);
@@ -495,6 +499,11 @@ public class IMCodeGenerator implements AbsVisitor {
 	@Override
 	public void visit(AbsBreakStmt acceptor) {
             result(new ImcJUMP(((ImcLABEL)endlabels.pop()).label));
+	}
+
+	@Override
+	public void visit(AbsContinueStmt acceptor) {
+            result(new ImcJUMP(((ImcLABEL)startlabels.pop()).label));
 	}
 
 }

@@ -324,6 +324,10 @@ public class SemNameResolver implements AbsVisitor {
 	@Override
 	public void visit(AbsBreakStmt acceptor) {
 	}
+	@Override
+	public void visit(AbsContinueStmt acceptor) {
+	}
+
 
 
     private void isDeclaredError(String name, AbsTree loc){

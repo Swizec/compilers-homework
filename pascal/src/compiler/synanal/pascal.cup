@@ -28,7 +28,7 @@ terminal BOOL, CHAR, INT;
 terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
 terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
-terminal BREAK;
+terminal BREAK, CONTINUE;
 
 non terminal source;
 non terminal program, declaration, block_statement;
@@ -500,7 +500,8 @@ statement ::= value:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
     | conditional:cond {: RESULT = cond; :}
     | loop:loop {: RESULT = loop; :}
     | block_statement:block {: RESULT = block; :}
-    | BREAK:br {: RESULT = (new AbsBreakStmt()).setBeg(br.toString(), brleft, brright).setEnd(br.toString(), brleft, brright); :};
+    | BREAK:br {: RESULT = (new AbsBreakStmt()).setBeg(br.toString(), brleft, brright).setEnd(br.toString(), brleft, brright); :}
+    | CONTINUE:br {: RESULT = (new AbsContinueStmt()).setBeg(br.toString(), brleft, brright).setEnd(br.toString(), brleft, brright); :};
 conditional ::= IF:i value:cond THEN statement:then
 {:
  RESULT = (new AbsIfStmt((AbsValExpr)cond,

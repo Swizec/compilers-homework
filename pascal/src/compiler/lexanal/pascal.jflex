@@ -111,6 +111,7 @@ eof { Report.warning("Unclosed comment! "+yytext(), yyline, yycolumn); }
 "procedure"   { return sym(PascalTok.PROCEDURE); }
 "do"   { return sym(PascalTok.DO); }
 "break" { return sym(PascalTok.BREAK); }
+"continue" { return sym(PascalTok.CONTINUE); }
 
 
 "true"|"false"	{ return sym(PascalTok.BOOL_CONST); }
