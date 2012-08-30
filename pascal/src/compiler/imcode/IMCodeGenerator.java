@@ -161,7 +161,13 @@ public class IMCodeGenerator implements AbsVisitor {
             FrmFrame frame = FrmDesc.getFrame(SemDesc.getNameDecl(acceptor.name));
             call = new ImcCALL(frame.label);
 
-            call.args.add(new ImcTEMP(curFrame.FP));
+            ImcExpr fp = new ImcTEMP(curFrame.FP);
+
+            for(int i=0; i<curFrame.level; i++) {
+                fp = new ImcMEM(fp);
+            }
+
+            call.args.add(fp);
         }
 
         call.size.add(4);
@@ -406,7 +412,6 @@ public class IMCodeGenerator implements AbsVisitor {
     private void visitValName(FrmArgAccess access, AbsDecl decl, FrmFrame frame) {
         ImcExpr t = new ImcTEMP(curFrame.FP);
         for(int i=0; i<curFrame.level - access.frame.level; i++) {
-            System.out.println("adding level");
             t = new ImcMEM(t);
         }
 
@@ -423,6 +428,7 @@ public class IMCodeGenerator implements AbsVisitor {
 
     private void visitValName(FrmLocAccess access, AbsDecl decl, FrmFrame frame) {
         ImcExpr t = new ImcTEMP(curFrame.FP);
+
         for(int i=0; i<curFrame.level - access.frame.level; i++) {
             t = new ImcMEM(t);
         }

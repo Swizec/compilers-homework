@@ -62,6 +62,7 @@ var
                else putch('.');
             putch(chr(10))
          end;
+         debug('S');
          num_solutions := num_solutions + 1
       end
       else
