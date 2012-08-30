@@ -96,6 +96,7 @@ begin
    end;
    printA(empty_chessboard.used_cols);
    printB(empty_chessboard.free_lins);
+   debug('S');
    empty_chessboard.num_queens := 0;
    solve(^empty_chessboard);
    putint(num_solutions)

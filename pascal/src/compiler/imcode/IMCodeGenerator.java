@@ -406,6 +406,7 @@ public class IMCodeGenerator implements AbsVisitor {
     private void visitValName(FrmArgAccess access, AbsDecl decl, FrmFrame frame) {
         ImcExpr t = new ImcTEMP(curFrame.FP);
         for(int i=0; i<curFrame.level - access.frame.level; i++) {
+            System.out.println("adding level");
             t = new ImcMEM(t);
         }
 
@@ -414,14 +415,9 @@ public class IMCodeGenerator implements AbsVisitor {
                                 t,
                                 new ImcCONST(access.offset)));
         }else{
-            result(new ImcBINOP(ImcBINOP.ADD,
+            result(new ImcMEM(new ImcBINOP(ImcBINOP.ADD,
                                            t,
-                                           new ImcCONST(access.offset)));
-        }
-
-        SemType type = SemDesc.getActualType(access.var);
-        if (type instanceof SemArrayType || type instanceof SemRecordType) {
-            result(new ImcMEM((ImcExpr)result()));
+                                           new ImcCONST(access.offset))));
         }
     }
 
