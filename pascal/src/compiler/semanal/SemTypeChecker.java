@@ -395,6 +395,11 @@ public class SemTypeChecker implements AbsVisitor {
         assert_bool(acceptor.cond, acceptor);
     }
 
+	@Override
+	public void visit(AbsBreakStmt acceptor) {
+	}
+
+
     private void noTypeError(AbsTree loc) {
         Report.error(String.format("cannot resolve type at (%d, %d)",
                                 loc.begLine, loc.begColumn), 1);

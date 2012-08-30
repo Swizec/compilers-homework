@@ -28,6 +28,7 @@ terminal BOOL, CHAR, INT;
 terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
 terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
+terminal BREAK;
 
 non terminal source;
 non terminal program, declaration, block_statement;
@@ -492,13 +493,14 @@ statement_ ::= {: RESULT = new AbsStmts(); :}
 statement ::= value:v {: RESULT = (new AbsExprStmt((AbsValExpr)v))
                                    .setBeg(v.toString(), vleft, vright)
                                    .setEnd(v.toString(), vleft, vright); :}
-| value:dst ASSIGN value:src {: RESULT = (new AbsAssignStmt((AbsValExpr)dst,
+    | value:dst ASSIGN value:src {: RESULT = (new AbsAssignStmt((AbsValExpr)dst,
                                                             (AbsValExpr)src))
                                          .setBeg(dst.toString(), dstleft, dstright)
                                          .setEnd(src.toString(), srcleft, srcright); :}
     | conditional:cond {: RESULT = cond; :}
     | loop:loop {: RESULT = loop; :}
-    | block_statement:block {: RESULT = block; :};
+    | block_statement:block {: RESULT = block; :}
+    | BREAK:br {: RESULT = (new AbsBreakStmt()).setBeg(br.toString(), brleft, brright).setEnd(br.toString(), brleft, brright); :};
 conditional ::= IF:i value:cond THEN statement:then
 {:
  RESULT = (new AbsIfStmt((AbsValExpr)cond,

@@ -5,6 +5,7 @@ import java.io.*;
 import compiler.abstree.*;
 import compiler.abstree.tree.*;
 import compiler.semanal.type.*;
+import compiler.report.*;
 
 public class SemPrintXML implements AbsVisitor {
 
@@ -413,5 +414,12 @@ public class SemPrintXML implements AbsVisitor {
 		acceptor.stmt.accept(this);
 		xml.print("</absnode>\n");
 	}
+
+	@Override
+	public void visit(AbsBreakStmt acceptor) {
+		if (acceptor.error) { xml.print("<abserror kind=\"BreakStmt\"/>\n"); return; }
+		xml.print("<absnode " + printPos(acceptor) + " kind=\"BreakStmt\">\n");
+		xml.print("</absnode>\n");
+        }
 
 }

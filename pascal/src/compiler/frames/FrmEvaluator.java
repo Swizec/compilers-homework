@@ -4,6 +4,7 @@ package compiler.frames;
 import compiler.abstree.*;
 import compiler.abstree.tree.*;
 import compiler.semanal.*;
+import compiler.report.*;
 
 public class FrmEvaluator implements AbsVisitor {
 
@@ -215,4 +216,8 @@ public class FrmEvaluator implements AbsVisitor {
         acceptor.cond.accept(this);
         acceptor.stmt.accept(this);
     }
+
+	@Override
+	public void visit(AbsBreakStmt acceptor) {
+	}
 }

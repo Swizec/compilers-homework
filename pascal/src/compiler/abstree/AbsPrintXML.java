@@ -3,6 +3,7 @@ package compiler.abstree;
 import java.io.*;
 
 import compiler.abstree.tree.*;
+import compiler.report.*;
 
 public class AbsPrintXML implements AbsVisitor {
 
@@ -350,5 +351,13 @@ public class AbsPrintXML implements AbsVisitor {
 		acceptor.stmt.accept(this);
 		xml.print("</absnode>\n");
 	}
+
+	@Override
+	public void visit(AbsBreakStmt acceptor) {
+		if (acceptor.error) { xml.println("<abserror kind=\"BreakStmt\"/>"); return; }
+		xml.print("<absnode " + printPos(acceptor) + " kind=\"BreakStmt\">");
+		xml.print("</absnode>\n");
+	}
+
 
 }

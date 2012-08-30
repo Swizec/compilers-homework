@@ -6,6 +6,7 @@ import compiler.abstree.*;
 import compiler.abstree.tree.*;
 import compiler.semanal.*;
 import compiler.semanal.type.*;
+import compiler.report.*;
 
 public class FrmPrintXML implements AbsVisitor {
 
@@ -426,5 +427,13 @@ public class FrmPrintXML implements AbsVisitor {
 		acceptor.stmt.accept(this);
 		xml.print("</absnode>\n");
 	}
+
+	@Override
+	public void visit(AbsBreakStmt acceptor) {
+		if (acceptor.error) { xml.print("<abserror kind=\"BreakStmt\"/>\n"); return; }
+		xml.print("<absnode " + printPos(acceptor) + " kind=\"BreakStmt\">\n");
+		xml.print("</absnode>\n");
+        }
+
 
 }

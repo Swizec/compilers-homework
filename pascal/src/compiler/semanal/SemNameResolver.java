@@ -321,6 +321,11 @@ public class SemNameResolver implements AbsVisitor {
         acceptor.stmt.accept(this);
     }
 
+	@Override
+	public void visit(AbsBreakStmt acceptor) {
+	}
+
+
     private void isDeclaredError(String name, AbsTree loc){
         System.out.println(String.format("var %s is redefined at (%d,%d)",
                                          name, loc.begLine, loc.endLine));
