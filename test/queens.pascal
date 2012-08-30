@@ -8,37 +8,6 @@ type
                    free_lins  : array [1..chessboard_size] of boolean
                 end;
 
-procedure printA(arr : array[1..chessboard_size] of integer);
-var i : integer;
-begin
-   putch('A');
-   putch(':');
-   putch(' ');
-   for i := 1 to chessboard_size do
-      putint(arr[i]);
-   putch(chr(10))
-end; { printA }
-
-procedure printB(arr : array[1..chessboard_size] of boolean);
-var i : integer;
-begin
-   putch('B');
-   putch(':');
-   putch(' ');
-   for i := 1 to chessboard_size do
-      if arr[i] then
-         putint(1)
-      else
-         putint(0);
-   putch(chr(10))
-end; { printA }
-
-procedure debug(c : char);
-begin
-   putch(c);
-   putch(chr(10))
-end; { debug }
-
 procedure solver();
 var
    num_solutions    : integer;
@@ -52,8 +21,6 @@ var
    begin
       if current_chessboard^.num_queens = chessboard_size then
       begin
-         printA(current_chessboard^.used_cols);
-         printB(current_chessboard^.free_lins);
          for j := 1 to chessboard_size do
          begin
             for i := 1 to chessboard_size do
@@ -62,7 +29,6 @@ var
                else putch('.');
             putch(chr(10))
          end;
-         debug('S');
          num_solutions := num_solutions + 1
       end
       else
@@ -95,9 +61,6 @@ begin
       empty_chessboard.used_cols[i] := i;
       empty_chessboard.free_lins[i] := true
    end;
-   printA(empty_chessboard.used_cols);
-   printB(empty_chessboard.free_lins);
-   debug('S');
    empty_chessboard.num_queens := 0;
    solve(^empty_chessboard);
    putint(num_solutions)
