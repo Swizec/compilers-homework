@@ -66,7 +66,7 @@ public class IMCodeGenerator implements AbsVisitor {
             FrmVarAccess acc = (FrmVarAccess)access;
             single = SemDesc.getActualType(acc.var).single;
         }else if (access instanceof FrmLocAccess) {
-            FrmVarAccess _acc = (FrmVarAccess)access;
+            FrmLocAccess _acc = (FrmLocAccess)access;
             single = SemDesc.getActualType(_acc.var).single;
         }
 
