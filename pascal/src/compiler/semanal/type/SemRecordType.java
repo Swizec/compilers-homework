@@ -9,23 +9,23 @@ import compiler.abstree.tree.*;
 public class SemRecordType extends SemType {
 
 	private Vector<AbsDeclName> fieldNames;
-	
+
 	private Vector<SemType> fieldTypes;
-	
+
 	public SemRecordType() {
 		fieldNames = new Vector<AbsDeclName>();
 		fieldTypes = new Vector<SemType>();
 	}
-	
+
 	public void addField(AbsDeclName name, SemType type) {
 		fieldNames.add(name);
 		fieldTypes.add(type);
 	}
-	
+
 	public int getNumFields() {
 		return fieldNames.size();
 	}
-	
+
 	public AbsDeclName getFieldName(int i) {
 		return (i < fieldNames.size()) ? fieldNames.get(i) : null;
 	}
@@ -40,7 +40,7 @@ public class SemRecordType extends SemType {
 		for (int i = 0; i < getNumFields(); i++) getFieldType(i).toXML(xml);
 		xml.print("</semtype>\n");
 	}
-	
+
 	@Override
 	public boolean coercesTo(SemType type) {
 		if (type instanceof SemRecordType) {
@@ -59,7 +59,7 @@ public class SemRecordType extends SemType {
 		for (int i = 0; i < getNumFields(); i++) {
 			sum = sum + this.getFieldType(i).size();
 		}
-		return sum;
+		return sum + 4;
 	}
 
 }

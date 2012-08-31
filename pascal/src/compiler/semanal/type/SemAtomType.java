@@ -4,19 +4,19 @@ import java.io.*;
 
 /** Opis atomarnih tipov. */
 public class SemAtomType extends SemType {
-	
+
 	public static final int BOOL = 0;
 	public static final int CHAR = 1;
 	public static final int INT = 2;
 	public static final int VOID = 3;
-	
+
 	/* Tip. */
 	public int type;
-	
+
 	public SemAtomType(int type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public void toXML(PrintStream xml) {
 		switch (type) {
@@ -43,10 +43,10 @@ public class SemAtomType extends SemType {
 		} else
 			return false;
 	}
-	
+
 	@Override
 	public int size() {
-		return 4;
+		return 8;
 	}
-	
+
 }

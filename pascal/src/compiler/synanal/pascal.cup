@@ -28,6 +28,7 @@ terminal BOOL, CHAR, INT;
 terminal COLON, COMMA, DOT, DOTS, LBRACKET, LPARENTHESIS, RBRACKET, RPARENTHESIS, SEMIC;
 terminal ADD, AND, DIV, EQU, GEQ, GTH, LEQ, LTH, MEM, MUL, NEQ, NOT, OR, PTR, SUB, UADD, USUB, VAL;
 terminal ARRAY, ASSIGN, BEGIN, CONST, DO, ELSE, END, FOR, FUNCTION, IF, OF, PROCEDURE, PROGRAM, RECORD, THEN, TO, TYPE, VAR, WHILE;
+terminal SINGLE;
 
 non terminal source;
 non terminal program, declaration, block_statement;
@@ -220,7 +221,18 @@ var_ ::= one_var:v {: AbsDecls decls = new AbsDecls();
        decls.decls.addAll(((AbsDecls)rest).decls);
        RESULT = decls;
     :};
-one_var ::= IDENTIFIER:id COLON type_desc:t SEMIC:s
+one_var ::= IDENTIFIER:id COLON SINGLE type_desc:t SEMIC:s
+{:
+ AbsTypeExpr _t = (AbsTypeExpr)t;
+ _t.single = true;
+ RESULT = (AbsVarDecl)(new AbsVarDecl((AbsDeclName)(new AbsDeclName(id))
+                                      .setBeg(id.toString(), idleft, idright)
+                                      .setEnd(id.toString(), idleft, idright),
+                                      _t))
+                       .setBeg(id.toString(), idleft, idright)
+                       .setEnd(s.toString(), sleft, sright);
+ :}
+| IDENTIFIER:id COLON type_desc:t SEMIC:s
 {:
  RESULT = (AbsVarDecl)(new AbsVarDecl((AbsDeclName)(new AbsDeclName(id))
                                       .setBeg(id.toString(), idleft, idright)

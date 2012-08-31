@@ -52,10 +52,65 @@ public class IMCodeGenerator implements AbsVisitor {
         acceptor.dstExpr.accept(this);
         ImcExpr dst = (ImcExpr)result();
 
+        AbsDecl decl = SemDesc.getNameDecl(acceptor.dstExpr);
+        FrmFrame frame = FrmDesc.getFrame(decl);
+        FrmAccess access = FrmDesc.getAccess(decl);
+
+        boolean single = false;
+
         acceptor.srcExpr.accept(this);
         ImcExpr src = (ImcExpr)result();
 
-        result(new ImcMOVE(dst, src));
+
+        if (access instanceof FrmVarAccess) {
+            FrmVarAccess acc = (FrmVarAccess)access;
+            single = SemDesc.getActualType(acc.var).single;
+        }else if (access instanceof FrmLocAccess) {
+            FrmVarAccess _acc = (FrmVarAccess)access;
+            single = SemDesc.getActualType(_acc.var).single;
+        }
+
+        if (single) {
+            ImcSEQ seq = new ImcSEQ();
+
+            ImcLABEL tl = new ImcLABEL(FrmLabel.newLabel());
+            ImcLABEL fl = new ImcLABEL(FrmLabel.newLabel());
+            ImcLABEL el = new ImcLABEL(FrmLabel.newLabel());
+
+
+            ImcSEQ flag = new ImcSEQ();
+            flag.stmts.add(new ImcMOVE(dst, src));
+
+            ImcExpr cond;
+            if (noMem.getFirst()) {
+                cond = new ImcBINOP(ImcBINOP.ADD,
+                                    dst,
+                                    new ImcCONST(4));
+
+            }else{
+                cond = new ImcMEM(new ImcBINOP(ImcBINOP.ADD,
+                                           dst,
+                                           new ImcCONST(4)));
+
+            }
+
+            flag.stmts.add(new ImcMOVE(new ImcMEM(new ImcBINOP(ImcBINOP.ADD,
+                                                           dst,
+                                                           new ImcCONST(4))),
+                                       new ImcCONST(1)));
+
+
+            seq.stmts.add(new ImcCJUMP(cond, tl.label, fl.label));
+            seq.stmts.add(tl);
+            seq.stmts.add(new ImcJUMP(el.label));
+            seq.stmts.add(fl);
+            seq.stmts.add(flag);
+            seq.stmts.add(el);
+
+            result(seq);
+        }else{
+            result(new ImcMOVE(dst, src));
+        }
     }
 
     @Override

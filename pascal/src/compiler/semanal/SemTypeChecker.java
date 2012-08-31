@@ -384,7 +384,9 @@ public class SemTypeChecker implements AbsVisitor {
     @Override
 	public void visit(AbsVarDecl acceptor) {
         acceptor.type.accept(this);
-        SemDesc.setActualType(acceptor, SemDesc.getActualType(acceptor.type));
+        SemType _t = SemDesc.getActualType(acceptor.type);
+        _t.single = acceptor.type.single;
+        SemDesc.setActualType(acceptor, _t);
     }
 
     @Override

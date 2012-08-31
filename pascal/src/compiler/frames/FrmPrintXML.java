@@ -409,6 +409,7 @@ public class FrmPrintXML implements AbsVisitor {
 		{
 			xml.print("<seminfo kind=\"DECL\" value=\"" + acceptor.hashCode() + "\"/>\n");
 			xml.print("<seminfo kind=\"SCOPE\" value=\"" + SemDesc.getScope(acceptor) + "\"/>\n");
+
 			SemType actualType = SemDesc.getActualType(acceptor); if (actualType != null) actualType.toXML(xml);
 		}
 		{

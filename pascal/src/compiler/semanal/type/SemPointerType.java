@@ -4,14 +4,14 @@ import java.io.*;
 
 /** Opis kazalcev. */
 public class SemPointerType extends SemType {
-	
+
 	/** Tip elementa. */
 	public SemType type;
-	
+
 	public SemPointerType(SemType type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public void toXML(PrintStream xml) {
 		xml.print("<semtype kind=\"POINTER\">\n");
@@ -29,10 +29,10 @@ public class SemPointerType extends SemType {
 		} else
 			return false;
 	}
-	
+
 	@Override
 	public int size() {
-		return 4;
+		return 8;
 	}
-	
+
 }

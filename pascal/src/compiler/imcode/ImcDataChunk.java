@@ -11,7 +11,6 @@ public class ImcDataChunk extends ImcChunk {
 
 	/** Velikost spremenljivke v pomnilniku.  */
 	public int size;
-
 	public ImcDataChunk(FrmLabel label, int size) {
 		this.label = label;
 		this.size = size;
@@ -19,7 +18,7 @@ public class ImcDataChunk extends ImcChunk {
 
 	@Override
 	public void toXML(PrintStream xml) {
-		xml.print("<datachunk label=\"" + label.name() + "\" size=\"" + size + "\"/>\n");
+            xml.print("<datachunk label=\"" + label.name() + "\" size=\"" + size + "\" />\n");
 	}
 
 }

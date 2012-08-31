@@ -7,19 +7,19 @@ import compiler.abstree.AbsVisitor;
  */
 public class AbsVarDecl extends AbsDecl {
 
-	/** Ime spremenljivke. */
-	public AbsDeclName name;
-	
-	/** Tip spremenljivke. */
-	public AbsTypeExpr type;
-	
-	public AbsVarDecl(AbsDeclName name, AbsTypeExpr type) {
-		this.name = name;
-		this.type = type;
-	}
+    /** Ime spremenljivke. */
+    public AbsDeclName name;
 
-	public void accept(AbsVisitor visitor) {
-		visitor.visit(this);
-	}
+    /** Tip spremenljivke. */
+    public AbsTypeExpr type;
+
+    public AbsVarDecl(AbsDeclName name, AbsTypeExpr type) {
+        this.name = name;
+        this.type = type;
+    }
+
+    public void accept(AbsVisitor visitor) {
+        visitor.visit(this);
+    }
 
 }
