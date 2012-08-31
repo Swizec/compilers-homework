@@ -94,6 +94,7 @@ public class SemTypeChecker implements AbsVisitor {
         case AbsBinExpr.DIV:
             assert_coerces(ft, st, acceptor);
             if (!st.coercesTo(typeInt)) {
+                System.out.println("HAI");
                 integerTypeError(acceptor);
             }
             SemDesc.setActualType(acceptor, typeInt);

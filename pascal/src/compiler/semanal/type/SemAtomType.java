@@ -4,19 +4,19 @@ import java.io.*;
 
 /** Opis atomarnih tipov. */
 public class SemAtomType extends SemType {
-	
+
 	public static final int BOOL = 0;
 	public static final int CHAR = 1;
 	public static final int INT = 2;
 	public static final int VOID = 3;
-	
+
 	/* Tip. */
 	public int type;
-	
+
 	public SemAtomType(int type) {
 		this.type = type;
 	}
-	
+
 	@Override
 	public void toXML(PrintStream xml) {
 		switch (type) {
@@ -39,14 +39,16 @@ public class SemAtomType extends SemType {
 	public boolean coercesTo(SemType type) {
 		if (type instanceof SemAtomType) {
 			SemAtomType atomType = (SemAtomType)type;
-			return this.type == atomType.type;
+			return this.type == atomType.type
+                            || (atomType.type == SemAtomType.BOOL && this.type == SemAtomType.INT)
+                            || (this.type == SemAtomType.BOOL && atomType.type == SemAtomType.INT);
 		} else
 			return false;
 	}
-	
+
 	@Override
 	public int size() {
 		return 4;
 	}
-	
+
 }
